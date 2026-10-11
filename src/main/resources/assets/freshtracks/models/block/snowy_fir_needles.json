@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "freshtracks:block/snowy_fir_needles"
+  }
+}

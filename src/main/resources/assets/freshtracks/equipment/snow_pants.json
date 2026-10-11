@@ -1,0 +1,15 @@
+{
+  "layers": {
+    "humanoid_leggings": [
+      {
+        "texture": "freshtracks:snow_pants",
+        "dyeable": {
+          "color_when_undyed": -14011056
+        }
+      },
+      {
+        "texture": "freshtracks:snow_pants_overlay"
+      }
+    ]
+  }
+}

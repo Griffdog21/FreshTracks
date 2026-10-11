@@ -1,0 +1,63 @@
+# gradle
+
+.gradle/
+build/
+out/
+classes/
+
+# eclipse
+
+*.launch
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# macos
+
+*.DS_Store
+
+# fabric
+
+run/
+
+# java
+
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
+
+# local test games, logs and downloads
+run2/
+run-prod/
+run-vanilla/
+play/
+*.log
+visual-mods/
+dist/
+tools/dev/local.env
+Play Fresh Tracks.bat
+Play Snowmass.bat
+__pycache__/
+
+# the build journal (local notes)
+MODLOG.md
+
+# the private Snowmass map add-on: kept off the public repository
+src/snowmass/
+tools/snowmass/
+tools/snowmass_world_data.py
+tools/dev/snowmass_*.py
+.claude/

@@ -1,0 +1,15 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "freshtracks:ski_helmet",
+        "dyeable": {
+          "color_when_undyed": -854793
+        }
+      },
+      {
+        "texture": "freshtracks:ski_helmet_overlay"
+      }
+    ]
+  }
+}

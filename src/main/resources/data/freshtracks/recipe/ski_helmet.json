@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "freshtracks:ski_goggles",
+    "minecraft:iron_helmet"
+  ],
+  "result": {
+    "id": "freshtracks:ski_helmet",
+    "count": 1
+  }
+}

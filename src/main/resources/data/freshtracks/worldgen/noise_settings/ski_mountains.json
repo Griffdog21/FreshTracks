@@ -1,0 +1,52 @@
+{
+  "sea_level": -64,
+  "disable_mob_generation": false,
+  "legacy_random_source": false,
+  "default_block": "minecraft:stone",
+  "default_fluid": "minecraft:water",
+  "noise": {
+    "min_y": -64,
+    "height": 512
+  },
+  "noise_router": {
+    "chunk_surface_level": "freshtracks:ski/height",
+    "continents": "freshtracks:ski/elevation",
+    "depth": "freshtracks:ski/depth",
+    "erosion": "freshtracks:ski/steepness",
+    "final_density": "freshtracks:ski/density",
+    "ridges": "freshtracks:ski/variety",
+    "temperature": -0.5,
+    "vegetation": "freshtracks:ski/moisture"
+  },
+  "material_rule": "minecraft:overworld",
+  "spawn_target": [
+    {
+      "freshtracks:ski/elevation": [
+        -1.0,
+        -0.9272727272727272
+      ],
+      "freshtracks:ski/steepness": [
+        -1.0,
+        -0.6444444444444444
+      ]
+    }
+  ],
+  "debug_functions": [
+    {
+      "function": "freshtracks:ski/density",
+      "label": "D"
+    },
+    {
+      "function": "freshtracks:ski/elevation",
+      "label": "E"
+    },
+    {
+      "function": "freshtracks:ski/steepness",
+      "label": "S"
+    },
+    {
+      "function": "freshtracks:ski/moisture",
+      "label": "M"
+    }
+  ]
+}

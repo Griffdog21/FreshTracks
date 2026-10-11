@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "root": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#freshtracks:rigs"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:alpine_skis"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.root.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.root.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "background": "minecraft:block/packed_ice"
+  },
+  "requirements": [
+    [
+      "root"
+    ]
+  ]
+}

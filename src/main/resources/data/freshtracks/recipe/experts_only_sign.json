@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#minecraft:signs",
+    "minecraft:black_dye"
+  ],
+  "result": {
+    "id": "freshtracks:experts_only_sign",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "first_tracks": {
+      "trigger": "freshtracks:ride",
+      "conditions": {
+        "event": "fresh_tracks"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:powder_skis"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.first_tracks.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.first_tracks.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "first_tracks"
+    ]
+  ],
+  "parent": "freshtracks:click_in"
+}

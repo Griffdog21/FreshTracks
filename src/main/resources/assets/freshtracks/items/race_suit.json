@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "freshtracks:item/race_suit",
+    "tints": [
+      {
+        "type": "minecraft:dye",
+        "default": -2606805
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      }
+    ]
+  }
+}

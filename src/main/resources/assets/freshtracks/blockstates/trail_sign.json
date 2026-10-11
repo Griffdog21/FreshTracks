@@ -1,0 +1,244 @@
+{
+  "variants": {
+    "facing=north,symbol=green,wall=false": {
+      "model": "freshtracks:block/trail_sign_green"
+    },
+    "facing=north,symbol=green,wall=true": {
+      "model": "freshtracks:block/trail_sign_green_wall"
+    },
+    "facing=east,symbol=green,wall=false": {
+      "model": "freshtracks:block/trail_sign_green",
+      "y": 90
+    },
+    "facing=east,symbol=green,wall=true": {
+      "model": "freshtracks:block/trail_sign_green_wall",
+      "y": 90
+    },
+    "facing=south,symbol=green,wall=false": {
+      "model": "freshtracks:block/trail_sign_green",
+      "y": 180
+    },
+    "facing=south,symbol=green,wall=true": {
+      "model": "freshtracks:block/trail_sign_green_wall",
+      "y": 180
+    },
+    "facing=west,symbol=green,wall=false": {
+      "model": "freshtracks:block/trail_sign_green",
+      "y": 270
+    },
+    "facing=west,symbol=green,wall=true": {
+      "model": "freshtracks:block/trail_sign_green_wall",
+      "y": 270
+    },
+    "facing=north,symbol=blue,wall=false": {
+      "model": "freshtracks:block/trail_sign_blue"
+    },
+    "facing=north,symbol=blue,wall=true": {
+      "model": "freshtracks:block/trail_sign_blue_wall"
+    },
+    "facing=east,symbol=blue,wall=false": {
+      "model": "freshtracks:block/trail_sign_blue",
+      "y": 90
+    },
+    "facing=east,symbol=blue,wall=true": {
+      "model": "freshtracks:block/trail_sign_blue_wall",
+      "y": 90
+    },
+    "facing=south,symbol=blue,wall=false": {
+      "model": "freshtracks:block/trail_sign_blue",
+      "y": 180
+    },
+    "facing=south,symbol=blue,wall=true": {
+      "model": "freshtracks:block/trail_sign_blue_wall",
+      "y": 180
+    },
+    "facing=west,symbol=blue,wall=false": {
+      "model": "freshtracks:block/trail_sign_blue",
+      "y": 270
+    },
+    "facing=west,symbol=blue,wall=true": {
+      "model": "freshtracks:block/trail_sign_blue_wall",
+      "y": 270
+    },
+    "facing=north,symbol=black,wall=false": {
+      "model": "freshtracks:block/trail_sign_black"
+    },
+    "facing=north,symbol=black,wall=true": {
+      "model": "freshtracks:block/trail_sign_black_wall"
+    },
+    "facing=east,symbol=black,wall=false": {
+      "model": "freshtracks:block/trail_sign_black",
+      "y": 90
+    },
+    "facing=east,symbol=black,wall=true": {
+      "model": "freshtracks:block/trail_sign_black_wall",
+      "y": 90
+    },
+    "facing=south,symbol=black,wall=false": {
+      "model": "freshtracks:block/trail_sign_black",
+      "y": 180
+    },
+    "facing=south,symbol=black,wall=true": {
+      "model": "freshtracks:block/trail_sign_black_wall",
+      "y": 180
+    },
+    "facing=west,symbol=black,wall=false": {
+      "model": "freshtracks:block/trail_sign_black",
+      "y": 270
+    },
+    "facing=west,symbol=black,wall=true": {
+      "model": "freshtracks:block/trail_sign_black_wall",
+      "y": 270
+    },
+    "facing=north,symbol=double_black,wall=false": {
+      "model": "freshtracks:block/trail_sign_double_black"
+    },
+    "facing=north,symbol=double_black,wall=true": {
+      "model": "freshtracks:block/trail_sign_double_black_wall"
+    },
+    "facing=east,symbol=double_black,wall=false": {
+      "model": "freshtracks:block/trail_sign_double_black",
+      "y": 90
+    },
+    "facing=east,symbol=double_black,wall=true": {
+      "model": "freshtracks:block/trail_sign_double_black_wall",
+      "y": 90
+    },
+    "facing=south,symbol=double_black,wall=false": {
+      "model": "freshtracks:block/trail_sign_double_black",
+      "y": 180
+    },
+    "facing=south,symbol=double_black,wall=true": {
+      "model": "freshtracks:block/trail_sign_double_black_wall",
+      "y": 180
+    },
+    "facing=west,symbol=double_black,wall=false": {
+      "model": "freshtracks:block/trail_sign_double_black",
+      "y": 270
+    },
+    "facing=west,symbol=double_black,wall=true": {
+      "model": "freshtracks:block/trail_sign_double_black_wall",
+      "y": 270
+    },
+    "facing=north,symbol=park,wall=false": {
+      "model": "freshtracks:block/trail_sign_park"
+    },
+    "facing=north,symbol=park,wall=true": {
+      "model": "freshtracks:block/trail_sign_park_wall"
+    },
+    "facing=east,symbol=park,wall=false": {
+      "model": "freshtracks:block/trail_sign_park",
+      "y": 90
+    },
+    "facing=east,symbol=park,wall=true": {
+      "model": "freshtracks:block/trail_sign_park_wall",
+      "y": 90
+    },
+    "facing=south,symbol=park,wall=false": {
+      "model": "freshtracks:block/trail_sign_park",
+      "y": 180
+    },
+    "facing=south,symbol=park,wall=true": {
+      "model": "freshtracks:block/trail_sign_park_wall",
+      "y": 180
+    },
+    "facing=west,symbol=park,wall=false": {
+      "model": "freshtracks:block/trail_sign_park",
+      "y": 270
+    },
+    "facing=west,symbol=park,wall=true": {
+      "model": "freshtracks:block/trail_sign_park_wall",
+      "y": 270
+    },
+    "facing=north,symbol=closed,wall=false": {
+      "model": "freshtracks:block/trail_sign_closed"
+    },
+    "facing=north,symbol=closed,wall=true": {
+      "model": "freshtracks:block/trail_sign_closed_wall"
+    },
+    "facing=east,symbol=closed,wall=false": {
+      "model": "freshtracks:block/trail_sign_closed",
+      "y": 90
+    },
+    "facing=east,symbol=closed,wall=true": {
+      "model": "freshtracks:block/trail_sign_closed_wall",
+      "y": 90
+    },
+    "facing=south,symbol=closed,wall=false": {
+      "model": "freshtracks:block/trail_sign_closed",
+      "y": 180
+    },
+    "facing=south,symbol=closed,wall=true": {
+      "model": "freshtracks:block/trail_sign_closed_wall",
+      "y": 180
+    },
+    "facing=west,symbol=closed,wall=false": {
+      "model": "freshtracks:block/trail_sign_closed",
+      "y": 270
+    },
+    "facing=west,symbol=closed,wall=true": {
+      "model": "freshtracks:block/trail_sign_closed_wall",
+      "y": 270
+    },
+    "facing=north,symbol=extreme,wall=false": {
+      "model": "freshtracks:block/trail_sign_extreme"
+    },
+    "facing=north,symbol=extreme,wall=true": {
+      "model": "freshtracks:block/trail_sign_extreme_wall"
+    },
+    "facing=east,symbol=extreme,wall=false": {
+      "model": "freshtracks:block/trail_sign_extreme",
+      "y": 90
+    },
+    "facing=east,symbol=extreme,wall=true": {
+      "model": "freshtracks:block/trail_sign_extreme_wall",
+      "y": 90
+    },
+    "facing=south,symbol=extreme,wall=false": {
+      "model": "freshtracks:block/trail_sign_extreme",
+      "y": 180
+    },
+    "facing=south,symbol=extreme,wall=true": {
+      "model": "freshtracks:block/trail_sign_extreme_wall",
+      "y": 180
+    },
+    "facing=west,symbol=extreme,wall=false": {
+      "model": "freshtracks:block/trail_sign_extreme",
+      "y": 270
+    },
+    "facing=west,symbol=extreme,wall=true": {
+      "model": "freshtracks:block/trail_sign_extreme_wall",
+      "y": 270
+    },
+    "facing=north,symbol=lift,wall=false": {
+      "model": "freshtracks:block/trail_sign_lift"
+    },
+    "facing=north,symbol=lift,wall=true": {
+      "model": "freshtracks:block/trail_sign_lift_wall"
+    },
+    "facing=east,symbol=lift,wall=false": {
+      "model": "freshtracks:block/trail_sign_lift",
+      "y": 90
+    },
+    "facing=east,symbol=lift,wall=true": {
+      "model": "freshtracks:block/trail_sign_lift_wall",
+      "y": 90
+    },
+    "facing=south,symbol=lift,wall=false": {
+      "model": "freshtracks:block/trail_sign_lift",
+      "y": 180
+    },
+    "facing=south,symbol=lift,wall=true": {
+      "model": "freshtracks:block/trail_sign_lift_wall",
+      "y": 180
+    },
+    "facing=west,symbol=lift,wall=false": {
+      "model": "freshtracks:block/trail_sign_lift",
+      "y": 270
+    },
+    "facing=west,symbol=lift,wall=true": {
+      "model": "freshtracks:block/trail_sign_lift_wall",
+      "y": 270
+    }
+  }
+}

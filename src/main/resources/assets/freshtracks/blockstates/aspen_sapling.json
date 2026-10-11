@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "stage=0": {
+      "model": "freshtracks:block/aspen_sapling"
+    },
+    "stage=1": {
+      "model": "freshtracks:block/aspen_sapling"
+    }
+  }
+}

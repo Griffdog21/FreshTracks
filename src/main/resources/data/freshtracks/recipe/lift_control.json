@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "L": "minecraft:lever",
+    "R": "minecraft:redstone",
+    "S": "minecraft:smooth_stone"
+  },
+  "pattern": [
+    "LRL",
+    "SSS"
+  ],
+  "result": {
+    "id": "freshtracks:lift_control",
+    "count": 1
+  }
+}

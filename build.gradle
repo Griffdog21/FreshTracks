@@ -1,0 +1,206 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+// The Snowmass map add-on (src/snowmass) is private: it isn't in the public repository. Everything about it below is
+// skipped when that folder isn't there, so the public mod builds on its own.
+def hasSnowmass = file("src/snowmass").isDirectory()
+
+if (hasSnowmass) {
+	sourceSets {
+		snowmass {
+			compileClasspath += sourceSets.main.compileClasspath + sourceSets.main.output
+			runtimeClasspath += sourceSets.main.runtimeClasspath + sourceSets.main.output
+		}
+	}
+}
+
+repositories {
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
+	// for more information about repositories.
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"freshtracks" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+		// the Snowmass map add-on (server side: world generation from the real Snowmass data); not part of the
+		// public mod, built as its own jar for the Snowmass server and your own game
+		if (hasSnowmass) {
+			"freshtracks_snowmass" {
+				sourceSet sourceSets.snowmass
+			}
+		}
+	}
+
+	runs {
+		client {
+			programArgs "--width", "1280", "--height", "720"
+		}
+		// a second client for multiplayer tests (joins the first one's LAN world); own folder, name and bridge port
+		client2 {
+			client()
+			configName = "Second client"
+			runDir = "run2"
+			programArgs "--width", "960", "--height", "540", "--username", "Friend"
+			vmArg "-Dfreshtracks.bridgePort=25600"
+		}
+	}
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+// A production-style client (the real launcher setup, the built jar + Fabric API, no dev tools on the classpath) for
+// testing what players actually install. The dev bridge is switched on with a flag only this task passes.
+configurations {
+	prodMods {
+		transitive = false
+	}
+}
+
+dependencies {
+	prodMods "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+// Optional look-good mods for the test games (Sodium, Iris shaders, Distant Horizons): any jars dropped in visual-mods/.
+// Not part of the mod or the pack; the folder is local only.
+def visualMods = fileTree("visual-mods") { include "*.jar" }
+
+tasks.register("prodClient", net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+	mods.from(tasks.named("jar"))
+	if (hasSnowmass && project.hasProperty("withSnowmass")) {
+		mods.from(tasks.named("snowmassJar"))
+	}
+	mods.from(configurations.prodMods)
+	mods.from(visualMods)
+	jvmArgs.addAll("-Dfreshtracks.devbridge=true", "-Dfreshtracks.bridgePort=25601")
+	programArgs.addAll("--width", "1280", "--height", "720")
+	runDir = layout.projectDirectory.dir("run-prod")
+}
+
+// The play game runs from its own copy of the mod jar, in a fresh folder each launch, so rebuilding the mod while a
+// game is open can never swap the jar out from under it (that shows up as "Errors in the currently selected data
+// packs" / "invalid LOC header"). Copies from earlier launches are cleared out first.
+def playModsRoot = layout.buildDirectory.dir("play-mods")
+def playMods = tasks.register("playMods", Copy) {
+	def stamp = String.valueOf(System.currentTimeMillis())
+	from(tasks.named("jar"))
+	if (hasSnowmass) {
+		from(tasks.named("snowmassJar"))
+	}
+	into(playModsRoot.map { it.dir(stamp) })
+	doFirst {
+		def root = playModsRoot.get().asFile
+		if (root.isDirectory()) {
+			root.eachDir { old -> old.deleteDir() }
+		}
+	}
+}
+
+// Just play: the built mod + Fabric API in its own folder (play/), no test tools.
+// gradlew playClient -PplayWorld=Snowmass opens that world straight away.
+tasks.register("playClient", net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+	mods.setFrom(files(playMods).asFileTree) // replace the default list (it holds the jar in build/libs)
+	mods.from(configurations.prodMods)
+	if (project.hasProperty("playWorld")) {
+		programArgs.addAll("--quickPlaySingleplayer", project.property("playWorld").toString())
+	}
+	mods.from(visualMods)
+	jvmArgs.addAll("-Xmx6G", "-XX:ErrorFile=" + layout.projectDirectory.file("play/hs_err_pid%p.log").asFile.absolutePath)
+	programArgs.addAll("--width", "1600", "--height", "900")
+	runDir = layout.projectDirectory.dir("play")
+}
+
+// The same game WITHOUT Fresh Tracks, opening a copy of a world that used it: checks that removing the mod is safe.
+tasks.register("prodClientNoMod", net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+	mods.setFrom(configurations.prodMods) // replace the default list, which includes this project's jar
+	programArgs.addAll("--width", "1280", "--height", "720", "--quickPlaySingleplayer", "FT Alpine 2")
+	runDir = layout.projectDirectory.dir("run-vanilla")
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+if (hasSnowmass) {
+	tasks.named("processSnowmassResources", ProcessResources) {
+		def version = project.version
+		inputs.property "version", version
+
+		filesMatching("fabric.mod.json") {
+			expand "version": version
+		}
+	}
+
+	// the dev game loads the Snowmass add-on too (its classes and data as their own mod)
+	sourceSets.client.runtimeClasspath += sourceSets.snowmass.output
+
+	def snowmassJar = tasks.register("snowmassJar", Jar) {
+		archiveBaseName = "freshtracks-snowmass"
+		from(sourceSets.snowmass.output)
+		from("LICENSE") {
+			rename { "${it}_freshtracks_snowmass" }
+		}
+	}
+	tasks.named("build") { dependsOn(snowmassJar) }
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	def projectName = project.name
+	inputs.property "projectName", projectName
+
+	from("LICENSE") {
+		rename { "${it}_$projectName"}
+	}
+}
+
+// configure the maven publication
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
+
+	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+	repositories {
+		// Add repositories to publish to here.
+		// Notice: This block does NOT have the same function as the block in the top level.
+		// The repositories here will be used for publishing your artifact, not for
+		// retrieving dependencies.
+	}
+}

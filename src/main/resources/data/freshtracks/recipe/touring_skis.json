@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "#minecraft:planks",
+    "L": "minecraft:leather",
+    "S": "minecraft:string"
+  },
+  "pattern": [
+    "P P",
+    "L L",
+    "S S"
+  ],
+  "result": {
+    "id": "freshtracks:touring_skis",
+    "count": 1
+  }
+}

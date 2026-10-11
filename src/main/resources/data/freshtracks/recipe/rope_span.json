@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:string",
+    "minecraft:blue_dye"
+  ],
+  "result": {
+    "id": "freshtracks:rope_span",
+    "count": 4
+  }
+}

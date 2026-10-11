@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_dye",
+  "dye": "#minecraft:dyes",
+  "group": "freshtracks_dyed_gear",
+  "result": {
+    "id": "freshtracks:puffer_jacket"
+  },
+  "target": "freshtracks:puffer_jacket"
+}

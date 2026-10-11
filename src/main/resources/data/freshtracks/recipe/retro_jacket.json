@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "W": "#minecraft:wool",
+    "G": "minecraft:glowstone_dust"
+  },
+  "pattern": [
+    "W W",
+    "WGW",
+    "WWW"
+  ],
+  "result": {
+    "id": "freshtracks:retro_jacket",
+    "count": 1
+  }
+}

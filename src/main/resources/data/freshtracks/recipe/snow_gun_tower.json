@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "W": "minecraft:water_bucket"
+  },
+  "pattern": [
+    "I",
+    "W"
+  ],
+  "result": {
+    "id": "freshtracks:snow_gun_tower",
+    "count": 1
+  }
+}

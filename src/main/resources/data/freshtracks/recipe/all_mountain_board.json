@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "III",
+    "PPP"
+  ],
+  "result": {
+    "id": "freshtracks:all_mountain_board",
+    "count": 1
+  }
+}

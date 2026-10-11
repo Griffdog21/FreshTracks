@@ -1,0 +1,15 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "freshtracks:shell_jacket",
+        "dyeable": {
+          "color_when_undyed": -12605858
+        }
+      },
+      {
+        "texture": "freshtracks:shell_jacket_overlay"
+      }
+    ]
+  }
+}

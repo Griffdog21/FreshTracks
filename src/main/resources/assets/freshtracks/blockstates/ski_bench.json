@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "freshtracks:block/ski_bench"
+    },
+    "facing=east": {
+      "model": "freshtracks:block/ski_bench",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "freshtracks:block/ski_bench",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "freshtracks:block/ski_bench",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "W": "#minecraft:wool",
+    "L": "minecraft:leather"
+  },
+  "pattern": [
+    "W W",
+    "WLW",
+    "WWW"
+  ],
+  "result": {
+    "id": "freshtracks:ski_jacket",
+    "count": 1
+  }
+}

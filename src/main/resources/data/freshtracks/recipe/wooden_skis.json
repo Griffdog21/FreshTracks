@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "#minecraft:planks",
+    "S": "minecraft:string"
+  },
+  "pattern": [
+    "P P",
+    "P P",
+    "S S"
+  ],
+  "result": {
+    "id": "freshtracks:wooden_skis",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "III",
+    "P P",
+    "PPP"
+  ],
+  "result": {
+    "id": "freshtracks:board_press",
+    "count": 1
+  }
+}

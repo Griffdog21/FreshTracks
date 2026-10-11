@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "freshtracks:item/snow_pants",
+    "tints": [
+      {
+        "type": "minecraft:dye",
+        "default": -14011056
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      }
+    ]
+  }
+}

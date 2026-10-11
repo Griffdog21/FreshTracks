@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 5
+  },
+  "gives": {
+    "id": "freshtracks:larch_sapling"
+  },
+  "max_uses": 8,
+  "xp": 1,
+  "reputation_discount": 0.2
+}

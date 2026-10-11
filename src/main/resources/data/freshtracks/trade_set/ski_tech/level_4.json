@@ -1,0 +1,11 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/ski_tech/level_4",
+  "trades": [
+    "freshtracks:ski_tech/4/emerald_race_skis",
+    "freshtracks:ski_tech/4/emerald_helmet",
+    "freshtracks:ski_tech/4/emerald_wax_bulk",
+    "freshtracks:ski_tech/4/emerald_freeride_skis",
+    "freshtracks:ski_tech/4/emerald_touring_skis"
+  ]
+}

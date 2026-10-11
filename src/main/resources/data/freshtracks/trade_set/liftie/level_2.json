@@ -1,0 +1,9 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/liftie/level_2",
+  "trades": [
+    "freshtracks:liftie/2/iron_emerald",
+    "freshtracks:liftie/2/emerald_towers",
+    "freshtracks:liftie/2/redstone_emerald"
+  ]
+}

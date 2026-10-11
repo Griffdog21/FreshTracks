@@ -1,0 +1,17 @@
+{
+	"required": true,
+	"package": "com.freshtracks.client.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"AvatarRendererMixin",
+		"ClientPacketListenerMixin",
+		"FogRendererMixin",
+		"HumanoidModelMixin",
+		"LivingEntityRendererAccessor",
+		"LocalPlayerMixin",
+		"MinecraftMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

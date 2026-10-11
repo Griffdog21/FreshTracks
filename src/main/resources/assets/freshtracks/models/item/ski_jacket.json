@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "freshtracks:item/ski_jacket",
+    "layer1": "freshtracks:item/ski_jacket_overlay"
+  }
+}

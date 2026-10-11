@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "shop_local": {
+      "trigger": "minecraft:villager_trade",
+      "conditions": {
+        "item": {
+          "items": "#freshtracks:shop_goods"
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:ski_bench"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.shop_local.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.shop_local.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "shop_local"
+    ]
+  ],
+  "parent": "freshtracks:root"
+}

@@ -1,0 +1,13 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 1
+  },
+  "gives": {
+    "id": "freshtracks:ski_wax",
+    "count": 2
+  },
+  "max_uses": 8,
+  "xp": 1,
+  "reputation_discount": 0.2
+}

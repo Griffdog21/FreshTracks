@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "condition": {
+        "type": "minecraft:survives_explosion"
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "freshtracks:aspen_sapling"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "freshtracks:blocks/aspen_sapling"
+}

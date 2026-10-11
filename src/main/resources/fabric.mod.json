@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "freshtracks",
+	"version": "${version}",
+	"name": "Fresh Tracks",
+	"description": "Skis, snowboards, chairlifts, powder days and blizzards, ski shops and new alpine biomes. Carve on your edges, hit kickers, throw tricks, and live on the mountain.",
+	"authors": ["Griffdog21"],
+	"contact": {},
+	"license": "ARR",
+	"icon": "assets/freshtracks/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["com.freshtracks.FreshTracks"],
+		"client": ["com.freshtracks.client.FreshTracksClient"]
+	},
+	"mixins": [
+		"freshtracks.mixins.json",
+		{
+			"config": "freshtracks.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": ">=0.162.0"
+	}
+}

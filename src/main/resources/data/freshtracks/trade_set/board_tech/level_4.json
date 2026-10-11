@@ -1,0 +1,11 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/board_tech/level_4",
+  "trades": [
+    "freshtracks:board_tech/4/emerald_park_board",
+    "freshtracks:board_tech/4/emerald_goggles",
+    "freshtracks:board_tech/4/emerald_carving_board",
+    "freshtracks:board_tech/4/emerald_splitboard",
+    "freshtracks:board_tech/4/emerald_shell"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "values": [
+    "freshtracks:ski_bench",
+    "freshtracks:trail_marker",
+    "freshtracks:rope_line",
+    "freshtracks:slow_zone_sign",
+    "freshtracks:closed_sign",
+    "freshtracks:experts_only_sign",
+    "freshtracks:singles_sign",
+    "freshtracks:boundary_sign",
+    "freshtracks:cliff_sign",
+    "freshtracks:trail_sign"
+  ]
+}

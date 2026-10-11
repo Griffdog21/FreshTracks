@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "freshtracks:block/lift_control"
+    },
+    "facing=east": {
+      "model": "freshtracks:block/lift_control",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "freshtracks:block/lift_control",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "freshtracks:block/lift_control",
+      "y": 270
+    }
+  }
+}

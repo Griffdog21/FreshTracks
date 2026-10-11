@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "yard_sale": {
+      "trigger": "freshtracks:ride",
+      "conditions": {
+        "event": "yard_sale"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:ski_poles"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.yard_sale.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.yard_sale.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "yard_sale"
+    ]
+  ],
+  "parent": "freshtracks:click_in"
+}

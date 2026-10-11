@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "#minecraft:planks",
+    "F": "minecraft:feather"
+  },
+  "pattern": [
+    "I I",
+    "P P",
+    "F F"
+  ],
+  "result": {
+    "id": "freshtracks:freeride_skis",
+    "count": 1
+  }
+}

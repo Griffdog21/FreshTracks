@@ -1,0 +1,10 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/ski_tech/level_2",
+  "trades": [
+    "freshtracks:ski_tech/2/iron_emerald",
+    "freshtracks:ski_tech/2/emerald_poles",
+    "freshtracks:ski_tech/2/emerald_ski_boots",
+    "freshtracks:ski_tech/2/emerald_alpine_skis"
+  ]
+}

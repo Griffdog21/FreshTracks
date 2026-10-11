@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": "minecraft:leather",
+    "G": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    "L L",
+    "LGL",
+    "LLL"
+  ],
+  "result": {
+    "id": "freshtracks:race_suit",
+    "count": 1
+  }
+}

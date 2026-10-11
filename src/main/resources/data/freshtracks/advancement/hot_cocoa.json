@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "hot_cocoa": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "freshtracks:hot_cocoa"
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:hot_cocoa"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.hot_cocoa.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.hot_cocoa.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "hot_cocoa"
+    ]
+  ],
+  "parent": "freshtracks:dressed"
+}

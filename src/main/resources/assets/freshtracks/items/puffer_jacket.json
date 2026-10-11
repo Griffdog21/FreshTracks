@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "freshtracks:item/puffer_jacket",
+    "tints": [
+      {
+        "type": "minecraft:dye",
+        "default": -13931303
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      }
+    ]
+  }
+}

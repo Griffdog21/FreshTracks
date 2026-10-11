@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_dye",
+  "dye": "#minecraft:dyes",
+  "group": "freshtracks_dyed_gear",
+  "result": {
+    "id": "freshtracks:ski_goggles"
+  },
+  "target": "freshtracks:ski_goggles"
+}

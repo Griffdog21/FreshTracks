@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "freshtracks:item/retro_jacket",
+    "layer1": "freshtracks:item/retro_jacket_overlay"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "freshtracks:block/trail_map"
+    },
+    "facing=east": {
+      "model": "freshtracks:block/trail_map"
+    },
+    "facing=south": {
+      "model": "freshtracks:block/trail_map"
+    },
+    "facing=west": {
+      "model": "freshtracks:block/trail_map"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "values": [
+    "freshtracks:wooden_skis",
+    "freshtracks:alpine_skis",
+    "freshtracks:race_skis",
+    "freshtracks:powder_skis",
+    "freshtracks:park_skis",
+    "freshtracks:carving_skis",
+    "freshtracks:freeride_skis",
+    "freshtracks:touring_skis",
+    "freshtracks:retro_skis",
+    "freshtracks:snurfer",
+    "freshtracks:all_mountain_board",
+    "freshtracks:powder_board",
+    "freshtracks:park_board",
+    "freshtracks:freeride_board",
+    "freshtracks:carving_board",
+    "freshtracks:splitboard",
+    "freshtracks:retro_board"
+  ]
+}

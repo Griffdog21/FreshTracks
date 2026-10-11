@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:bamboo",
+    "minecraft:orange_dye",
+    "minecraft:black_dye"
+  ],
+  "result": {
+    "id": "freshtracks:hazard_pole",
+    "count": 4
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "values": [
+    "freshtracks:lift_terminal",
+    "freshtracks:lift_tower",
+    "freshtracks:lift_tower_head",
+    "freshtracks:board_press",
+    "freshtracks:lift_control",
+    "freshtracks:snow_gun",
+    "freshtracks:snow_gun_tower",
+    "freshtracks:snow_gun_pole"
+  ]
+}

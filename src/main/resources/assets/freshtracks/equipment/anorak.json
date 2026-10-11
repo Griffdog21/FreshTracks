@@ -1,0 +1,15 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "freshtracks:anorak",
+        "dyeable": {
+          "color_when_undyed": -2053830
+        }
+      },
+      {
+        "texture": "freshtracks:anorak_overlay"
+      }
+    ]
+  }
+}

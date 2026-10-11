@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/template_glass_pane_side_alt",
+  "textures": {
+    "pane": "freshtracks:block/closure_fence",
+    "edge": "freshtracks:block/closure_fence_edge",
+    "particle": "freshtracks:block/closure_fence"
+  }
+}

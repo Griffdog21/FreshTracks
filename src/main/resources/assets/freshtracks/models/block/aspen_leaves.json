@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "freshtracks:block/aspen_leaves"
+  }
+}

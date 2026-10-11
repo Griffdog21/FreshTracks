@@ -1,0 +1,141 @@
+{
+  "rig.click_in": {
+    "sounds": [
+      "freshtracks:rig/click_in1",
+      "freshtracks:rig/click_in2",
+      "freshtracks:rig/click_in3"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.click_in"
+  },
+  "rig.click_out": {
+    "sounds": [
+      "freshtracks:rig/click_out1",
+      "freshtracks:rig/click_out2",
+      "freshtracks:rig/click_out3"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.click_out"
+  },
+  "rig.carve": {
+    "sounds": [
+      "freshtracks:rig/carve"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.carve"
+  },
+  "rig.glide": {
+    "sounds": [
+      "freshtracks:rig/glide"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.glide"
+  },
+  "rig.powder": {
+    "sounds": [
+      "freshtracks:rig/powder"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.powder"
+  },
+  "rig.skid": {
+    "sounds": [
+      "freshtracks:rig/skid"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.skid"
+  },
+  "rig.ice_scrape": {
+    "sounds": [
+      "freshtracks:rig/ice_scrape"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.ice_scrape"
+  },
+  "rig.rock_scrape": {
+    "sounds": [
+      "freshtracks:rig/rock_scrape"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.rock_scrape"
+  },
+  "rig.wind": {
+    "sounds": [
+      "freshtracks:rig/wind"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.wind"
+  },
+  "rig.pop": {
+    "sounds": [
+      "freshtracks:rig/pop1",
+      "freshtracks:rig/pop2",
+      "freshtracks:rig/pop3"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.pop"
+  },
+  "rig.land": {
+    "sounds": [
+      "freshtracks:rig/land1",
+      "freshtracks:rig/land2",
+      "freshtracks:rig/land3"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.land"
+  },
+  "rig.land_powder": {
+    "sounds": [
+      "freshtracks:rig/land_powder1",
+      "freshtracks:rig/land_powder2",
+      "freshtracks:rig/land_powder3"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.land_powder"
+  },
+  "rig.wipeout": {
+    "sounds": [
+      "freshtracks:rig/wipeout1",
+      "freshtracks:rig/wipeout2",
+      "freshtracks:rig/wipeout3"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.wipeout"
+  },
+  "rig.core_shot": {
+    "sounds": [
+      "freshtracks:rig/core_shot"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.core_shot"
+  },
+  "rig.trick": {
+    "sounds": [
+      "freshtracks:rig/trick"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.trick"
+  },
+  "rig.bonk": {
+    "sounds": [
+      "freshtracks:rig/bonk1",
+      "freshtracks:rig/bonk2",
+      "freshtracks:rig/bonk3"
+    ],
+    "subtitle": "subtitles.freshtracks.rig.bonk"
+  },
+  "lift.hum": {
+    "sounds": [
+      "freshtracks:lift/hum"
+    ],
+    "subtitle": "subtitles.freshtracks.lift.hum"
+  },
+  "lift.chair_clack": {
+    "sounds": [
+      "freshtracks:lift/chair_clack1",
+      "freshtracks:lift/chair_clack2",
+      "freshtracks:lift/chair_clack3"
+    ],
+    "subtitle": "subtitles.freshtracks.lift.chair_clack"
+  },
+  "lift.bell": {
+    "sounds": [
+      "freshtracks:lift/bell"
+    ],
+    "subtitle": "subtitles.freshtracks.lift.bell"
+  },
+  "weather.blizzard": {
+    "sounds": [
+      {
+        "name": "freshtracks:weather/blizzard",
+        "stream": true
+      }
+    ],
+    "subtitle": "subtitles.freshtracks.weather.blizzard"
+  }
+}

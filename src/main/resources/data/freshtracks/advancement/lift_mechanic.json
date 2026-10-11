@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "lift_mechanic": {
+      "trigger": "freshtracks:ride",
+      "conditions": {
+        "event": "build_lift"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:lift_terminal"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.lift_mechanic.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.lift_mechanic.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "lift_mechanic"
+    ]
+  ],
+  "parent": "freshtracks:first_chair"
+}

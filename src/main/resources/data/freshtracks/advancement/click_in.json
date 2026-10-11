@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "click_in": {
+      "trigger": "freshtracks:ride",
+      "conditions": {
+        "event": "click_in"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:wooden_skis"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.click_in.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.click_in.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "click_in"
+    ]
+  ],
+  "parent": "freshtracks:root"
+}

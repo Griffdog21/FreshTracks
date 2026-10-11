@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:bamboo",
+    "minecraft:bamboo",
+    "minecraft:string",
+    "minecraft:blue_dye"
+  ],
+  "result": {
+    "id": "freshtracks:rope_line",
+    "count": 6
+  }
+}

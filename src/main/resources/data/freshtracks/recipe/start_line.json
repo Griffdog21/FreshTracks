@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:white_carpet",
+    "minecraft:white_carpet",
+    "minecraft:white_carpet",
+    "minecraft:green_dye"
+  ],
+  "result": {
+    "id": "freshtracks:start_line",
+    "count": 3
+  }
+}

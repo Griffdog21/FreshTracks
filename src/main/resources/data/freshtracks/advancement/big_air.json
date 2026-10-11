@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "big_air": {
+      "trigger": "freshtracks:ride",
+      "conditions": {
+        "event": "big_air"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:park_skis"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.big_air.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.big_air.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "big_air"
+    ]
+  ],
+  "parent": "freshtracks:click_in"
+}

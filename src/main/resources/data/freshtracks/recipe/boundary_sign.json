@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#minecraft:signs",
+    "minecraft:orange_dye"
+  ],
+  "result": {
+    "id": "freshtracks:boundary_sign",
+    "count": 1
+  }
+}

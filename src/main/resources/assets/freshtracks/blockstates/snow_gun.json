@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "facing=north,mode=auto": {
+      "model": "freshtracks:block/snow_gun"
+    },
+    "facing=north,mode=on": {
+      "model": "freshtracks:block/snow_gun"
+    },
+    "facing=north,mode=off": {
+      "model": "freshtracks:block/snow_gun"
+    },
+    "facing=east,mode=auto": {
+      "model": "freshtracks:block/snow_gun",
+      "y": 90
+    },
+    "facing=east,mode=on": {
+      "model": "freshtracks:block/snow_gun",
+      "y": 90
+    },
+    "facing=east,mode=off": {
+      "model": "freshtracks:block/snow_gun",
+      "y": 90
+    },
+    "facing=south,mode=auto": {
+      "model": "freshtracks:block/snow_gun",
+      "y": 180
+    },
+    "facing=south,mode=on": {
+      "model": "freshtracks:block/snow_gun",
+      "y": 180
+    },
+    "facing=south,mode=off": {
+      "model": "freshtracks:block/snow_gun",
+      "y": 180
+    },
+    "facing=west,mode=auto": {
+      "model": "freshtracks:block/snow_gun",
+      "y": 270
+    },
+    "facing=west,mode=on": {
+      "model": "freshtracks:block/snow_gun",
+      "y": 270
+    },
+    "facing=west,mode=off": {
+      "model": "freshtracks:block/snow_gun",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fresh Tracks</title>
+<meta name="description" content="Fresh Tracks: skis, snowboards, real chairlifts and gondolas, powder days and mountain weather for Minecraft Java 26.3 (Fabric).">
+<meta property="og:title" content="Fresh Tracks: a ski mod for Minecraft">
+<meta property="og:description" content="Carve on your edges, drop into powder, ride the gondola to the top.">
+<meta property="og:image" content="images/carving.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f7fb;
+    --panel: #ffffff;
+    --ink: #0f1d2e;
+    --muted: #51627a;
+    --line: #dbe3ee;
+    --accent: #1f6fe0;
+    --accent-ink: #ffffff;
+    --accent-soft: #e5efff;
+    --green: #22964a;
+    --blue: #1f5fd1;
+    --black: #17181b;
+    --shadow: 0 18px 40px -22px rgba(15, 29, 46, 0.45);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1320;
+      --panel: #121c2c;
+      --ink: #e8eff8;
+      --muted: #9fb0c6;
+      --line: #22314a;
+      --accent: #5aa0ff;
+      --accent-ink: #06121f;
+      --accent-soft: #15253d;
+      --black: #e8eff8;
+      --shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.8);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1320;
+    --panel: #121c2c;
+    --ink: #e8eff8;
+    --muted: #9fb0c6;
+    --line: #22314a;
+    --accent: #5aa0ff;
+    --accent-ink: #06121f;
+    --accent-soft: #15253d;
+    --black: #e8eff8;
+    --shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.6 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: var(--accent); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    min-height: min(92vh, 860px);
+    display: flex;
+    align-items: flex-end;
+    color: #fff;
+    background: #0b1320 url("images/carving.jpg") center / cover no-repeat;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(6, 14, 28, 0.72) 0%, rgba(6, 14, 28, 0.38) 45%, rgba(6, 14, 28, 0) 75%),
+      linear-gradient(180deg, rgba(6, 14, 28, 0.1) 0%, rgba(6, 14, 28, 0) 40%, rgba(6, 14, 28, 0.7) 100%);
+  }
+  .hero .wrap { position: relative; z-index: 1; padding-bottom: 64px; width: 100%; }
+  .snow { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  .eyebrow {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(6px);
+  }
+  h1 {
+    font-family: Outfit, Inter, sans-serif;
+    font-weight: 900;
+    font-size: clamp(54px, 11vw, 128px);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    margin: 18px 0 14px;
+    text-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+  }
+  .lede { font-size: clamp(18px, 2.4vw, 23px); max-width: 640px; margin: 0 0 30px; color: #f1f6fc; text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45); }
+  .buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: #ffffff; color: #0f1d2e; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5); }
+  .btn-ghost { color: #fff; border: 1.5px solid rgba(255, 255, 255, 0.55); background: rgba(255, 255, 255, 0.08); }
+  .btn small { font-weight: 500; opacity: 0.7; }
+
+  /* ---------- sections ---------- */
+  section { padding: 84px 0; }
+  .kicker { font-weight: 700; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; font-size: 13px; }
+  h2 {
+    font-family: Outfit, Inter, sans-serif;
+    font-weight: 800;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.05;
+    margin: 8px 0 18px;
+    letter-spacing: -0.01em;
+  }
+  .sub { color: var(--muted); max-width: 680px; margin: 0 0 40px; font-size: 18px; }
+
+  .features { display: grid; gap: 28px; }
+  .feature {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 36px;
+    align-items: center;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+  }
+  .feature:nth-child(even) { grid-template-columns: 1fr 1.15fr; }
+  .feature:nth-child(even) .shot { order: 2; }
+  .shot { border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 9; background: #0b1320; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+  .feature:hover .shot img { transform: scale(1.03); }
+  .feature h3 { font-family: Outfit, Inter, sans-serif; font-size: 28px; margin: 0 0 10px; line-height: 1.15; }
+  .feature p { margin: 0 0 12px; color: var(--muted); }
+  .feature ul { margin: 0; padding-left: 20px; color: var(--muted); }
+  .feature .text { padding: 10px 14px 10px 4px; }
+  .feature:nth-child(even) .text { padding: 10px 4px 10px 14px; }
+
+  .gear { background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .gear-grid {
+    background: linear-gradient(160deg, #dfeaf7, #f7fbff);
+    border-radius: 22px;
+    padding: 28px;
+    border: 1px solid var(--line);
+  }
+  :root[data-theme="dark"] .gear-grid { background: linear-gradient(160deg, #18263b, #0f1a2a); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gear-grid { background: linear-gradient(160deg, #18263b, #0f1a2a); } }
+  .gear-grid img { image-rendering: pixelated; margin: 0 auto; width: 100%; max-width: 900px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .chip { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 15px; font-weight: 500; }
+
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .gallery figure { margin: 0; border-radius: 16px; overflow: hidden; position: relative; aspect-ratio: 16 / 10; background: #0b1320; }
+  .gallery figure.wide { grid-column: span 2; }
+  .gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+  .gallery figure:hover img { transform: scale(1.04); }
+  .gallery figcaption {
+    position: absolute; left: 12px; bottom: 10px; color: #fff; font-weight: 600; font-size: 14px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: step; }
+  .step {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 24px; position: relative;
+    box-shadow: var(--shadow);
+  }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px;
+    background: var(--accent); color: var(--accent-ink); font-weight: 800; margin-bottom: 14px;
+  }
+  .step h4 { margin: 0 0 6px; font-size: 19px; }
+  .step p { margin: 0; color: var(--muted); font-size: 16px; }
+  .note { margin-top: 22px; color: var(--muted); font-size: 16px; }
+
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--accent-soft); }
+  tr:last-child td { border-bottom: 0; }
+  kbd {
+    display: inline-block; min-width: 26px; padding: 2px 8px; border-radius: 7px; text-align: center;
+    border: 1px solid var(--line); border-bottom-width: 3px; background: var(--bg); font: 600 14px/1.5 Inter, sans-serif;
+  }
+  .table-scroll { overflow-x: auto; border-radius: 16px; }
+
+  .cta {
+    text-align: center; color: #fff; border-radius: 28px; padding: 64px 22px;
+    background: #0b1320 url("images/northern-lights.jpg") center / cover no-repeat; position: relative; overflow: hidden;
+  }
+  .cta::before { content: ""; position: absolute; inset: 0; background: rgba(6, 14, 28, 0.35); }
+  .cta > * { position: relative; }
+  .cta h2 { color: #fff; }
+  .cta p { color: #dce8f6; margin: 0 auto 26px; max-width: 560px; }
+  .cta .buttons { justify-content: center; }
+
+  footer { padding: 40px 0 60px; color: var(--muted); font-size: 15px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; }
+
+  .diff { display: inline-flex; align-items: center; gap: 6px; margin-right: 12px; font-weight: 600; }
+  .sym { width: 14px; height: 14px; display: inline-block; }
+  .sym.g { background: var(--green); border-radius: 50%; }
+  .sym.b { background: var(--blue); }
+  .sym.k { background: var(--black); transform: rotate(45deg) scale(0.85); }
+
+  @media (max-width: 860px) {
+    .feature, .feature:nth-child(even) { grid-template-columns: 1fr; gap: 12px; }
+    .feature:nth-child(even) .shot { order: 0; }
+    .feature .text, .feature:nth-child(even) .text { padding: 6px 6px 10px; }
+    .gallery { grid-template-columns: 1fr 1fr; }
+    .gallery figure.wide { grid-column: span 2; }
+    .steps { grid-template-columns: 1fr; }
+    section { padding: 60px 0; }
+  }
+  @media (max-width: 520px) {
+    .gallery { grid-template-columns: 1fr; }
+    .gallery figure.wide { grid-column: auto; }
+    .hero .wrap { padding-bottom: 40px; }
+    .btn { width: 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .snow { display: none; }
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <canvas class="snow" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <span class="eyebrow">Minecraft Java 26.3 · Fabric</span>
+    <h1>Fresh<br>Tracks</h1>
+    <p class="lede">Skis, snowboards and lifts that really run. Carve on your edges, drop into powder, ride the gondola to the top, and build your own ski resort.</p>
+    <div class="buttons">
+      <a class="btn btn-primary" href="https://github.com/Griffdog21/FreshTracks/releases/latest">⬇ Download the mod pack <small>v1.2.0</small></a>
+      <a class="btn btn-ghost" href="#install">How to install</a>
+      <a class="btn btn-ghost" href="https://github.com/Griffdog21/FreshTracks">View on GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="features">
+    <div class="wrap">
+      <div class="kicker">What's in it</div>
+      <h2>A whole ski day, in Minecraft.</h2>
+      <p class="sub">Not a sled with a ski texture: an edge-carving ride model, lifts with real stations and timing, mountain weather, gear, shops and everything you need to build a resort.</p>
+
+      <div class="features">
+        <article class="feature">
+          <div class="shot"><img src="images/first-tracks.jpg" alt="Skiing through fresh powder, spray flying, with a First Tracks combo on screen" loading="lazy"></div>
+          <div class="text">
+            <h3>Skiing that feels like skiing</h3>
+            <p>Lean onto an edge with <kbd>A</kbd> <kbd>D</kbd> and carve. Dig in with <kbd>S</kbd> to scrub speed, tuck with <kbd>W</kbd>. Powder floats you once you're moving and leaves real tracks behind.</p>
+            <ul>
+              <li>First Tracks combos for linked turns in untouched snow</li>
+              <li>Ollies, spins, flips and grabs, with landings you can stomp or crash</li>
+              <li>Corduroy, moguls, ice and slush all ride differently</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="feature">
+          <div class="shot"><img src="images/gondola.jpg" alt="Gondola cabins with glass windows at the base station" loading="lazy"></div>
+          <div class="text">
+            <h3>Lifts that actually run</h3>
+            <p>Doubles, quads, express six-packs that slow down in the stations, glass-cabin gondolas, T-bars and platters that tow you up on your skis, and magic carpets.</p>
+            <ul>
+              <li>Two terminals and a cable: towers place themselves</li>
+              <li>LOAD HERE and WAIT HERE mats, countdown to your chair</li>
+              <li>Speed, spacing, type and opening hours from a control panel</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="feature">
+          <div class="shot"><img src="images/trail-map.jpg" alt="A trail map board on posts at the base of the lifts" loading="lazy"></div>
+          <div class="text">
+            <h3>Build your own resort</h3>
+            <p>Name every run and give it a difficulty:
+              <span class="diff"><span class="sym g"></span>green</span>
+              <span class="diff"><span class="sym b"></span>blue</span>
+              <span class="diff"><span class="sym k"></span>black</span></p>
+            <ul>
+              <li>Trail signs, markers, rope-line mazes and orange closure fence</li>
+              <li>SLOW ZONE, EXPERTS ONLY and boundary signs, hazard poles, tower pads</li>
+              <li>Snow guns that make snow overnight, trail map boards, race timing</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="feature">
+          <div class="shot"><img src="images/northern-lights.jpg" alt="The northern lights over a snowy mountain at night" loading="lazy"></div>
+          <div class="text">
+            <h3>Mountain weather</h3>
+            <p>Every morning rolls a new day: bluebird, powder day, snowstorm, blizzard, thundersnow, high wind, cold snap, flat light or spring slush.</p>
+            <ul>
+              <li>Fresh powder piles up in storms; get out there for first tracks</li>
+              <li>Wind holds the lifts; cold snaps freeze the underdressed</li>
+              <li>On clear, cold nights the northern lights come out</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="gear" id="gear">
+    <div class="wrap">
+      <div class="kicker">Gear</div>
+      <h2>Kit out for the mountain.</h2>
+      <p class="sub">Nine pairs of skis and eight snowboards, each riding differently, plus everything you wear. Ski Techs, Board Techs and Lifties work in the snowy villages and sell the good stuff.</p>
+      <div class="gear-grid"><img src="images/gear.png" alt="Skis, snowboards, jackets, boots, goggles, helmet, beanie, wax and hot cocoa" loading="lazy"></div>
+      <div class="chips">
+        <span class="chip">Race, powder, park, carving, touring skis</span>
+        <span class="chip">Snurfer to splitboard</span>
+        <span class="chip">Goggles that cut through blizzards</span>
+        <span class="chip">6 dyeable jackets</span>
+        <span class="chip">Ski &amp; snowboard boots</span>
+        <span class="chip">Poles, wax, hot cocoa</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <div class="wrap">
+      <div class="kicker">Gallery</div>
+      <h2>Out on the hill.</h2>
+      <p class="sub">The Ski Mountains world type builds huge ranges with long cruisers and steep bowls up top, and six new alpine biomes join normal worlds. Screenshots with the Complementary Unbound shaders.</p>
+      <div class="gallery">
+        <figure class="wide"><img src="images/summit.jpg" alt="Above the clouds at the top of the gondola" loading="lazy"><figcaption>Above the clouds</figcaption></figure>
+        <figure><img src="images/cruising.jpg" alt="Cruising down past the gondola line" loading="lazy"><figcaption>Cruising</figcaption></figure>
+        <figure><img src="images/carving2.jpg" alt="Carving a turn under the gondola" loading="lazy"><figcaption>Carving</figcaption></figure>
+        <figure class="wide"><img src="images/golden-hour.jpg" alt="Long shadows across the snow at golden hour" loading="lazy"><figcaption>Golden hour</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="install" style="padding-top: 20px;">
+    <div class="wrap">
+      <div class="kicker">Install</div>
+      <h2>Two minutes, one file.</h2>
+      <p class="sub">The mod pack sets up Minecraft 26.3, Fabric and Fresh Tracks in its own game folder. Your normal Minecraft and its worlds are never touched.</p>
+      <div class="steps">
+        <div class="step"><h4>Get a launcher</h4><p>Install <a href="https://prismlauncher.org">Prism Launcher</a> or the <a href="https://modrinth.com/app">Modrinth App</a> (both free) and sign in.</p></div>
+        <div class="step"><h4>Import the pack</h4><p>Download <a href="https://github.com/Griffdog21/FreshTracks/releases/latest"><b>FreshTracks-1.2.0.mrpack</b></a>. Prism: <b>Add Instance → Import</b>. Modrinth: <b>+ → Import from file</b>.</p></div>
+        <div class="step"><h4>Hit play</h4><p>Launch the new <b>Fresh Tracks</b> instance, make a world (try <b>World Type → Ski Mountains</b>) and right-click with skis.</p></div>
+      </div>
+      <p class="note">✨ The pack offers <b>Sodium</b>, <b>Iris</b> (shaders) and <b>Distant Horizons</b> as optional extras; untick them if your PC struggles. Want to jump straight in? Grab the <b>Test World</b> from the <a href="https://github.com/Griffdog21/FreshTracks/releases/latest">download page</a>: a ready-made hill with a gondola, chairs, a T-bar, a lodge, a park and snow guns. Unzip it into the instance's <code>saves</code> folder. Hosting for friends? The <b>server pack</b> is on the same page.</p>
+    </div>
+  </section>
+
+  <section id="controls" style="padding-top: 20px;">
+    <div class="wrap">
+      <div class="kicker">Controls</div>
+      <h2>On the snow.</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Key</th><th>On skis / board</th><th>In the air</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Right-click</kbd> with skis or a board</td><td>Click in</td><td></td></tr>
+            <tr><td><kbd>W</kbd></td><td>Push and skate, tuck when you're fast</td><td>Front flip (after a jump)</td></tr>
+            <tr><td><kbd>S</kbd></td><td>Snowplough / heel-edge slide</td><td>Back flip (after a jump)</td></tr>
+            <tr><td><kbd>A</kbd> <kbd>D</kbd></td><td>Lean onto an edge and carve</td><td>Steer the landing; spin (after a jump)</td></tr>
+            <tr><td><kbd>S</kbd> + <kbd>A</kbd>/<kbd>D</kbd></td><td>Edge check: swing across the hill and dig in to stop</td><td></td></tr>
+            <tr><td><kbd>Space</kbd></td><td>Hold to crouch, release to ollie</td><td>Tap to throw a trick off a ledge</td></tr>
+            <tr><td><kbd>Left click</kbd></td><td></td><td>Grab</td></tr>
+            <tr><td><kbd>Shift</kbd></td><td>Hockey stop; step out when stopped</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Lifts: stand on <b>LOAD HERE</b> and the screen counts down to your chair. Hold <kbd>Shift</kbd> for a second to jump off a chair; on a T-bar, <kbd>Shift</kbd> lets go.</p>
+    </div>
+  </section>
+
+  <section style="padding-top: 10px;">
+    <div class="wrap">
+      <div class="cta">
+        <h2>See you on the hill.</h2>
+        <p>Free, for Minecraft Java 26.3 with Fabric. Play solo, open to LAN, or run a server for your friends.</p>
+        <div class="buttons">
+          <a class="btn btn-primary" href="https://github.com/Griffdog21/FreshTracks/releases/latest">⬇ Download Fresh Tracks</a>
+          <a class="btn btn-ghost" href="https://github.com/Griffdog21/FreshTracks">Source on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Griffdog21 · Fresh Tracks</span>
+    <span>Not affiliated with Mojang or Microsoft. Minecraft is a trademark of Mojang.</span>
+  </div>
+</footer>
+
+<script>
+  // a light snowfall over the hero
+  (function () {
+    const canvas = document.querySelector(".snow");
+    if (!canvas || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = canvas.getContext("2d");
+    let w, h, flakes;
+    function resize() {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      w = canvas.clientWidth; h = canvas.clientHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.round(w * h / 9000);
+      flakes = Array.from({ length: count }, () => ({
+        x: Math.random() * w, y: Math.random() * h, r: 0.6 + Math.random() * 2.2,
+        s: 0.3 + Math.random() * 1.1, d: Math.random() * Math.PI * 2
+      }));
+    }
+    function tick() {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      for (const f of flakes) {
+        f.y += f.s; f.d += 0.01; f.x += Math.sin(f.d) * 0.35;
+        if (f.y > h + 4) { f.y = -4; f.x = Math.random() * w; }
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+      }
+      requestAnimationFrame(tick);
+    }
+    addEventListener("resize", resize);
+    resize(); tick();
+  })();
+</script>
+</body>
+</html>

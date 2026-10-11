@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": "minecraft:spruce_planks",
+    "M": "minecraft:map",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    "PMP",
+    "S S"
+  ],
+  "result": {
+    "id": "freshtracks:trail_map",
+    "count": 1
+  }
+}

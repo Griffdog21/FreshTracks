@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "freshtracks:item/anorak",
+    "tints": [
+      {
+        "type": "minecraft:dye",
+        "default": -2053830
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      }
+    ]
+  }
+}

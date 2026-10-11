@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "freshtracks:item/shell_jacket",
+    "tints": [
+      {
+        "type": "minecraft:dye",
+        "default": -12605858
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      }
+    ]
+  }
+}

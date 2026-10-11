@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#minecraft:signs",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "freshtracks:trail_marker",
+    "count": 1
+  }
+}

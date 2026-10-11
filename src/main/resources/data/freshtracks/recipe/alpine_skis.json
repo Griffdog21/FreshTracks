@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "#minecraft:planks",
+    "S": "minecraft:string"
+  },
+  "pattern": [
+    "I I",
+    "P P",
+    "S S"
+  ],
+  "result": {
+    "id": "freshtracks:alpine_skis",
+    "count": 1
+  }
+}

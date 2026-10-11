@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "minecraft:stick",
+    "N": "minecraft:iron_nugget"
+  },
+  "pattern": [
+    "S S",
+    "S S",
+    "N N"
+  ],
+  "result": {
+    "id": "freshtracks:ski_poles",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "W": "#minecraft:wool",
+    "L": "minecraft:leather"
+  },
+  "pattern": [
+    "WWW",
+    "L L",
+    "W W"
+  ],
+  "result": {
+    "id": "freshtracks:snow_pants",
+    "count": 1
+  }
+}

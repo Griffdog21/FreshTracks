@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:honeycomb",
+    "minecraft:snowball"
+  ],
+  "result": {
+    "id": "freshtracks:ski_wax",
+    "count": 2
+  }
+}

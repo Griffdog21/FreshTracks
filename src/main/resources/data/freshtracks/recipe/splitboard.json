@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "P": "#minecraft:planks",
+    "L": "minecraft:leather"
+  },
+  "pattern": [
+    "PLP",
+    "P P"
+  ],
+  "result": {
+    "id": "freshtracks:splitboard",
+    "count": 1
+  }
+}

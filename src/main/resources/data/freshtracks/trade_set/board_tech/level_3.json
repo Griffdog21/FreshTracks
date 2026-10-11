@@ -1,0 +1,11 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/board_tech/level_3",
+  "trades": [
+    "freshtracks:board_tech/3/emerald_jacket",
+    "freshtracks:board_tech/3/emerald_pants",
+    "freshtracks:board_tech/3/emerald_powder_board",
+    "freshtracks:board_tech/3/emerald_puffer",
+    "freshtracks:board_tech/3/emerald_freeride_board"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "dressed": {
+      "trigger": "freshtracks:ride",
+      "conditions": {
+        "event": "dressed"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:ski_goggles"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.dressed.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.dressed.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "dressed"
+    ]
+  ],
+  "parent": "freshtracks:root"
+}

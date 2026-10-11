@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "W": "freshtracks:ski_wax",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "WW",
+    "PP",
+    "PP"
+  ],
+  "result": {
+    "id": "freshtracks:ski_bench",
+    "count": 1
+  }
+}

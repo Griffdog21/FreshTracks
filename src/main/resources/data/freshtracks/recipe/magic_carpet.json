@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "W": "minecraft:black_wool",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "WWW",
+    "IRI"
+  ],
+  "result": {
+    "id": "freshtracks:magic_carpet",
+    "count": 6
+  }
+}

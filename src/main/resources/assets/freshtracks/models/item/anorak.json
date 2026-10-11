@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "freshtracks:item/anorak",
+    "layer1": "freshtracks:item/anorak_overlay"
+  }
+}

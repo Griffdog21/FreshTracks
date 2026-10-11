@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "freshtracks:block/larch_sapling"
+  }
+}

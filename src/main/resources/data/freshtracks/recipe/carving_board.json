@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "III",
+    "PRP"
+  ],
+  "result": {
+    "id": "freshtracks:carving_board",
+    "count": 1
+  }
+}

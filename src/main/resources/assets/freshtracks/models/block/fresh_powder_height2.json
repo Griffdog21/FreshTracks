@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/snow_height2",
+  "textures": {
+    "particle": "freshtracks:block/fresh_powder",
+    "texture": "freshtracks:block/fresh_powder"
+  }
+}

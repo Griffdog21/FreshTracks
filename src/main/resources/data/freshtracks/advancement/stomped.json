@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "stomped": {
+      "trigger": "freshtracks:ride",
+      "conditions": {
+        "event": "trick_1000"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:park_board"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.stomped.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.stomped.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "stomped"
+    ]
+  ],
+  "parent": "freshtracks:big_air"
+}

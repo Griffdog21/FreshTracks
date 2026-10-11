@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "freshtracks:item/race_suit",
+    "layer1": "freshtracks:item/race_suit_overlay"
+  }
+}

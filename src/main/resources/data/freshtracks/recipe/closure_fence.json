@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "S": "minecraft:stick",
+    "O": "minecraft:orange_wool"
+  },
+  "pattern": [
+    "SOS",
+    "SOS"
+  ],
+  "result": {
+    "id": "freshtracks:closure_fence",
+    "count": 8
+  }
+}

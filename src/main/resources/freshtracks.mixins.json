@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"package": "com.freshtracks.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"OverworldBiomeBuilderMixin",
+		"PlayerMixin",
+		"PowderSnowBlockMixin",
+		"WorldDimensionsMixin",
+		"ServerGamePacketListenerImplMixin",
+		"StructureTemplatePoolAccessor"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "freshtracks:block/lift_terminal"
+  }
+}

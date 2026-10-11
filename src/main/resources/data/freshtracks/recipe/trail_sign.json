@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "#minecraft:signs",
+    "minecraft:white_dye"
+  ],
+  "result": {
+    "id": "freshtracks:trail_sign",
+    "count": 1
+  }
+}

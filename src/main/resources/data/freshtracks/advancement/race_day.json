@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "race_day": {
+      "trigger": "freshtracks:ride",
+      "conditions": {
+        "event": "race_finish"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:finish_line"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.race_day.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.race_day.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "race_day"
+    ]
+  ],
+  "parent": "freshtracks:click_in"
+}

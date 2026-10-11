@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "tip=true": {
+      "model": "freshtracks:block/icicle_tip"
+    },
+    "tip=false": {
+      "model": "freshtracks:block/icicle_body"
+    }
+  }
+}

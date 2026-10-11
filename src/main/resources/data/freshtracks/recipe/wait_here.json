@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:blue_carpet",
+    "minecraft:white_dye"
+  ],
+  "result": {
+    "id": "freshtracks:wait_here",
+    "count": 2
+  }
+}

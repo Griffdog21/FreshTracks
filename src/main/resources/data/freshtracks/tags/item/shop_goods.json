@@ -1,0 +1,11 @@
+{
+  "values": [
+    "freshtracks:race_skis",
+    "freshtracks:powder_skis",
+    "freshtracks:park_skis",
+    "freshtracks:powder_board",
+    "freshtracks:park_board",
+    "freshtracks:retro_skis",
+    "freshtracks:retro_board"
+  ]
+}

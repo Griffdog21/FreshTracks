@@ -1,0 +1,80 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "freshtracks:block/trail_sign_blue",
+    "face": "freshtracks:block/trail_sign_blue",
+    "back": "minecraft:block/spruce_planks",
+    "post": "minecraft:block/stripped_spruce_log"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        3,
+        14.5
+      ],
+      "to": [
+        16,
+        13,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#face",
+          "uv": [
+            0,
+            0,
+            16,
+            10
+          ]
+        },
+        "south": {
+          "texture": "#back",
+          "uv": [
+            0,
+            3,
+            16,
+            13
+          ],
+          "cullface": "south"
+        },
+        "east": {
+          "texture": "#back",
+          "uv": [
+            0,
+            3,
+            1.5,
+            13
+          ]
+        },
+        "west": {
+          "texture": "#back",
+          "uv": [
+            14.5,
+            3,
+            16,
+            13
+          ]
+        },
+        "up": {
+          "texture": "#back",
+          "uv": [
+            0,
+            14.5,
+            16,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#back",
+          "uv": [
+            0,
+            0,
+            16,
+            1.5
+          ]
+        }
+      }
+    }
+  ]
+}

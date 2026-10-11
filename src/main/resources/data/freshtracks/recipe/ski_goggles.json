@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "minecraft:string",
+    "G": "minecraft:glass_pane",
+    "N": "minecraft:iron_nugget"
+  },
+  "pattern": [
+    "SSS",
+    "GNG"
+  ],
+  "result": {
+    "id": "freshtracks:ski_goggles",
+    "count": 1
+  }
+}

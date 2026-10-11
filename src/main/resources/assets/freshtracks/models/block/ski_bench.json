@@ -1,0 +1,217 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "freshtracks:block/ski_bench_side",
+    "top": "freshtracks:block/ski_bench_top",
+    "side": "freshtracks:block/ski_bench_side",
+    "front": "freshtracks:block/ski_bench_front",
+    "bottom": "minecraft:block/spruce_planks",
+    "ski": "freshtracks:block/ski_bench_ski"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        12,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front",
+          "uv": [
+            1,
+            4,
+            15,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            1,
+            4,
+            15,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            1,
+            4,
+            15,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            1,
+            4,
+            15,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "down": {
+          "texture": "#bottom",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        12,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            4
+          ]
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "down": {
+          "texture": "#bottom",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        16,
+        6
+      ],
+      "to": [
+        14,
+        17,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#ski"
+        },
+        "south": {
+          "texture": "#ski"
+        },
+        "east": {
+          "texture": "#ski"
+        },
+        "west": {
+          "texture": "#ski"
+        },
+        "up": {
+          "texture": "#ski"
+        },
+        "down": {
+          "texture": "#ski",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        16,
+        5
+      ],
+      "to": [
+        9,
+        19,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#ski",
+          "uv": [
+            0,
+            13,
+            2,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#ski",
+          "uv": [
+            0,
+            13,
+            2,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#ski",
+          "uv": [
+            0,
+            13,
+            2,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#ski",
+          "uv": [
+            0,
+            13,
+            2,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#ski"
+        },
+        "down": {
+          "texture": "#ski",
+          "cullface": "down"
+        }
+      }
+    }
+  ]
+}

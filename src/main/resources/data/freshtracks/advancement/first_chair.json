@@ -1,0 +1,30 @@
+{
+  "criteria": {
+    "first_chair": {
+      "trigger": "freshtracks:ride",
+      "conditions": {
+        "event": "lift"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "freshtracks:lift_cable"
+    },
+    "title": {
+      "translate": "advancements.freshtracks.first_chair.title"
+    },
+    "description": {
+      "translate": "advancements.freshtracks.first_chair.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "requirements": [
+    [
+      "first_chair"
+    ]
+  ],
+  "parent": "freshtracks:click_in"
+}

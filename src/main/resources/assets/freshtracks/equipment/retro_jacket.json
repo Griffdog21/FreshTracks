@@ -1,0 +1,15 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "freshtracks:retro_jacket",
+        "dyeable": {
+          "color_when_undyed": -8699943
+        }
+      },
+      {
+        "texture": "freshtracks:retro_jacket_overlay"
+      }
+    ]
+  }
+}

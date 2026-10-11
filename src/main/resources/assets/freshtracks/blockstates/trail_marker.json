@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "facing=north,symbol=green": {
+      "model": "freshtracks:block/trail_marker_green"
+    },
+    "facing=east,symbol=green": {
+      "model": "freshtracks:block/trail_marker_green",
+      "y": 90
+    },
+    "facing=south,symbol=green": {
+      "model": "freshtracks:block/trail_marker_green",
+      "y": 180
+    },
+    "facing=west,symbol=green": {
+      "model": "freshtracks:block/trail_marker_green",
+      "y": 270
+    },
+    "facing=north,symbol=blue": {
+      "model": "freshtracks:block/trail_marker_blue"
+    },
+    "facing=east,symbol=blue": {
+      "model": "freshtracks:block/trail_marker_blue",
+      "y": 90
+    },
+    "facing=south,symbol=blue": {
+      "model": "freshtracks:block/trail_marker_blue",
+      "y": 180
+    },
+    "facing=west,symbol=blue": {
+      "model": "freshtracks:block/trail_marker_blue",
+      "y": 270
+    },
+    "facing=north,symbol=black": {
+      "model": "freshtracks:block/trail_marker_black"
+    },
+    "facing=east,symbol=black": {
+      "model": "freshtracks:block/trail_marker_black",
+      "y": 90
+    },
+    "facing=south,symbol=black": {
+      "model": "freshtracks:block/trail_marker_black",
+      "y": 180
+    },
+    "facing=west,symbol=black": {
+      "model": "freshtracks:block/trail_marker_black",
+      "y": 270
+    },
+    "facing=north,symbol=double_black": {
+      "model": "freshtracks:block/trail_marker_double_black"
+    },
+    "facing=east,symbol=double_black": {
+      "model": "freshtracks:block/trail_marker_double_black",
+      "y": 90
+    },
+    "facing=south,symbol=double_black": {
+      "model": "freshtracks:block/trail_marker_double_black",
+      "y": 180
+    },
+    "facing=west,symbol=double_black": {
+      "model": "freshtracks:block/trail_marker_double_black",
+      "y": 270
+    },
+    "facing=north,symbol=park": {
+      "model": "freshtracks:block/trail_marker_park"
+    },
+    "facing=east,symbol=park": {
+      "model": "freshtracks:block/trail_marker_park",
+      "y": 90
+    },
+    "facing=south,symbol=park": {
+      "model": "freshtracks:block/trail_marker_park",
+      "y": 180
+    },
+    "facing=west,symbol=park": {
+      "model": "freshtracks:block/trail_marker_park",
+      "y": 270
+    },
+    "facing=north,symbol=closed": {
+      "model": "freshtracks:block/trail_marker_closed"
+    },
+    "facing=east,symbol=closed": {
+      "model": "freshtracks:block/trail_marker_closed",
+      "y": 90
+    },
+    "facing=south,symbol=closed": {
+      "model": "freshtracks:block/trail_marker_closed",
+      "y": 180
+    },
+    "facing=west,symbol=closed": {
+      "model": "freshtracks:block/trail_marker_closed",
+      "y": 270
+    },
+    "facing=north,symbol=extreme": {
+      "model": "freshtracks:block/trail_marker_extreme"
+    },
+    "facing=east,symbol=extreme": {
+      "model": "freshtracks:block/trail_marker_extreme",
+      "y": 90
+    },
+    "facing=south,symbol=extreme": {
+      "model": "freshtracks:block/trail_marker_extreme",
+      "y": 180
+    },
+    "facing=west,symbol=extreme": {
+      "model": "freshtracks:block/trail_marker_extreme",
+      "y": 270
+    },
+    "facing=north,symbol=lift": {
+      "model": "freshtracks:block/trail_marker_lift"
+    },
+    "facing=east,symbol=lift": {
+      "model": "freshtracks:block/trail_marker_lift",
+      "y": 90
+    },
+    "facing=south,symbol=lift": {
+      "model": "freshtracks:block/trail_marker_lift",
+      "y": 180
+    },
+    "facing=west,symbol=lift": {
+      "model": "freshtracks:block/trail_marker_lift",
+      "y": 270
+    }
+  }
+}

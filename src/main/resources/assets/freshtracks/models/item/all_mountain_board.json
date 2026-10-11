@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "freshtracks:item/all_mountain_board"
+  }
+}
