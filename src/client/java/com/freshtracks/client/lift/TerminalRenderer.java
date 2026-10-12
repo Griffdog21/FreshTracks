@@ -60,6 +60,7 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 		float wheelAngle;
 		boolean housing;
 		boolean drive;
+		boolean gondola;
 		Livery livery = Livery.GRAY;
 		@Nullable String name;
 		int housingLight;
@@ -112,6 +113,7 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 				state.wheelAngle = -state.wheelAngle;
 			}
 			state.housing = housed(line.style);
+			state.gondola = line.style.cabin();
 			state.livery = line.livery();
 			// modern detachables drive from the top; old fixed grips mostly from the bottom
 			state.drive = state.housing == top;
@@ -134,6 +136,11 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 		poseStack.rotateDegrees(Axis.YP, 180f - state.yaw);
 		poseStack.pushPose();
 		poseStack.scale(-1f, -1f, 1f);
+		// Cabin lifts need a more substantial enclosed station than a chairlift terminal. Keep the shared
+		// architectural details, but give the gondola a wider, longer roofline like a real cabin terminal.
+		if (state.gondola) {
+			poseStack.scale(1.12f, 1f, 1.22f);
+		}
 		Model.Simple model = state.housing ? (state.drive ? housingDrive : housingReturn) : (state.drive ? fixedDrive : fixedReturn);
 		Identifier texture = (state.housing ? HOUSING_TEXTURES : FIXED_TEXTURES).get(state.livery);
 		collector.submitModel(model, Unit.INSTANCE, poseStack, texture, state.housingLight, OverlayTexture.NO_OVERLAY, 0);

@@ -85,6 +85,7 @@ public final class DevBridge {
 	public static void endTick(Minecraft mc) {
 		if (enabled()) {
 			Telemetry.tick(mc);
+			DevCamera.tick(mc);
 		}
 	}
 
@@ -110,6 +111,11 @@ public final class DevBridge {
 					return "{\"ok\":true}";
 				});
 				case "/look" -> onMain(() -> look(q));
+				case "/dolly" -> onMain(() -> DevCamera.dolly(q));
+				case "/follow" -> onMain(() -> DevCamera.follow(q));
+				case "/orbit" -> onMain(() -> DevCamera.orbit(q));
+				case "/camstop" -> onMain(DevCamera::stop);
+				case "/cambusy" -> onMain(() -> "{\"busy\":" + DevCamera.busy() + "}");
 				case "/hud" -> onMain(() -> {
 					// hide / show the HUD like F1 (for clean screenshots); ?hidden=true|false sets it
 					var hud = Minecraft.getInstance().gui.hud;
@@ -128,6 +134,10 @@ public final class DevBridge {
 				});
 				case "/screen" -> onMain(DevBridge::screen);
 				case "/click" -> onMain(() -> click(q.getOrDefault("text", "")));
+				case "/resume" -> onMain(() -> {
+					Minecraft.getInstance().gui.setScreen(null);
+					return "{\"ok\":true}";
+				});
 				case "/world" -> onMain(() -> world(q));
 				case "/shot" -> shot(q.getOrDefault("name", "shot"), Integer.parseInt(q.getOrDefault("scale", "1")));
 				case "/telemetry" -> Telemetry.handle(q);

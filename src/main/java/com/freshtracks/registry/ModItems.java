@@ -69,6 +69,8 @@ public final class ModItems {
 		.food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6f).alwaysEdible().build(),
 			Consumables.defaultDrink().onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(ModEffects.WARMTH, 6000))).build())
 		.usingConvertsTo(Items.BOWL));
+	/** Spendable resort currency earned from skiing tricks. */
+	public static final Item SKI_BUCK = register("ski_buck", Item::new, new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON));
 
 	private ModItems() {
 	}

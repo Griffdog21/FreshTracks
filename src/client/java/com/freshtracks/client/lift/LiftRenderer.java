@@ -38,6 +38,10 @@ public final class LiftRenderer {
 	public static final Identifier CHAIR_TEXTURE = FreshTracks.id("textures/entity/lift/chair.png");
 	public static final Identifier GONDOLA_TEXTURE = FreshTracks.id("textures/entity/lift/gondola.png");
 	public static final Identifier PULSE_TEXTURE = FreshTracks.id("textures/entity/lift/gondola_pulse.png");
+	private static final Identifier[] SKITTLES_TEXTURES = {
+		FreshTracks.id("textures/entity/lift/gondola_pulse_red.png"), PULSE_TEXTURE,
+		FreshTracks.id("textures/entity/lift/gondola_pulse_green.png"), FreshTracks.id("textures/entity/lift/gondola_pulse_yellow.png")
+	};
 	public static final Identifier GONDOLA_GLASS_TEXTURE = FreshTracks.id("textures/entity/lift/gondola_glass.png");
 	public static final Identifier ROPE_TEXTURE = FreshTracks.id("textures/entity/lift/rope.png");
 	public static final Identifier EXPRESS_TEXTURE = FreshTracks.id("textures/entity/lift/chair_express.png");
@@ -138,6 +142,9 @@ public final class LiftRenderer {
 			Set<Integer> busy = occupied.getOrDefault(entry.netId, Set.of());
 			double time = (double) level.getGameTime() + partial;
 			for (int chair = 0; chair < line.chairCount(); chair++) {
+				if (line.name.equals("Sky Cab") && line.style == ChairStyle.PULSE_GONDOLA) {
+					texture = SKITTLES_TEXTURES[chair % SKITTLES_TEXTURES.length];
+				}
 				LiftLine.RopePoint rope = line.ropeAt(line.chairS(phase, chair));
 				Vec3 p = rope.pos();
 				if (p.distanceToSqr(cam) > CHAIR_VIEW * CHAIR_VIEW) {

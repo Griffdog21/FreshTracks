@@ -25,7 +25,7 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 ![Skis, boards, jackets and gear](docs/images/gear.png)
 
-Nine pairs of skis and eight snowboards (wooden skis to race skis, snurfer to splitboard), each riding differently. Goggles that see through blizzards, helmets, beanies, six dyeable jackets, snow pants, ski and snowboard boots, poles, wax and hot cocoa. Ski Techs, Board Techs, Lifties and Ski Patrol (red jackets, white cross, at the new First Aid Kit) work in the villages and sell the good stuff.
+Nine pairs of skis and eight snowboards (wooden skis to race skis, snurfer to splitboard), each riding differently. Goggles that see through blizzards, helmets, beanies, six dyeable jackets, snow pants, ski and snowboard boots, poles, wax and hot cocoa. Tricks pay out Ski Bucks; Snowmass village shops take them for food, lift tickets, and gear. Ski Techs, Board Techs, Lifties and Ski Patrol work in the villages.
 
 ### 🏔️ Mountains
 
@@ -42,12 +42,12 @@ Want to jump straight in? The **Fresh Tracks Test World** is a ready-made ski hi
 Everything comes as one file you import into a launcher. It makes its own separate game folder, so **your normal Minecraft worlds are never touched**.
 
 **Prism Launcher** (recommended, free: [prismlauncher.org](https://prismlauncher.org))
-1. Download **`FreshTracks-1.2.1.mrpack`** from the [releases page](../../releases/latest).
+1. Download **`FreshTracks-1.2.2.mrpack`** from the [releases page](../../releases/latest).
 2. In Prism: **Add Instance → Import** → pick the file → **OK**.
 3. Select the new **Fresh Tracks** instance and press **Launch**.
 
 **Modrinth App** ([modrinth.com/app](https://modrinth.com/app))
-1. Download **`FreshTracks-1.2.1.mrpack`**.
+1. Download **`FreshTracks-1.2.2.mrpack`**.
 2. **+ (Create instance) → Import from file** → pick it → **Play**.
 
 The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **Sodium, Iris (shaders) and Distant Horizons** as optional extras (untick them if your PC struggles). For the screenshots above: Iris with the *Complementary Unbound* shader pack.
@@ -58,7 +58,7 @@ The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **S
 <summary>Manual install (official launcher)</summary>
 
 1. Install Fabric for Minecraft 26.3 with the [Fabric installer](https://fabricmc.net/use/installer) (give the profile its own game directory so your normal worlds stay separate).
-2. Put `freshtracks-1.2.1.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
+2. Put `freshtracks-1.2.2.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
 </details>
 
 ## 🎮 Controls
@@ -79,7 +79,7 @@ Lifts: stand on **LOAD HERE**, the screen counts down to your chair. Hold Shift 
 ## 🖥️ Play with friends
 
 - **Open to LAN** works as usual, or join any server running Fresh Tracks (everyone needs the same version).
-- **Run a server:** download `FreshTracks-1.2.1-server.zip`, unzip it, install Java 25 ([adoptium.net](https://adoptium.net)) and run `start.bat` (Windows) or `./start.sh`. The README inside walks through Mojang's EULA, settings and hosting the test world.
+- **Run a server:** download `FreshTracks-1.2.2-server.zip`, unzip it, install Java 25 ([adoptium.net](https://adoptium.net)) and run `start.bat` (Windows) or `./start.sh`. The README inside walks through Mojang's EULA, settings and hosting the test world.
 
 ## 🛠️ Build from source
 

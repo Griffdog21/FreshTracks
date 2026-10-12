@@ -18,6 +18,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import com.freshtracks.registry.ModItems;
+import net.minecraft.world.item.ItemStack;
 
 public final class ModNetworking {
 	/** XP budget per player per minute from tricks, so nobody farms levels by bunny hopping. */
@@ -77,6 +79,16 @@ public final class ModNetworking {
 			return;
 		}
 		int points = Mth.clamp(payload.points(), 0, 100_000);
+		// Keep the trick score for the HUD, and also pay it out as resort currency.
+		int bucks = points / 100;
+		while (bucks > 0) {
+			int payout = Math.min(bucks, ModItems.SKI_BUCK.getDefaultMaxStackSize());
+			ItemStack stack = new ItemStack(ModItems.SKI_BUCK, payout);
+			if (!player.getInventory().add(stack)) {
+				player.level().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack.copy()));
+			}
+			bucks -= payout;
+		}
 		if (payload.airTicks() >= 30) {
 			com.freshtracks.advancement.ModCriteria.fire(player, "big_air");
 		}

@@ -35,7 +35,8 @@ public final class TrickHud {
 	}
 
 	public static void showTrick(TrickTracker.Result result) {
-		String detail = String.format(Locale.ROOT, "%,d", result.points());
+		int skiBucks = result.points() / 100;
+		String detail = String.format(Locale.ROOT, "%,d pts  ·  +%,d Ski Bucks", result.points(), skiBucks);
 		if (result.combo() > 0) {
 			detail += "   x" + (1 + 0.5f * result.combo() == Math.floor(1 + 0.5f * result.combo())
 				? String.valueOf((int) (1 + 0.5f * result.combo()))
@@ -132,7 +133,7 @@ public final class TrickHud {
 		float powderAge = now - powderTick + delta.getGameTimeDeltaPartialTick(false);
 		if (powderAge < 45) {
 			int a = Mth.clamp((int) ((powderAge < 3 ? powderAge / 3f : powderAge > 30 ? (45 - powderAge) / 15f : 1f) * 255), 8, 255);
-			String line = powderText + "  +" + powderPoints;
+			String line = powderText + "  +" + powderPoints + "  ·  +" + (powderPoints / 100) + " Ski Bucks";
 			float pop = 1.15f + Math.max(0, 3 - powderAge) * 0.08f;
 			graphics.pose().pushMatrix();
 			graphics.pose().translate(width / 2f, height * 0.2f + 46);

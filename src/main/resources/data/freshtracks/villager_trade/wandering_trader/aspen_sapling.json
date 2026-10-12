@@ -1,6 +1,6 @@
 {
   "wants": {
-    "id": "minecraft:emerald",
+    "id": "freshtracks:ski_buck",
     "count": 5
   },
   "gives": {
