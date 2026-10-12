@@ -14,7 +14,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-/** A shop workstation (ski bench, board press, lift control). Faces the player who places it; villagers take the job. */
+/** A resort workstation (ski bench, board press, lift control, first aid kit). Faces the player who places it; villagers take the job. */
 public class WorkstationBlock extends HorizontalDirectionalBlock {
 	private static final VoxelShape BENCH = Shapes.or(Block.box(0, 12, 0, 16, 16, 16), Block.box(1, 0, 1, 15, 12, 15));
 	private static final Map<Direction, VoxelShape> PANEL = Shapes.rotateHorizontal(Block.box(1, 0, 3, 15, 15, 13));
@@ -36,7 +36,7 @@ public class WorkstationBlock extends HorizontalDirectionalBlock {
 
 	@Override
 	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		if (state.is(com.freshtracks.registry.ModBlocks.LIFT_CONTROL)) {
+		if (state.is(com.freshtracks.registry.ModBlocks.LIFT_CONTROL) || state.is(com.freshtracks.registry.ModBlocks.FIRST_AID_KIT)) {
 			return PANEL.get(state.getValue(FACING));
 		}
 		return BENCH;

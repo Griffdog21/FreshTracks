@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 8
+  },
+  "gives": {
+    "id": "freshtracks:first_aid_kit"
+  },
+  "max_uses": 12,
+  "xp": 30,
+  "reputation_discount": 0.2
+}

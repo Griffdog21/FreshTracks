@@ -1,0 +1,9 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/ski_patrol/level_1",
+  "trades": [
+    "freshtracks:ski_patrol/1/paper_emerald",
+    "freshtracks:ski_patrol/1/emerald_cocoa",
+    "freshtracks:ski_patrol/1/emerald_rope_line"
+  ]
+}

@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import com.freshtracks.client.lift.ClientLifts;
 import com.freshtracks.client.lift.LiftModels;
 import com.freshtracks.client.lift.LiftRenderer;
+import com.freshtracks.client.lift.TerminalModels;
 import com.freshtracks.client.lift.TerminalRenderer;
 import com.freshtracks.client.lift.TowerHeadRenderer;
 import com.freshtracks.lift.ChairStyle;
@@ -41,7 +42,9 @@ public class FreshTracksClient implements ClientModInitializer {
 		}
 		ModelLayerRegistry.registerModelLayer(LiftModels.GONDOLA_GLASS, LiftModels::gondolaGlass);
 		ModelLayerRegistry.registerModelLayer(LiftModels.BULLWHEEL, LiftModels::bullwheel);
-		ModelLayerRegistry.registerModelLayer(LiftModels.TERMINAL, LiftModels::terminal);
+		ModelLayerRegistry.registerModelLayer(TerminalModels.HOUSING, TerminalModels::housing);
+		ModelLayerRegistry.registerModelLayer(TerminalModels.MID_HOUSING, TerminalModels::midHousing);
+		ModelLayerRegistry.registerModelLayer(TerminalModels.FIXED, TerminalModels::fixed);
 		ModelLayerRegistry.registerModelLayer(LiftModels.TOWER_HEAD, LiftModels::towerHead);
 		BlockEntityRendererRegistry.register(ModBlockEntities.LIFT_TERMINAL, TerminalRenderer::new);
 		BlockEntityRendererRegistry.register(ModBlockEntities.LIFT_TOWER_HEAD, TowerHeadRenderer::new);

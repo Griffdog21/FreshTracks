@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "S": "minecraft:snow",
+    "G": "minecraft:gravel"
+  },
+  "pattern": [
+    "SSS",
+    "GGG"
+  ],
+  "result": {
+    "id": "freshtracks:snowy_road",
+    "count": 6
+  }
+}

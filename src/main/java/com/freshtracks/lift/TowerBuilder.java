@@ -64,7 +64,7 @@ public final class TowerBuilder {
 			ground[i] = g;
 		}
 
-		double station = LiftLine.STATION_LENGTH;
+		double station = LiftLine.stationLength(style);
 		List<Point> points = new ArrayList<>();
 		points.add(new Point(0, a.y, true));
 		if (length > 2 * station + MIN_GAP) {

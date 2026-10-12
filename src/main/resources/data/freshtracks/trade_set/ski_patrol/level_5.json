@@ -1,0 +1,8 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/ski_patrol/level_5",
+  "trades": [
+    "freshtracks:ski_patrol/5/emerald_experts_only",
+    "freshtracks:ski_patrol/5/emerald_first_aid"
+  ]
+}

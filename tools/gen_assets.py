@@ -163,6 +163,7 @@ def write_recipes() -> None:
     shaped("snowboard_boots", ["S S", "L L"], {"S": "minecraft:string", "L": "minecraft:leather"})
     shapeless("ski_wax", ["minecraft:honeycomb", "minecraft:snowball"], count=2)
     shapeless("hot_cocoa", ["minecraft:bowl", "minecraft:cocoa_beans", "minecraft:milk_bucket", "minecraft:sugar"])
+    shaped("snowy_road", ["SSS", "GGG"], {"S": "minecraft:snow", "G": "minecraft:gravel"}, count=6, category="building")
     shaped("lift_terminal", ["I I", "IRI", "SSS"], {"I": "minecraft:iron_ingot", "R": "minecraft:redstone", "S": "minecraft:smooth_stone"}, category="building")
     shaped("lift_tower", ["B", "B"], {"B": "minecraft:iron_bars"}, count=2, category="building")
     shaped("lift_tower_head", ["III", " B "], {"I": "minecraft:iron_ingot", "B": "minecraft:iron_bars"}, category="building")
@@ -242,6 +243,32 @@ def write_groomed() -> None:
     write_data(f"{NS}/loot_table/blocks/{name}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
         {"type": "minecraft:item", "name": "minecraft:snowball", "conditions": [{"condition": "minecraft:match_tool",
                                                                                  "predicate": {"items": "#minecraft:shovels"}}]}]}]})
+    tag("minecraft/tags/block/mineable/shovel.json", f"{NS}:{name}")
+    tag("minecraft/tags/block/snow.json", f"{NS}:{name}")
+
+
+def write_snowy_road() -> None:
+    """A service road under packed snow: snow-layer heights, gravel and tyre ruts on top; the ruts turn with the axis."""
+    name = "snowy_road"
+    variants = {}
+    for layers in range(1, 9):
+        h = layers * 2
+        model = f"{NS}:block/{name}_height{h}"
+        tex = {"up": "#top", "down": "#side", "side": "#side"}
+        write_json(f"models/block/{name}_height{h}.json", {
+            "parent": "minecraft:block/block",
+            "textures": {"particle": f"{NS}:block/{name}", "top": f"{NS}:block/{name}", "side": f"{NS}:block/{name}_side"},
+            "elements": [element([0, 0, 0], [16, h, 16], tex, [0, 16 - h, 16, 16])]})
+        for axis, rot in (("z", 0), ("x", 90)):
+            v = {"model": model}
+            if rot:
+                v["y"] = rot
+            variants[f"axis={axis},layers={layers}"] = v
+    write_json(f"blockstates/{name}.json", {"variants": variants})
+    write_json(f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}_height2"}})
+    LANG[f"block.{NS}.{name}"] = "Snowy Road"
+    write_data(f"{NS}/loot_table/blocks/{name}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": f"{NS}:{name}"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
     tag("minecraft/tags/block/mineable/shovel.json", f"{NS}:{name}")
     tag("minecraft/tags/block/snow.json", f"{NS}:{name}")
 
@@ -426,6 +453,7 @@ def main() -> None:
     write_blocks()
     write_snow_like()
     write_groomed()
+    write_snowy_road()
     write_particles()
     write_gear()
     write_recipes()

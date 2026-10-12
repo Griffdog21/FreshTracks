@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "freshtracks:block/first_aid_kit"
+    },
+    "facing=east": {
+      "model": "freshtracks:block/first_aid_kit",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "freshtracks:block/first_aid_kit",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "freshtracks:block/first_aid_kit",
+      "y": 270
+    }
+  }
+}

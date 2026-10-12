@@ -30,8 +30,13 @@ public final class LiftLine {
 	/** Where riders get picked up / dropped off, measured along the rope from the bullwheel centre. */
 	public static final double LOAD_AT = 2.6;
 	public static final double UNLOAD_BEFORE = 2.8;
-	/** Level rope section inside each terminal. */
+	/** Level rope section inside each terminal (fixed grips and surface lifts). */
 	public static final double STATION_LENGTH = 5.5;
+	/**
+	 * Detachable lifts' stations are longer: the rope runs level through the whole housing, the carriers slowing down,
+	 * swinging round the bullwheel and speeding up again before they leave its nose.
+	 */
+	public static final double STATION_LENGTH_HOUSED = 10.5;
 	/** Detachable carriers crawl through the terminals at this fraction of rope speed. */
 	public static final double STATION_RATE = 0.2;
 	/** How far the slow zone reaches out from each bullwheel along the rope. */
@@ -50,6 +55,8 @@ public final class LiftLine {
 	 */
 	public final List<BlockPos> stations;
 	public ChairStyle style;
+	/** The terminals' paint (see {@link Livery}); AUTO picks one from the name. */
+	public Livery livery = Livery.AUTO;
 	/** Rope speed when running, blocks per tick. */
 	public double speed;
 	public double spacing;
@@ -105,8 +112,13 @@ public final class LiftLine {
 		ChairStyle.CODEC.optionalFieldOf("style", ChairStyle.QUAD).forGetter(l -> l.style),
 		Codec.DOUBLE.optionalFieldOf("speed", 0.25).forGetter(l -> l.speed),
 		Codec.DOUBLE.optionalFieldOf("spacing", 9.0).forGetter(l -> l.spacing),
-		Codec.BOOL.optionalFieldOf("running", true).forGetter(l -> l.running)
-	).apply(i, LiftLine::new));
+		Codec.BOOL.optionalFieldOf("running", true).forGetter(l -> l.running),
+		Livery.CODEC.optionalFieldOf("livery", Livery.AUTO).forGetter(l -> l.livery)
+	).apply(i, (id, name, bottom, top, towers, stations, style, speed, spacing, running, livery) -> {
+		LiftLine line = new LiftLine(id, name, bottom, top, towers, stations, style, speed, spacing, running);
+		line.livery = livery;
+		return line;
+	}));
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, LiftLine> STREAM_CODEC = StreamCodec.of(
 		(buf, l) -> {
@@ -126,6 +138,7 @@ public final class LiftLine {
 			buf.writeDouble(l.speed);
 			buf.writeDouble(l.spacing);
 			buf.writeBoolean(l.running);
+			buf.writeVarInt(l.livery.ordinal());
 		},
 		buf -> {
 			UUID id = UUIDUtil.STREAM_CODEC.decode(buf);
@@ -143,12 +156,19 @@ public final class LiftLine {
 				stations.add(BlockPos.STREAM_CODEC.decode(buf));
 			}
 			ChairStyle style = ChairStyle.byId(buf.readVarInt());
-			return new LiftLine(id, name, bottom, top, towers, stations, style, buf.readDouble(), buf.readDouble(), buf.readBoolean());
+			LiftLine line = new LiftLine(id, name, bottom, top, towers, stations, style, buf.readDouble(), buf.readDouble(), buf.readBoolean());
+			line.livery = Livery.byId(buf.readVarInt());
+			return line;
 		});
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, List<LiftLine>> LIST_STREAM_CODEC = LiftLine.STREAM_CODEC.apply(ByteBufCodecs.list(4096));
 
 	// ----------------------------------------------------------------------------------------- geometry
+
+	/** How far the rope runs level out of each terminal for this kind of lift. */
+	public static double stationLength(ChairStyle style) {
+		return style.detachable() || style.cabin() || style.pulse() ? STATION_LENGTH_HOUSED : STATION_LENGTH;
+	}
 
 	/** Recomputes the rope path. Call after changing towers or terminals. */
 	public void rebuild() {
@@ -164,13 +184,14 @@ public final class LiftLine {
 		Vec3 lastIn = mid.isEmpty() ? start : mid.getLast();
 		points.add(start);
 		Vec3 outDir = flat(firstOut.subtract(start));
-		if (horizontalDistance(start, firstOut) > STATION_LENGTH + 2) {
-			points.add(start.add(outDir.scale(STATION_LENGTH)));
+		double station = stationLength(style);
+		if (horizontalDistance(start, firstOut) > station + 2) {
+			points.add(start.add(outDir.scale(station)));
 		}
 		points.addAll(mid);
 		Vec3 inDir = flat(end.subtract(lastIn));
-		if (horizontalDistance(lastIn, end) > STATION_LENGTH + 2) {
-			points.add(end.subtract(inDir.scale(STATION_LENGTH)));
+		if (horizontalDistance(lastIn, end) > station + 2) {
+			points.add(end.subtract(inDir.scale(station)));
 		}
 		points.add(end);
 		cumulative = new double[points.size()];
@@ -488,7 +509,7 @@ public final class LiftLine {
 		if (!style.pulse()) {
 			return full;
 		}
-		double zone = STATION_LENGTH + 4.0;
+		double zone = stationLength(style) + 4.0;
 		double topLo = upLength - zone;
 		double topHi = upLength + Math.PI * TRACK_HALF + zone;
 		for (int i = 0; i < chairCount; i++) {
@@ -588,6 +609,24 @@ public final class LiftLine {
 	}
 
 	public LiftLine copyWith(List<BlockPos> newTowers) {
-		return new LiftLine(id, name, bottom, top, newTowers, stations, style, speed, spacing, running);
+		LiftLine copy = new LiftLine(id, name, bottom, top, newTowers, stations, style, speed, spacing, running);
+		copy.livery = livery;
+		return copy;
+	}
+
+	/** The paint the terminals actually wear (AUTO resolved). */
+	public Livery livery() {
+		return Livery.resolve(livery, style, name);
+	}
+
+	/**
+	 * Which way a terminal's station runs, flat: from the bullwheel along the level rope section towards the line. The
+	 * bottom station points up the line, the top one down it.
+	 */
+	public Vec3 stationDirection(boolean topTerminal) {
+		int n = points.size();
+		Vec3 from = topTerminal ? points.get(n - 1) : points.get(0);
+		Vec3 to = topTerminal ? points.get(n - 2) : points.get(1);
+		return horizontal(to.subtract(from));
 	}
 }

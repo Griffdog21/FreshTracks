@@ -43,6 +43,41 @@ def corduroy():
     return img
 
 
+def snowy_road():
+    """A service road under a skin of packed snow: gravel showing through in patches, clearest in the two tyre tracks.
+    The tracks run along the texture's y (north-south); the blockstate turns it for east-west roads."""
+    img = canvas(16, 16)
+    snow, snow_d = hexc("#E9ECEF"), hexc("#D5DADF")
+    gravels = (hexc("#8E8679"), hexc("#6F685F"), hexc("#A59C8F"), hexc("#7E776C"))
+    for y in range(16):
+        for x in range(16):
+            track = 3 <= x <= 5 or 10 <= x <= 12
+            # broad soft patches of snow (coarse noise, tiling every 16) over the gravel, thinner in the tracks
+            n = noise2((x // 2) % 8, (y // 2) % 8, 95) * 0.65 + noise2(x, y, 96) * 0.35
+            cover = n > (0.62 if track else 0.38)
+            g = gravels[int(noise2(x, y, 92) * 4) % 4]
+            if cover:
+                c = snow_d if noise2(x, y, 97) > 0.7 else snow
+            else:
+                c = shade(g, -0.08) if track and y % 4 == 0 else g
+            put(img, x, y, c)
+    return img
+
+
+def snowy_road_side():
+    """The edge of the road: gravel with snow pressed into it."""
+    img = canvas(16, 16)
+    snow = hexc("#E3E7EB")
+    gravels = (hexc("#8E8679"), hexc("#6F685F"), hexc("#A59C8F"), hexc("#7E776C"))
+    for y in range(16):
+        for x in range(16):
+            c = gravels[int(noise2(x, y, 93) * 4) % 4]
+            if noise2(x, y, 94) > 0.55:
+                c = mix(c, snow, 0.75)
+            put(img, x, y, c)
+    return img
+
+
 def spray(i):
     """Soft snow puffs, four sizes."""
     img = canvas(8, 8)
@@ -85,7 +120,8 @@ def sparkle(i):
 
 
 def main(preview_dir: str | None):
-    out = {"block/fresh_powder": fresh_powder(), "block/groomed_snow": corduroy()}
+    out = {"block/fresh_powder": fresh_powder(), "block/groomed_snow": corduroy(), "block/snowy_road": snowy_road(),
+           "block/snowy_road_side": snowy_road_side()}
     for i in range(4):
         out[f"particle/spray_{i}"] = spray(i)
         out[f"particle/sparkle_{i}"] = sparkle(i)

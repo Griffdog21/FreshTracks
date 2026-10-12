@@ -53,6 +53,9 @@ public final class ModBlocks {
 	/** Corduroy: freshly groomed snow, lines along the fall line. */
 	public static final Block GROOMED_SNOW = register("groomed_snow", com.freshtracks.weather.GroomedSnowBlock::new,
 		BlockBehaviour.Properties.ofFullCopy(Blocks.SNOW).mapColor(MapColor.SNOW));
+	/** A service road under a skin of packed snow: skiable, the gravel and tyre ruts showing. */
+	public static final Block SNOWY_ROAD = register("snowy_road", com.freshtracks.weather.SnowyRoadBlock::new,
+		BlockBehaviour.Properties.ofFullCopy(Blocks.SNOW).mapColor(MapColor.COLOR_LIGHT_GRAY).sound(SoundType.GRAVEL));
 
 	public static final Block LARCH_NEEDLES = register("larch_needles", p -> new LeavesBlock(AmbientLeavesBlockSoundPlayer.noAmbientSound(), p),
 		leaves(MapColor.COLOR_ORANGE), leafItem());
@@ -80,6 +83,9 @@ public final class ModBlocks {
 		BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0f).sound(SoundType.METAL).noOcclusion());
 	public static final Block LIFT_CONTROL = register("lift_control", WorkstationBlock::new,
 		BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(3.0f).sound(SoundType.METAL).noOcclusion());
+	/** The ski patrol's red first-aid cabinet: the Ski Patrol job site. */
+	public static final Block FIRST_AID_KIT = register("first_aid_kit", WorkstationBlock::new,
+		BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(2.5f).sound(SoundType.METAL).noOcclusion());
 
 	public static final Block START_LINE = register("start_line", p -> new TimingLineBlock(false, p),
 		BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).strength(0.2f).sound(SoundType.WOOL).noOcclusion());

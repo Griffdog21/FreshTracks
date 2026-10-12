@@ -1,0 +1,60 @@
+{
+  "variants": {
+    "axis=z,layers=1": {
+      "model": "freshtracks:block/snowy_road_height2"
+    },
+    "axis=x,layers=1": {
+      "model": "freshtracks:block/snowy_road_height2",
+      "y": 90
+    },
+    "axis=z,layers=2": {
+      "model": "freshtracks:block/snowy_road_height4"
+    },
+    "axis=x,layers=2": {
+      "model": "freshtracks:block/snowy_road_height4",
+      "y": 90
+    },
+    "axis=z,layers=3": {
+      "model": "freshtracks:block/snowy_road_height6"
+    },
+    "axis=x,layers=3": {
+      "model": "freshtracks:block/snowy_road_height6",
+      "y": 90
+    },
+    "axis=z,layers=4": {
+      "model": "freshtracks:block/snowy_road_height8"
+    },
+    "axis=x,layers=4": {
+      "model": "freshtracks:block/snowy_road_height8",
+      "y": 90
+    },
+    "axis=z,layers=5": {
+      "model": "freshtracks:block/snowy_road_height10"
+    },
+    "axis=x,layers=5": {
+      "model": "freshtracks:block/snowy_road_height10",
+      "y": 90
+    },
+    "axis=z,layers=6": {
+      "model": "freshtracks:block/snowy_road_height12"
+    },
+    "axis=x,layers=6": {
+      "model": "freshtracks:block/snowy_road_height12",
+      "y": 90
+    },
+    "axis=z,layers=7": {
+      "model": "freshtracks:block/snowy_road_height14"
+    },
+    "axis=x,layers=7": {
+      "model": "freshtracks:block/snowy_road_height14",
+      "y": 90
+    },
+    "axis=z,layers=8": {
+      "model": "freshtracks:block/snowy_road_height16"
+    },
+    "axis=x,layers=8": {
+      "model": "freshtracks:block/snowy_road_height16",
+      "y": 90
+    }
+  }
+}

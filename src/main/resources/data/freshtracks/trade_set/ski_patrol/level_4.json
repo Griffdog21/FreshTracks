@@ -1,0 +1,9 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/ski_patrol/level_4",
+  "trades": [
+    "freshtracks:ski_patrol/4/emerald_boundary_sign",
+    "freshtracks:ski_patrol/4/emerald_cliff_sign",
+    "freshtracks:ski_patrol/4/emerald_helmet"
+  ]
+}

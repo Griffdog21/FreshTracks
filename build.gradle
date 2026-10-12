@@ -89,7 +89,9 @@ tasks.register("prodClient", net.fabricmc.loom.task.prod.ClientProductionRunTask
 	mods.from(configurations.prodMods)
 	mods.from(visualMods)
 	jvmArgs.addAll("-Dfreshtracks.devbridge=true", "-Dfreshtracks.bridgePort=25601")
-	programArgs.addAll("--width", "1280", "--height", "720")
+	// -PprodSize=1920x1080 for crisper page screenshots
+	def size = (project.findProperty("prodSize") ?: "1280x720").toString().split("x")
+	programArgs.addAll("--width", size[0], "--height", size[1])
 	runDir = layout.projectDirectory.dir("run-prod")
 }
 

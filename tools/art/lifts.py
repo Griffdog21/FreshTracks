@@ -1,4 +1,4 @@
-"""Lift textures: chairs, gondola, terminal frame, bullwheel, tower head, rope, and the lift block textures.
+"""Lift textures: chairs, gondola, terminal housings, bullwheel, tower head, rope, and the lift block textures.
 
 Box-UV layouts mirror LiftModels.java. Run: uv run --with pillow --with numpy python tools/art/lifts.py [preview_dir]
 """
@@ -234,30 +234,107 @@ def gondola_glass_texture():
     return img
 
 
-def terminal_texture():
+# --------------------------------------------------------------------------------------------- terminals
+# Housings modelled on the real Snowmass terminals (TerminalModels.java): each material is one painted patch that every
+# box of that material reads from, so the patches only need to be big enough for the largest box.
+HOUSING_UV = {
+    "fascia": (0, 0, 150, 24), "glass": (0, 24, 182, 20), "metal": (0, 44, 176, 17), "crown": (0, 61, 234, 46),
+    "ceiling": (0, 107, 240, 47), "column": (0, 154, 44, 118), "capital": (48, 154, 62, 20), "footing": (48, 174, 72, 24),
+    "rail": (48, 198, 160, 6), "drive": (120, 154, 128, 42), "badge": (210, 198, 14, 6),
+}
+FIXED_UV = {"column": (0, 0, 48, 58), "hood": (0, 60, 232, 56), "drive": (0, 120, 96, 36)}
+
+# fascia, fascia shadow, glass, mullion, metal band, crown metal, ceiling, column, rails
+LIVERIES = {
+    "gray": ("#7E868E", "#626A72", "#1B222A", "#8E97A1", "#9AA2AB", "#ADB4BC", "#E4E8EC", "#8A929A"),
+    "charcoal": ("#30353B", "#22262B", "#12161B", "#4C535C", "#3B4148", "#474D55", "wood", "#2A2E34"),
+    "silver": ("#C6CCD2", "#A9B0B7", "#20303D", "#DCE1E6", "#D0D5DA", "#DDE1E5", "#F1F3F5", "#98A0A8"),
+    "green": ("#3E6A4B", "#2C5038", "#17211C", "#7F9A86", "#557C61", "#6A8C74", "#E4E8E4", "#5A6B60"),
+    "red": ("#A3312B", "#7C221E", "#1E1716", "#C9867F", "#B5463F", "#C25A52", "#ECE6E4", "#6E5552"),
+    "blue": ("#2F5E96", "#224674", "#141B26", "#7E9BC0", "#3F6FA6", "#5481B5", "#E4E9F0", "#56657A"),
+}
+RUBBER_PAD = hexc("#232529")
+SNOW_ROOF = hexc("#F3F6FA")
+SNOW_ROOF_D = hexc("#D9E2EC")
+
+
+def housing_texture(livery: str):
+    fascia, fascia_d, glass, mull, metal_c, crown_c, ceil, column = LIVERIES[livery]
+    fascia, fascia_d, glass, mull = hexc(fascia), hexc(fascia_d), hexc(glass), hexc(mull)
+    metal_c, crown_c, column = hexc(metal_c), hexc(crown_c), hexc(column)
+    img = canvas(256, 320)
+
+    def patch(name, fn):
+        u, v, w, h = HOUSING_UV[name]
+        rect(img, u, v, u + w, v + h, lambda x, y: fn(x - u, y - v))
+
+    # ribbed metal siding: a shadow line and a highlight every four pixels
+    patch("fascia", lambda x, y: fascia_d if x % 4 == 0 else (shade(fascia, 0.08) if x % 4 == 1 else
+                                                              (shade(fascia, -0.04) if noise2(x, y, 21) > 0.9 else fascia)))
+    # tinted glass between light mullions, a soft diagonal reflection
+    def glass_px(x, y):
+        if x % 10 == 0:
+            return mull
+        streak = (x + y * 2) % 37 < 3
+        return mix(glass, (200, 220, 240, 255), 0.18) if streak else (shade(glass, 0.06) if y % 9 == 0 else glass)
+    patch("glass", glass_px)
+    patch("metal", lambda x, y: shade(metal_c, -0.1) if x % 16 == 0 else (shade(metal_c, 0.05) if noise2(x, y, 5) > 0.85 else metal_c))
+    # the crown holds a cap of snow, the metal showing through here and there
+    def crown_px(x, y):
+        n = noise2(x // 3, y // 3, 17)
+        if n < 0.18:
+            return shade(crown_c, -0.06) if x % 8 == 0 else crown_c
+        return SNOW_ROOF_D if noise2(x, y, 4) > 0.8 else SNOW_ROOF
+    patch("crown", crown_px)
+    if ceil == "wood":
+        wood, wood_d = hexc("#C79E6E"), hexc("#A67C4E")
+        patch("ceiling", lambda x, y: wood_d if y % 5 == 0 else (shade(wood, -0.05) if noise2(x // 6, y // 5, 8) > 0.6 else wood))
+    else:
+        c = hexc(ceil)
+        patch("ceiling", lambda x, y: shade(c, -0.06) if x % 24 == 0 or y % 24 == 0 else c)
+
+    # columns: painted steel with a black rubber pad round the bottom (see TerminalModels.column)
+    def column_px(x, y):
+        if 52 <= y < 54:
+            return YELLOW
+        if 54 <= y < 79:
+            return RUBBER_PAD if (x + y) % 7 else shade(RUBBER_PAD, 0.15)
+        return shade(column, -0.08) if noise2(x, y, 9) > 0.88 else column
+    patch("column", column_px)
+    patch("capital", lambda x, y: shade(column, -0.12))
+    patch("footing", lambda x, y: mix(CONCRETE, CONCRETE_D, noise2(x, y, 4) * 0.6))
+    patch("rail", lambda x, y: hexc("#3A3F45") if y % 3 else hexc("#585E66"))
+    # the drive house: louvred vents in the siding
+    patch("drive", lambda x, y: (fascia_d if y % 3 == 0 else shade(fascia, -0.05)) if 6 < x % 40 < 30 and 4 < y < 36
+          else (fascia_d if x % 4 == 0 else fascia))
+    red = hexc("#D2232A")
+    patch("badge", lambda x, y: hexc("#FFFFFF") if (x % 5 == 2 and y % 3 == 1) else red)
+    return img
+
+
+def fixed_texture(livery: str):
+    fascia, fascia_d, _, _, metal_c, _, _, column = LIVERIES[livery]
+    fascia, fascia_d, column = hexc(fascia), hexc(fascia_d), hexc(column)
     img = canvas(256, 256)
-    paint_box(img, 0, 0, 3, 70, 3, metal)        # posts (generous height)
-    paint_box(img, 16, 0, 4, 70, 4, lambda f, s, t, x, y: STEEL_D)
 
-    def roof(face, s, t, x, y):
-        if face == "top":
-            # standing-seam metal roof with snow on it
-            snow = noise2(x // 2, y // 2, 3) > 0.55
-            return hexc("#F3F7FB") if snow else (ROOF if int(s * 22) % 2 == 0 else ROOF_D)
-        if face == "bottom":
-            return WOOD
-        return ROOF_D
-    paint_box(img, 0, 40, 44, 3, 44, roof)
+    def patch(name, fn):
+        u, v, w, h = FIXED_UV[name]
+        rect(img, u, v, u + w, v + h, lambda x, y: fn(x - u, y - v))
 
-    def house(face, s, t, x, y):
-        if face == "top":
-            return hexc("#EEF3F8")
-        if face == "bottom":
-            return STEEL_D
-        if 0.3 < t < 0.7 and 0.2 < s < 0.45:
-            return hexc("#9CD3FF")  # a window
-        return hexc("#3B4A5A") if int(t * 6) % 3 != 2 else hexc("#2E3A47")
-    paint_box(img, 0, 140, 28, 12, 28, house)
+    steel = STEEL
+
+    def column_px(x, y):
+        if 43 <= y < 58:
+            return RUBBER_PAD if (x + y) % 7 else shade(RUBBER_PAD, 0.15)
+        if y == 42:
+            return YELLOW
+        return shade(steel, -0.1) if noise2(x, y, 3) > 0.88 else steel
+    patch("column", column_px)
+    # riveted plate: a rivet every six pixels along the seams
+    patch("hood", lambda x, y: shade(fascia, 0.18) if (x % 6 == 3 and y % 6 == 3) else
+          (fascia_d if x % 24 == 0 or y % 24 == 0 else (shade(fascia, -0.05) if noise2(x, y, 12) > 0.86 else fascia)))
+    patch("drive", lambda x, y: (fascia_d if y % 3 == 0 else shade(fascia, -0.08)) if 4 < x % 46 < 20 and 6 < y < 30
+          else (shade(fascia, -0.12) if x % 5 == 0 else shade(fascia, -0.06)))
     return img
 
 
@@ -403,7 +480,8 @@ def main(preview_dir: str | None):
         "entity/lift/gondola": gondola_texture(),
         "entity/lift/gondola_glass": gondola_glass_texture(),
         "entity/lift/gondola_pulse": gondola_texture((hexc("#2F6FD0"), hexc("#1E4A93"))),
-        "entity/lift/terminal": terminal_texture(),
+        **{f"entity/lift/housing_{k}": housing_texture(k) for k in LIVERIES},
+        **{f"entity/lift/fixed_{k}": fixed_texture(k) for k in LIVERIES},
         "entity/lift/bullwheel": bullwheel_texture(),
         "entity/lift/tower_head": tower_head_texture(),
         "entity/lift/rope": rope_texture(),

@@ -1,0 +1,9 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/ski_patrol/level_3",
+  "trades": [
+    "freshtracks:ski_patrol/3/emerald_hazard_pole",
+    "freshtracks:ski_patrol/3/emerald_slow_zone",
+    "freshtracks:ski_patrol/3/emerald_goggles"
+  ]
+}

@@ -117,6 +117,32 @@ public final class FreshTracksCommand {
 									.executes(ctx -> createLift(ctx.getSource(), StringArgumentType.getString(ctx, "name"),
 										BlockPosArgument.getLoadedBlockPos(ctx, "from"), BlockPosArgument.getLoadedBlockPos(ctx, "to"),
 										parseStyle(StringArgumentType.getString(ctx, "style")))))))))
+				.then(Commands.literal("livery")
+					.then(Commands.argument("livery", StringArgumentType.word())
+						.suggests((c, b) -> {
+							for (com.freshtracks.lift.Livery l : com.freshtracks.lift.Livery.values()) {
+								b.suggest(l.getSerializedName());
+							}
+							return b.buildFuture();
+						})
+						.then(Commands.argument("name", StringArgumentType.greedyString()).executes(ctx -> {
+							ServerLevel level = ctx.getSource().getLevel();
+							String name = StringArgumentType.getString(ctx, "name");
+							com.freshtracks.lift.Livery livery = com.freshtracks.lift.Livery.byName(StringArgumentType.getString(ctx, "livery"));
+							int n = 0;
+							for (LiftLine line : LiftManager.lines(level)) {
+								if (line.name.equalsIgnoreCase(name) || name.equals("*")) {
+									line.livery = livery;
+									LiftManager.changed(level, line);
+									n++;
+									ctx.getSource().sendSuccess(() -> Component.literal(line.name + " terminals: " + line.livery().getSerializedName()), true);
+								}
+							}
+							if (n == 0) {
+								ctx.getSource().sendFailure(Component.literal("No lift called " + name));
+							}
+							return n;
+						}))))
 				.then(Commands.literal("open")
 					.then(Commands.argument("name", StringArgumentType.greedyString()).executes(ctx -> setRunning(ctx.getSource(), StringArgumentType.getString(ctx, "name"), true))))
 				.then(Commands.literal("close")

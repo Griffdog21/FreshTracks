@@ -13,6 +13,7 @@ PROFESSIONS = {
     "ski_tech": ("Ski Tech", "ski_bench", "Ski Bench"),
     "board_tech": ("Board Tech", "board_press", "Board Press"),
     "liftie": ("Liftie", "lift_control", "Lift Control"),
+    "ski_patrol": ("Ski Patrol", "first_aid_kit", "First Aid Kit"),
 }
 
 
@@ -79,6 +80,18 @@ def trades() -> dict[str, dict[int, dict[str, dict]]]:
             4: {"emerald_terminal": sell(i("lift_terminal"), 12, 15), "emerald_cocoa_bulk": sell(i("hot_cocoa"), 4, 15, count=8)},
             5: {"emerald_terminal_pair": sell(i("lift_terminal"), 20, 30, count=2)},
         },
+        # ski patrol put up the closures, rope lines and warning signs, and keep a thermos going
+        "ski_patrol": {
+            1: {"paper_emerald": buy("minecraft:paper", 24), "emerald_cocoa": sell(i("hot_cocoa"), 1, 1, count=2),
+                "emerald_rope_line": sell(i("rope_line"), 1, 2, count=8)},
+            2: {"string_emerald": buy("minecraft:string", 12, xp=10), "emerald_closure_fence": sell(i("closure_fence"), 2, 5, count=8),
+                "emerald_closed_sign": sell(i("closed_sign"), 2, 5, count=2)},
+            3: {"emerald_hazard_pole": sell(i("hazard_pole"), 2, 10, count=4), "emerald_slow_zone": sell(i("slow_zone_sign"), 2, 10, count=2),
+                "emerald_goggles": sell(i("ski_goggles"), 7, 10, dyed=True)},
+            4: {"emerald_boundary_sign": sell(i("boundary_sign"), 3, 15, count=2), "emerald_cliff_sign": sell(i("cliff_sign"), 3, 15, count=2),
+                "emerald_helmet": sell(i("ski_helmet"), 10, 15, dyed=True)},
+            5: {"emerald_experts_only": sell(i("experts_only_sign"), 3, 30, count=2), "emerald_first_aid": sell(i("first_aid_kit"), 8, 30)},
+        },
     }
 
 
@@ -132,6 +145,14 @@ def write(write_json, write_data, lang: dict, tag, element) -> None:
                                       "bottom": "minecraft:block/iron_block"},
                          "elements": [element([1, 0, 3], [15, 15, 13], {"up": "#top", "down": "#bottom", "north": "#front", "side": "#side"},
                                               [1, 1, 15, 16])]},
+        # a red cabinet with a white cross, a carry handle on top
+        "first_aid_kit": {"parent": "minecraft:block/block",
+                          "textures": {"particle": f"{NS}:block/first_aid_kit_side", "top": f"{NS}:block/first_aid_kit_top",
+                                       "side": f"{NS}:block/first_aid_kit_side", "front": f"{NS}:block/first_aid_kit_front",
+                                       "bottom": "minecraft:block/iron_block"},
+                          "elements": [element([1, 0, 3], [15, 14, 13], {"up": "#top", "down": "#bottom", "north": "#front", "side": "#side"},
+                                               [1, 2, 15, 16]),
+                                       element([5, 14, 7], [11, 15, 9], {"all": "#bottom"})]},
     }
     for prof, (_, block, block_english) in PROFESSIONS.items():
         write_json(f"models/block/{block}.json", models[block])
@@ -149,7 +170,7 @@ def write(write_json, write_data, lang: dict, tag, element) -> None:
             "pools": [{"rolls": 1, "condition": {"type": "minecraft:survives_explosion"},
                        "entries": [{"type": "minecraft:item", "name": f"{NS}:{block}"}]}]})
     tag("minecraft/tags/block/mineable/axe.json", f"{NS}:ski_bench")
-    tag("minecraft/tags/block/mineable/pickaxe.json", f"{NS}:board_press", f"{NS}:lift_control")
+    tag("minecraft/tags/block/mineable/pickaxe.json", f"{NS}:board_press", f"{NS}:lift_control", f"{NS}:first_aid_kit")
     lang[f"tooltip.{NS}.workstation"] = "A villager without a job will work here."
 
     # The ski lodge: a standalone structure in the snowfield biomes (both shops, a lift desk and three workers).

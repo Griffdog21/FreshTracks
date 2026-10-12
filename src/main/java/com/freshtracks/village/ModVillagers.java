@@ -20,12 +20,14 @@ import net.minecraft.world.level.block.Block;
 /**
  * Resort jobs. A villager without a job who finds one of these workstations takes the job:
  * Ski Bench = Ski Tech (skis, poles, boots, goggles), Board Press = Board Tech (boards, outerwear), Lift Control = Liftie
- * (lift parts, hot cocoa). Their trades are data (data/freshtracks/villager_trade + trade_set).
+ * (lift parts, hot cocoa), First Aid Kit = Ski Patrol (closure fencing, rope line, hazard poles and signs). Their trades
+ * are data (data/freshtracks/villager_trade + trade_set).
  */
 public final class ModVillagers {
 	public static final ResourceKey<VillagerProfession> SKI_TECH = profession("ski_tech", ModBlocks.SKI_BENCH, SoundEvents.VILLAGER_WORK_TOOLSMITH);
 	public static final ResourceKey<VillagerProfession> BOARD_TECH = profession("board_tech", ModBlocks.BOARD_PRESS, SoundEvents.VILLAGER_WORK_LEATHERWORKER);
 	public static final ResourceKey<VillagerProfession> LIFTIE = profession("liftie", ModBlocks.LIFT_CONTROL, SoundEvents.VILLAGER_WORK_CARTOGRAPHER);
+	public static final ResourceKey<VillagerProfession> SKI_PATROL = profession("ski_patrol", ModBlocks.FIRST_AID_KIT, SoundEvents.VILLAGER_WORK_CLERIC);
 
 	private ModVillagers() {
 	}

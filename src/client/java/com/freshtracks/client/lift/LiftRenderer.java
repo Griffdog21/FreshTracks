@@ -49,6 +49,7 @@ public final class LiftRenderer {
 
 	private static Map<ChairStyle, ChairModel> chairs;
 	private static Model.Simple gondolaGlass;
+	private static Model.Simple midHousing;
 
 	private LiftRenderer() {
 	}
@@ -84,6 +85,7 @@ public final class LiftRenderer {
 			chairs.put(style, new ChairModel(set.bakeLayer(LiftModels.CHAIRS.get(style))));
 		}
 		gondolaGlass = new Model.Simple(set.bakeLayer(LiftModels.GONDOLA_GLASS), RenderTypes::entityTranslucent);
+		midHousing = new Model.Simple(set.bakeLayer(TerminalModels.MID_HOUSING), RenderTypes::entityCutout);
 	}
 
 	public static void reload() {
@@ -121,6 +123,7 @@ public final class LiftRenderer {
 			}
 			double phase = entry.phase(partial);
 			drawRopes(out, poseStack, level, line, cam);
+			drawMidStations(out, poseStack, level, line, cam, mc.font);
 			if (line.style.surface()) {
 				drawSurfaceCarriers(out, poseStack, level, entry, phase, partial, cam, towing);
 				continue;
@@ -157,6 +160,37 @@ public final class LiftRenderer {
 				}
 				poseStack.popPose();
 			}
+		}
+	}
+
+	/** Mid stations: the terminal housing, open at both ends, over the level stretch of rope through the station. */
+	private static void drawMidStations(SubmitNodeCollector out, PoseStack poseStack, ClientLevel level, LiftLine line, Vec3 cam,
+		net.minecraft.client.gui.Font font) {
+		if (line.stations.isEmpty() || !TerminalRenderer.housed(line.style)) {
+			return;
+		}
+		com.freshtracks.lift.Livery livery = line.livery();
+		Identifier texture = TerminalRenderer.housingTexture(livery);
+		for (int i = 0; i < line.stations.size() && i < line.midStations(); i++) {
+			BlockPos st = line.stations.get(i);
+			Vec3 c = Vec3.atBottomCenterOf(st);
+			if (c.distanceToSqr(cam) > ROPE_VIEW * ROPE_VIEW) {
+				continue;
+			}
+			LiftLine.RopePoint rope = line.ropeAt(line.midS(i));
+			Vec3 flat = new Vec3(rope.direction().x, 0, rope.direction().z);
+			Vec3 dir = flat.lengthSqr() > 1.0e-6 ? flat.normalize() : new Vec3(0, 0, 1);
+			float yaw = (float) Math.toDegrees(Math.atan2(-dir.x, dir.z));
+			int light = light(level, st.above(4));
+			poseStack.pushPose();
+			poseStack.translate(c.x - cam.x, c.y - cam.y, c.z - cam.z);
+			poseStack.rotateDegrees(Axis.YP, 180f - yaw);
+			poseStack.pushPose();
+			poseStack.scale(-1f, -1f, 1f);
+			out.submitModel(midHousing, Unit.INSTANCE, poseStack, texture, light, OverlayTexture.NO_OVERLAY, 0);
+			poseStack.popPose();
+			TerminalRenderer.submitName(font, line.name, livery, light, poseStack, out, TerminalModels.MID_NAME_ALONG, 2 * TerminalModels.MID_HALF - 24f);
+			poseStack.popPose();
 		}
 	}
 

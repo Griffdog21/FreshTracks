@@ -30,7 +30,8 @@ def _cloth(c, x, y, seed):
     return shade(c, -0.08) if n < 0.25 else shade(c, 0.05) if n > 0.85 else c
 
 
-def uniform(jacket, jacket_dark, accent, pants, beanie, band, lens=None, vest=None, hoodie=False, radio=False, seed=1):
+def uniform(jacket, jacket_dark, accent, pants, beanie, band, lens=None, vest=None, hoodie=False, radio=False, cross=False,
+            helmet=False, seed=1):
     img = canvas(64, 64)
 
     def robe(face, x, y, fw, fh):
@@ -65,6 +66,10 @@ def uniform(jacket, jacket_dark, accent, pants, beanie, band, lens=None, vest=No
                 c = hexc("#22252B") if y > 2 else hexc("#3A3F48")
         if hoodie and face == "back" and y <= 2:
             c = shade(jacket, -0.22)  # hood resting on the back
+        if cross and face == "back" and (x in (3, 4) and 2 <= y <= 8 or y in (4, 5) and 1 <= x <= 6):
+            return hexc("#F6F6F6")  # the patrol cross across the back
+        if cross and face == "front" and (x == 6 and 2 <= y <= 4 or y == 3 and 5 <= x <= 7):
+            return hexc("#F6F6F6")  # and a small one on the chest
         return _cloth(c, x, y + 40, seed)
 
     _paint(img, 0, 38, 8, 20, 6, robe)
@@ -85,6 +90,23 @@ def uniform(jacket, jacket_dark, accent, pants, beanie, band, lens=None, vest=No
     _paint(img, 40, 38, 8, 4, 4, hands)
 
     def hat(face, x, y, fw, fh):
+        if helmet:
+            # a hard shell: vents along the top, a coloured stripe, goggles on the front
+            if face == "bottom":
+                return None
+            if face == "top":
+                return shade(beanie, 0.12) if x in (2, 5) and 1 <= y <= 6 else beanie
+            if y <= 1:
+                return shade(beanie, 0.06)
+            if y == 2:
+                if lens is not None and face == "front" and 1 <= x <= 6:
+                    return lens[0] if x < 4 else lens[1]
+                return band
+            if y == 3:
+                if lens is not None and face == "front" and 1 <= x <= 6:
+                    return lens[1] if x < 4 else lens[2]
+                return hexc("#202228")
+            return None
         if face == "top":
             c = beanie
             if (x, y) in ((3, 3), (4, 3), (3, 4), (4, 4)):
@@ -118,6 +140,10 @@ PROFESSION_LOOKS = {
     "board_tech": dict(jacket=hexc("#2C9C8E"), jacket_dark=hexc("#1D6B62"), accent=None, pants=hexc("#4A4E5A"),
                        beanie=hexc("#6E45C4"), band=hexc("#F2C230"), lens=(hexc("#9BE7FF"), hexc("#3C8CFF"), hexc("#2B4FC8")),
                        hoodie=True, seed=21),
+    # ski patrol: red jacket with the white cross, black pants, black helmet, amber goggles, radio
+    "ski_patrol": dict(jacket=hexc("#C8102E"), jacket_dark=hexc("#860A1E"), accent=None, pants=hexc("#1E1F24"),
+                       beanie=hexc("#232529"), band=hexc("#C8102E"), lens=(hexc("#FFD05A"), hexc("#F2A12A"), hexc("#B8641C")),
+                       radio=True, cross=True, helmet=True, seed=41),
     # navy jacket, hi-vis vest, orange beanie, radio
     "liftie": dict(jacket=hexc("#25335C"), jacket_dark=hexc("#172140"), accent=None, pants=hexc("#2B2E36"),
                    beanie=hexc("#F07A22"), band=hexc("#B4541A"), vest=hexc("#E6DB2E"), radio=True, seed=31),
@@ -266,6 +292,24 @@ def lift_control_top():
     return img
 
 
+def first_aid(face):
+    img = canvas(16, 16)
+    red, red_d, white = hexc("#C8102E"), hexc("#8A0B1F"), hexc("#F6F6F6")
+    rect(img, 0, 0, 16, 16, lambda x, y: shade(red, -0.06) if noise2(x, y, 51) > 0.85 else red)
+    for i in range(16):
+        put(img, i, 0, red_d)
+        put(img, i, 15, red_d)
+        put(img, 0, i, red_d)
+        put(img, 15, i, red_d)
+    if face == "front":
+        rect(img, 6, 3, 10, 13, white)
+        rect(img, 3, 6, 13, 10, white)
+        put(img, 13, 12, hexc("#C9CED6"))  # latch
+    elif face == "top":
+        rect(img, 5, 6, 11, 10, red_d)
+    return img
+
+
 def main(preview_dir: str | None):
     out = {}
     for name, look in PROFESSION_LOOKS.items():
@@ -282,6 +326,9 @@ def main(preview_dir: str | None):
     out["block/lift_control_front"] = lift_control_front()
     out["block/lift_control_side"] = lift_control_side()
     out["block/lift_control_top"] = lift_control_top()
+    out["block/first_aid_kit_front"] = first_aid("front")
+    out["block/first_aid_kit_side"] = first_aid("side")
+    out["block/first_aid_kit_top"] = first_aid("top")
     for name, img in out.items():
         save(img, f"textures/{name}.png")
         if "/profession/" in name:

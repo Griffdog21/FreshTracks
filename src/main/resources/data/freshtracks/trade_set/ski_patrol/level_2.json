@@ -1,0 +1,9 @@
+{
+  "amount": 2,
+  "random_sequence": "freshtracks:trade_set/ski_patrol/level_2",
+  "trades": [
+    "freshtracks:ski_patrol/2/string_emerald",
+    "freshtracks:ski_patrol/2/emerald_closure_fence",
+    "freshtracks:ski_patrol/2/emerald_closed_sign"
+  ]
+}

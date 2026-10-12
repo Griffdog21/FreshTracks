@@ -14,13 +14,12 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 
 /**
  * Lift models, built in code. Vanilla model space: -Z is forward (direction of travel), +X is left, +Y is down,
- * 16 units per block. Chair origin = the haul rope; terminal origin = base of the terminal block; tower head
- * origin = base of the head block. Texture layouts are mirrored by {@code tools/art/lifts.py}.
+ * 16 units per block. Chair origin = the haul rope; tower head origin = base of the head block. Terminals are in
+ * {@link TerminalModels}. Texture layouts are mirrored by {@code tools/art/lifts.py}.
  */
 public final class LiftModels {
 	public static final Map<ChairStyle, ModelLayerLocation> CHAIRS = new EnumMap<>(ChairStyle.class);
 	public static final ModelLayerLocation BULLWHEEL = new ModelLayerLocation(FreshTracks.id("lift_bullwheel"), "main");
-	public static final ModelLayerLocation TERMINAL = new ModelLayerLocation(FreshTracks.id("lift_terminal"), "main");
 	public static final ModelLayerLocation TOWER_HEAD = new ModelLayerLocation(FreshTracks.id("lift_tower_head"), "main");
 	public static final ModelLayerLocation GONDOLA_GLASS = new ModelLayerLocation(FreshTracks.id("lift_gondola_glass"), "main");
 
@@ -164,29 +163,6 @@ public final class LiftModels {
 				PartPose.rotation(0f, (float) angle, 0f));
 		}
 		return LayerDefinition.create(mesh, 64, 64);
-	}
-
-	/** Posts, roof and drive house of a terminal. The bullwheel sits at rope height under the roof. */
-	public static LayerDefinition terminal() {
-		MeshDefinition mesh = new MeshDefinition();
-		PartDefinition root = mesh.getRoot();
-		float rope = (float) (LiftLine.TERMINAL_ROPE * 16.0);
-		float postH = rope + 10f;
-		float[][] posts = {{-12f, -12f}, {12f, -12f}, {-12f, 12f}, {12f, 12f}};
-		for (int i = 0; i < posts.length; i++) {
-			root.addOrReplaceChild("post" + i, CubeListBuilder.create().texOffs(0, 0).addBox(-1.5f, -postH, -1.5f, 3f, postH, 3f),
-				PartPose.offset(posts[i][0], 0f, posts[i][1]));
-		}
-		// a bar from the posts up to the wheel's axle
-		root.addOrReplaceChild("axle", CubeListBuilder.create().texOffs(16, 0).addBox(-2f, -postH, -2f, 4f, postH - rope - 2f, 4f), PartPose.ZERO);
-		// big flat roof over the wheel, Minecraft-blocky, in four panels (keeps the box-UV texture small)
-		for (int i = 0; i < 4; i++) {
-			float px = (i % 2 == 0) ? -44f : 0f;
-			float pz = (i / 2 == 0) ? -44f : 0f;
-			root.addOrReplaceChild("roof" + i, CubeListBuilder.create().texOffs(0, 40).addBox(px, -postH - 3f, pz, 44f, 3f, 44f), PartPose.ZERO);
-		}
-		root.addOrReplaceChild("house", CubeListBuilder.create().texOffs(0, 140).addBox(-14f, -postH - 15f, -14f, 28f, 12f, 28f), PartPose.ZERO);
-		return LayerDefinition.create(mesh, 256, 256);
 	}
 
 	public static LayerDefinition towerHead() {
