@@ -12,7 +12,11 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 </div>
 
-## New in 1.2.3
+## New in 1.2.4
+
+- Fixed the missing Ski Bucks icon in inventory and shop trades. Ski Bucks now display using the intended gold token model.
+
+### Included from 1.2.3
 
 - Pulse gondolas use exposed bullwheel terminals and groups of three cabins.
 - Gondola housings fit the shared cable envelope without the enlarged roof scale.
@@ -50,12 +54,12 @@ Want to jump straight in? The **Fresh Tracks Test World** is a ready-made ski hi
 Everything comes as one file you import into a launcher. It makes its own separate game folder, so **your normal Minecraft worlds are never touched**.
 
 **Prism Launcher** (recommended, free: [prismlauncher.org](https://prismlauncher.org))
-1. Download **`FreshTracks-1.2.3.mrpack`** from the [releases page](../../releases/latest).
+1. Download **`FreshTracks-1.2.4.mrpack`** from the [releases page](../../releases/latest).
 2. In Prism: **Add Instance → Import** → pick the file → **OK**.
 3. Select the new **Fresh Tracks** instance and press **Launch**.
 
 **Modrinth App** ([modrinth.com/app](https://modrinth.com/app))
-1. Download **`FreshTracks-1.2.3.mrpack`**.
+1. Download **`FreshTracks-1.2.4.mrpack`**.
 2. **+ (Create instance) → Import from file** → pick it → **Play**.
 
 The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **Sodium, Iris (shaders) and Distant Horizons** as optional extras (untick them if your PC struggles). For the screenshots above: Iris with the *Complementary Unbound* shader pack.
@@ -66,7 +70,7 @@ The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **S
 <summary>Manual install (official launcher)</summary>
 
 1. Install Fabric for Minecraft 26.3 with the [Fabric installer](https://fabricmc.net/use/installer) (give the profile its own game directory so your normal worlds stay separate).
-2. Put `freshtracks-1.2.3.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
+2. Put `freshtracks-1.2.4.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
 </details>
 
 ## 🎮 Controls
