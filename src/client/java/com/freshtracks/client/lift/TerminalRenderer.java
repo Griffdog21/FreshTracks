@@ -51,6 +51,7 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 	private final Model.Simple housingReturn;
 	private final Model.Simple fixedDrive;
 	private final Model.Simple fixedReturn;
+	private final Model.Simple pulseSupport;
 	private final Model.Simple wheel;
 	private final Font font;
 
@@ -60,7 +61,7 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 		float wheelAngle;
 		boolean housing;
 		boolean drive;
-		boolean gondola;
+		boolean pulse;
 		Livery livery = Livery.GRAY;
 		@Nullable String name;
 		int housingLight;
@@ -71,6 +72,7 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 		this.housingReturn = new Model.Simple(hideDrive(context.bakeLayer(TerminalModels.HOUSING)), RenderTypes::entityCutout);
 		this.fixedDrive = new Model.Simple(context.bakeLayer(TerminalModels.FIXED), RenderTypes::entityCutout);
 		this.fixedReturn = new Model.Simple(hideDrive(context.bakeLayer(TerminalModels.FIXED)), RenderTypes::entityCutout);
+		this.pulseSupport = new Model.Simple(exposedSupport(context.bakeLayer(TerminalModels.FIXED)), RenderTypes::entityCutout);
 		this.wheel = new Model.Simple(context.bakeLayer(LiftModels.BULLWHEEL), RenderTypes::entityCutout);
 		this.font = context.font();
 	}
@@ -80,13 +82,19 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 		return root;
 	}
 
+	private static ModelPart exposedSupport(ModelPart root) {
+		for (String part : new String[]{"drive", "skirt0", "skirt1", "step1_0", "step1_1", "step2", "step3"})
+			root.getChild(part).visible = false;
+		return root;
+	}
+
 	public static Identifier housingTexture(Livery livery) {
 		return HOUSING_TEXTURES.getOrDefault(livery, HOUSING_TEXTURES.get(Livery.GRAY));
 	}
 
 	/** Detachables (chairs and cabins) get a housing; fixed grips and surface lifts the bullwheel under a hood. */
 	public static boolean housed(ChairStyle style) {
-		return style.detachable() || style.cabin() || style.pulse();
+		return !style.pulse() && (style.detachable() || style.cabin());
 	}
 
 	@Override
@@ -113,7 +121,7 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 				state.wheelAngle = -state.wheelAngle;
 			}
 			state.housing = housed(line.style);
-			state.gondola = line.style.cabin();
+			state.pulse = line.style.pulse();
 			state.livery = line.livery();
 			// modern detachables drive from the top; old fixed grips mostly from the bottom
 			state.drive = state.housing == top;
@@ -123,6 +131,7 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 			state.wheelYaw = state.yaw;
 			state.wheelAngle = 0;
 			state.housing = false;
+			state.pulse = false;
 			state.livery = Livery.GRAY;
 			state.drive = false;
 			state.name = null;
@@ -136,12 +145,7 @@ public class TerminalRenderer implements BlockEntityRenderer<LiftTerminalBlockEn
 		poseStack.rotateDegrees(Axis.YP, 180f - state.yaw);
 		poseStack.pushPose();
 		poseStack.scale(-1f, -1f, 1f);
-		// Cabin lifts need a more substantial enclosed station than a chairlift terminal. Keep the shared
-		// architectural details, but give the gondola a wider, longer roofline like a real cabin terminal.
-		if (state.gondola) {
-			poseStack.scale(1.12f, 1f, 1.22f);
-		}
-		Model.Simple model = state.housing ? (state.drive ? housingDrive : housingReturn) : (state.drive ? fixedDrive : fixedReturn);
+		Model.Simple model = state.pulse ? pulseSupport : state.housing ? (state.drive ? housingDrive : housingReturn) : (state.drive ? fixedDrive : fixedReturn);
 		Identifier texture = (state.housing ? HOUSING_TEXTURES : FIXED_TEXTURES).get(state.livery);
 		collector.submitModel(model, Unit.INSTANCE, poseStack, texture, state.housingLight, OverlayTexture.NO_OVERLAY, 0);
 		poseStack.popPose();

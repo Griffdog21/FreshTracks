@@ -57,6 +57,8 @@ public final class LiftLine {
 	public ChairStyle style;
 	/** The terminals' paint (see {@link Livery}); AUTO picks one from the name. */
 	public Livery livery = Livery.AUTO;
+	/** Loading angle around the bottom bullwheel, in degrees before the uphill tangent. */
+	public double bottomLoadAngle;
 	/** Rope speed when running, blocks per tick. */
 	public double speed;
 	public double spacing;
@@ -113,10 +115,12 @@ public final class LiftLine {
 		Codec.DOUBLE.optionalFieldOf("speed", 0.25).forGetter(l -> l.speed),
 		Codec.DOUBLE.optionalFieldOf("spacing", 9.0).forGetter(l -> l.spacing),
 		Codec.BOOL.optionalFieldOf("running", true).forGetter(l -> l.running),
-		Livery.CODEC.optionalFieldOf("livery", Livery.AUTO).forGetter(l -> l.livery)
-	).apply(i, (id, name, bottom, top, towers, stations, style, speed, spacing, running, livery) -> {
+		Livery.CODEC.optionalFieldOf("livery", Livery.AUTO).forGetter(l -> l.livery),
+		Codec.doubleRange(0, 180).optionalFieldOf("bottom_load_angle", 0.0).forGetter(l -> l.bottomLoadAngle)
+	).apply(i, (id, name, bottom, top, towers, stations, style, speed, spacing, running, livery, bottomLoadAngle) -> {
 		LiftLine line = new LiftLine(id, name, bottom, top, towers, stations, style, speed, spacing, running);
 		line.livery = livery;
+		line.bottomLoadAngle = bottomLoadAngle;
 		return line;
 	}));
 
@@ -139,6 +143,7 @@ public final class LiftLine {
 			buf.writeDouble(l.spacing);
 			buf.writeBoolean(l.running);
 			buf.writeVarInt(l.livery.ordinal());
+			buf.writeDouble(l.bottomLoadAngle);
 		},
 		buf -> {
 			UUID id = UUIDUtil.STREAM_CODEC.decode(buf);
@@ -158,6 +163,7 @@ public final class LiftLine {
 			ChairStyle style = ChairStyle.byId(buf.readVarInt());
 			LiftLine line = new LiftLine(id, name, bottom, top, towers, stations, style, buf.readDouble(), buf.readDouble(), buf.readBoolean());
 			line.livery = Livery.byId(buf.readVarInt());
+			line.bottomLoadAngle = Mth.clamp(buf.readDouble(), 0, 180);
 			return line;
 		});
 
@@ -490,7 +496,7 @@ public final class LiftLine {
 	}
 
 	/** Cabins per group on a pulse gondola, and the gap between cabins in a group. */
-	public static final int PULSE_CABINS = 4;
+	public static final int PULSE_CABINS = 3;
 	public static final double PULSE_GAP = 7.0;
 	/** A pulse rope crawls at this share of full speed while a group is in a station. */
 	public static final double PULSE_CRAWL = 0.07;
@@ -566,7 +572,7 @@ public final class LiftLine {
 
 	/** Loop position where riders get on (just past the bottom bullwheel, up side). */
 	public double loadS() {
-		return LOAD_AT;
+		return bottomLoadAngle > 0 ? loopLength - Math.toRadians(bottomLoadAngle) * TRACK_HALF : LOAD_AT;
 	}
 
 	/** Loop position where riders get off at the top. */
