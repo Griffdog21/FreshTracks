@@ -25,6 +25,7 @@ public class TowerHeadRenderer implements BlockEntityRenderer<LiftTowerHeadBlock
 
 	public static class State extends BlockEntityRenderState {
 		float yaw;
+		float railOffset;
 	}
 
 	public TowerHeadRenderer(BlockEntityRendererProvider.Context context) {
@@ -40,8 +41,10 @@ public class TowerHeadRenderer implements BlockEntityRenderer<LiftTowerHeadBlock
 	public void extractRenderState(LiftTowerHeadBlockEntity be, State state, float partialTicks, Vec3 cameraPosition,
 		ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
 		BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPosition, breakProgress);
+		state.railOffset = 0;
 		ClientLifts.Entry entry = ClientLifts.byTower(be.getBlockPos());
 		if (entry != null) {
+			state.railOffset = (float) (entry.line.towerRopeHeight(be.getBlockPos()) - be.getBlockPos().getY() - com.freshtracks.lift.LiftLine.HEAD_ROPE);
 			Vec3 d = ClientLifts.towerDirection(entry, be.getBlockPos());
 			state.yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
 		} else {
@@ -52,7 +55,7 @@ public class TowerHeadRenderer implements BlockEntityRenderer<LiftTowerHeadBlock
 	@Override
 	public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
 		poseStack.pushPose();
-		poseStack.translate(0.5f, 0f, 0.5f);
+		poseStack.translate(0.5f, state.railOffset, 0.5f);
 		poseStack.rotateDegrees(Axis.YP, 180f - state.yaw);
 		poseStack.scale(-1f, -1f, 1f);
 		collector.submitModel(head, Unit.INSTANCE, poseStack, TEXTURE, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);

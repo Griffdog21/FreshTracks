@@ -170,6 +170,8 @@ public final class LiftModels {
 		PartDefinition root = mesh.getRoot();
 		float rope = (float) (LiftLine.HEAD_ROPE * 16.0);
 		float r = (float) (LiftLine.TRACK_HALF * 16.0);
+		// Sleeve overlaps the mast when a station sheave is aligned above its integer block position.
+		root.addOrReplaceChild("mast_sleeve", CubeListBuilder.create().texOffs(0, 0).addBox(-2f, -12f, -2f, 4f, 22f, 4f), PartPose.ZERO);
 		// Cross-arm across the line (along X), just under the sheaves.
 		root.addOrReplaceChild("arm", CubeListBuilder.create().texOffs(0, 0).addBox(-r - 6f, -rope + 3.5f, -1.5f, 2 * r + 12f, 3f, 3f), PartPose.ZERO);
 		for (int side = -1; side <= 1; side += 2) {

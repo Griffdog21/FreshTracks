@@ -183,7 +183,7 @@ public final class LiftLine {
 		Vec3 end = Vec3.atBottomCenterOf(top).add(0, TERMINAL_ROPE, 0);
 		List<Vec3> mid = new ArrayList<>();
 		for (BlockPos tower : towers) {
-			mid.add(Vec3.atBottomCenterOf(tower).add(0, HEAD_ROPE, 0));
+			mid.add(new Vec3(tower.getX() + 0.5, towerRopeHeight(tower), tower.getZ() + 0.5));
 		}
 		// Inside each terminal the rope runs level for a few blocks (the loading / unloading zone), like the real thing.
 		Vec3 firstOut = mid.isEmpty() ? end : mid.getFirst();
@@ -230,6 +230,28 @@ public final class LiftLine {
 			int groups = Mth.clamp((int) Math.round(loopLength / Math.max(60.0, spacing * 20)), 2, 4);
 			chairCount = groups * PULSE_CABINS;
 		}
+	}
+
+	/** The station rail supports carriers above the deck, including the cabin belly and a small sway allowance. */
+	public double towerRopeHeight(BlockPos tower) {
+		double height = tower.getY() + HEAD_ROPE;
+		for (BlockPos station : stations) {
+			if (Math.hypot(tower.getX() - station.getX(), tower.getZ() - station.getZ()) <= 6.5
+				&& Math.abs(height - station.getY() - TERMINAL_ROPE) <= 1.0) {
+				height = Math.max(height, station.getY() + Math.max(TERMINAL_ROPE, style.hanger + 0.5));
+			}
+		}
+		return height;
+	}
+
+	private boolean supportedStationSpan(Vec3 a, Vec3 b) {
+		if (Math.abs(a.y - b.y) > 1.0e-6) return false;
+		for (BlockPos station : stations) {
+			Vec3 center = Vec3.atBottomCenterOf(station);
+			if (horizontalDistance(a, center) <= 6.5 && horizontalDistance(b, center) <= 6.5
+				&& Math.abs(a.y - station.getY() - Math.max(TERMINAL_ROPE, style.hanger + 0.5)) < 1.0) return true;
+		}
+		return false;
 	}
 
 	private void buildTiming() {
@@ -430,7 +452,7 @@ public final class LiftLine {
 		Vec3 a = points.get(k - 1);
 		Vec3 b = points.get(k);
 		Vec3 p = a.lerp(b, t);
-		double sag = 4 * sagFactor() * span * t * (1 - t);
+		double sag = supportedStationSpan(a, b) ? 0 : 4 * sagFactor() * span * t * (1 - t);
 		p = p.add(0, -sag, 0);
 		Vec3 side = sides.get(k - 1).lerp(sides.get(k), t).normalize();
 		Vec3 dir = b.subtract(a);
