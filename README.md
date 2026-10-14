@@ -12,7 +12,12 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 </div>
 
-## New in 1.2.5
+## New in 1.2.6
+
+- Fixed lift animation racing around the cable during wind holds or stops.
+- Small backward position corrections now stay small, including at the cable loop boundary.
+
+### Included from 1.2.5
 
 - Mid-station carrier rails stay level and give gondola cabins clearance above the platform.
 - Mid-station sheaves line up with the corrected cable height, with mast sleeves connecting them to their supports.
@@ -59,12 +64,12 @@ Want to jump straight in? The **Fresh Tracks Test World** is a ready-made ski hi
 Everything comes as one file you import into a launcher. It makes its own separate game folder, so **your normal Minecraft worlds are never touched**.
 
 **Prism Launcher** (recommended, free: [prismlauncher.org](https://prismlauncher.org))
-1. Download **`FreshTracks-1.2.5.mrpack`** from the [releases page](../../releases/latest).
+1. Download **`FreshTracks-1.2.6.mrpack`** from the [releases page](../../releases/latest).
 2. In Prism: **Add Instance → Import** → pick the file → **OK**.
 3. Select the new **Fresh Tracks** instance and press **Launch**.
 
 **Modrinth App** ([modrinth.com/app](https://modrinth.com/app))
-1. Download **`FreshTracks-1.2.5.mrpack`**.
+1. Download **`FreshTracks-1.2.6.mrpack`**.
 2. **+ (Create instance) → Import from file** → pick it → **Play**.
 
 The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **Sodium, Iris (shaders) and Distant Horizons** as optional extras (untick them if your PC struggles). For the screenshots above: Iris with the *Complementary Unbound* shader pack.

@@ -38,11 +38,10 @@ public final class ClientLifts {
 
 		/** Rope position at render time, unwrapped so it never jumps backwards across the loop seam. */
 		public double phase(float partialTick) {
-			double delta = phase - phaseO;
 			double loop = line.cycleLength();
-			if (delta < -loop / 2) {
-				delta += loop;
-			}
+			// Sync can move a stopped lift slightly backward. Unwrap both directions;
+			// a negative correction is not a forward journey around the entire rope.
+			double delta = Mth.positiveModulo(phase - phaseO + loop / 2, loop) - loop / 2;
 			return phaseO + delta * partialTick;
 		}
 	}
@@ -151,10 +150,10 @@ public final class ClientLifts {
 			entry.phaseO = entry.phase;
 			double step = Mth.clamp(entry.correction * 0.06, -0.012, 0.012);
 			entry.correction -= step;
-			entry.phase = Mth.positiveModulo(entry.phase + entry.speed + step, entry.line.cycleLength());
-			if (entry.phase < entry.phaseO) {
-				entry.phaseO -= entry.line.cycleLength();
-			}
+			double advance = entry.speed + step;
+			entry.phase = Mth.positiveModulo(entry.phase + advance, entry.line.cycleLength());
+			// Keep the actual signed movement, including a backward seam crossing.
+			entry.phaseO = entry.phase - advance;
 		}
 	}
 
