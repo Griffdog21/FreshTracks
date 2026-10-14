@@ -15,17 +15,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MinecraftMixin {
 	@Shadow public @Nullable LocalPlayer player;
 
-	/** In the air on skis, attack is the grab button: don't swing at things. */
+	/** While riding, attack is a grab/press button; never mine the feature underneath the rider. */
 	@Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
 	private void freshtracks$grabNotAttack(CallbackInfoReturnable<Boolean> cir) {
-		if (player != null && player.getVehicle() instanceof RigEntity rig && !rig.motion.grounded) {
+		if (player != null && player.getVehicle() instanceof RigEntity) {
 			cir.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "continueAttack", at = @At("HEAD"), cancellable = true)
 	private void freshtracks$noMiningMidAir(boolean down, CallbackInfo ci) {
-		if (player != null && player.getVehicle() instanceof RigEntity rig && !rig.motion.grounded) {
+		if (player != null && player.getVehicle() instanceof RigEntity) {
 			ci.cancel();
 		}
 	}

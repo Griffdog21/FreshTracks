@@ -38,6 +38,7 @@ public abstract class HumanoidModelMixin {
 		float bob = Mth.sin(pose.age() * 0.35f) * 0.03f;
 		// How deep the knees bend: 0 standing tall, 1 deep tuck.
 		float bend = tuck ? 1.0f : crouch ? 0.8f : air ? 0.55f : 0.35f;
+		if (pose.has(RigEntity.FLAG_BUTTER) || pose.has(RigEntity.FLAG_GRIND)) bend = 0.65f;
 		if (grab != Grab.NONE && air) {
 			bend = 1.0f;
 		}

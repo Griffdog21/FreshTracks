@@ -18,6 +18,15 @@ public final class RigPose {
 	private RigPose() {
 	}
 
+	/** Lift the board's centre while one end is pressed into the snow; rider and board share this transform. */
+	public static void pressLift(PoseStack stack, int flags, com.freshtracks.rig.Grab grab) {
+		if ((flags & com.freshtracks.rig.RigEntity.FLAG_AIR) == 0
+			&& (flags & (com.freshtracks.rig.RigEntity.FLAG_BUTTER | com.freshtracks.rig.RigEntity.FLAG_GRIND)) != 0
+			&& (grab == com.freshtracks.rig.Grab.FORWARD || grab == com.freshtracks.rig.Grab.BACK)) {
+			stack.translate(0, 0.21f, 0);
+		}
+	}
+
 	/**
 	 * Applies the slope tilt (pitch along the skis, roll across them), lean and flip in world orientation. Leaves the
 	 * pose stack yaw-aligned with the world again. Everything pivots at the feet, so boots stay in the bindings.

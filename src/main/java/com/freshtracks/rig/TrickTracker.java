@@ -102,6 +102,19 @@ public final class TrickTracker {
 		}
 	}
 
+	/** Award travel and rotation, never time spent standing still on a feature. */
+	public Result groundTrick(String name, double distance, float rotation, int ticks) {
+		int halfTurns = (int) (Math.abs(rotation) / 180f);
+		if (halfTurns > 0) name += " " + halfTurns * 180;
+		combo = comboTimer > 0 ? combo + 1 : 0;
+		comboTimer = COMBO_WINDOW;
+		int base = 60 + (int) (Math.min(distance, 40) * 18) + Math.min(halfTurns, 8) * 100;
+		int points = Math.round(base * Math.min(1f + combo * 0.5f, 4f));
+		runScore += points;
+		bestTrickPoints = Math.max(bestTrickPoints, points);
+		return new Result(name, points, Landing.CLEAN, combo, 0);
+	}
+
 	public void releaseGrab() {
 		grab = Grab.NONE;
 		grabTicks = 0;

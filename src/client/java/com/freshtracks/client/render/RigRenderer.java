@@ -66,6 +66,7 @@ public class RigRenderer extends EntityRenderer<RigEntity, RigRenderState> {
 	@Override
 	public void submit(RigRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
 		poseStack.pushPose();
+		RigPose.pressLift(poseStack, state.flags, state.grab);
 		RigPose.apply(poseStack, state.yaw, state.lean, state.flip, state.slopePitch, state.slopeRoll);
 		poseStack.rotateDegrees(Axis.YP, 180f - state.yaw);
 		poseStack.scale(-1f, -1f, 1f);

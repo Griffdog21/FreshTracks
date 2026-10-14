@@ -61,6 +61,8 @@ public class RigEntity extends Entity {
 	public static final int FLAG_BRAKE = 8;
 	public static final int FLAG_SKID = 16;
 	public static final int FLAG_SWITCH = 32;
+	public static final int FLAG_GRIND = 64;
+	public static final int FLAG_BUTTER = 128;
 
 	/** Below this speed (blocks/tick) holding sneak steps you out of your bindings. */
 	public static final double STEP_OUT_SPEED = 0.12;
@@ -243,7 +245,7 @@ public class RigEntity extends Entity {
 		slopeRollO = slopeRoll;
 		float pitch = 0f;
 		float roll = 0f;
-		if ((renderFlags() & FLAG_AIR) == 0) {
+		if ((renderFlags() & (FLAG_AIR | FLAG_GRIND)) == 0) {
 			SurfaceSampler.Ground ground = SurfaceSampler.ground(this.level(), this.getX(), this.getZ(), this.getY());
 			if (ground.found() && Math.abs(this.getY() - ground.height()) < 0.6) {
 				double yaw = Math.toRadians(this.getYRot());
@@ -255,6 +257,10 @@ public class RigEntity extends Entity {
 				pitch = (float) Math.toDegrees(Math.atan(riseAhead));
 				roll = (float) Math.toDegrees(Math.atan(riseRight));
 			}
+		}
+		if ((renderFlags() & FLAG_AIR) == 0) {
+			if (renderGrab() == Grab.FORWARD) pitch -= 14f;
+			if (renderGrab() == Grab.BACK) pitch += 14f;
 		}
 		slopePitch += (Mth.clamp(pitch, -60f, 60f) - slopePitch) * 0.4f;
 		slopeRoll += (Mth.clamp(roll, -60f, 60f) - slopeRoll) * 0.4f;
@@ -311,6 +317,8 @@ public class RigEntity extends Entity {
 
 	public int localFlags() {
 		int f = 0;
+		if (motion.grinding) f |= FLAG_GRIND;
+		if (motion.buttering) f |= FLAG_BUTTER;
 		if (!motion.grounded) {
 			f |= FLAG_AIR;
 		}
@@ -421,7 +429,7 @@ public class RigEntity extends Entity {
 				level.setBlock(p, state.setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, state.getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS) - 1), net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
 			}
 		}
-		if (serverSpeed < 0.08) {
+		if (serverSpeed < 0.08 || hasFlag(FLAG_GRIND)) {
 			return;
 		}
 		// the rig moves up to two blocks a tick, so lay the track along the whole stretch it covered
@@ -470,7 +478,7 @@ public class RigEntity extends Entity {
 
 	/** Riding over rocks and dirt slowly dings the base. */
 	private void wearBase(ServerLevel level, ServerPlayer player) {
-		if (serverSpeed < 0.15 || player.isCreative()) {
+		if (serverSpeed < 0.15 || player.isCreative() || hasFlag(FLAG_GRIND)) {
 			return;
 		}
 		SurfaceSampler.Column column = SurfaceSampler.column(level, Mth.floor(this.getX()), Mth.floor(this.getZ()), this.getY());

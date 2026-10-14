@@ -366,6 +366,8 @@ SOUNDS: dict[str, tuple[list[str], str, bool]] = {
 }
 
 LANG: dict[str, str] = {
+    "ride.freshtracks.state.grind": "Grinding",
+    "ride.freshtracks.state.butter": "Butter / press",
     "block.freshtracks.classic_park_box": "Classic Red Park Box",
     "block.freshtracks.park_rail": "Park Rail",
     "block.freshtracks.park_box": "Park Box",

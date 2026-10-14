@@ -44,6 +44,7 @@ public abstract class AvatarRendererMixin {
 	private void freshtracks$leanAndFlip(AvatarRenderState state, PoseStack poseStack, float bodyRot, float entityScale, CallbackInfo ci) {
 		RiderPose pose = state.getData(RiderPose.KEY);
 		if (pose != null) {
+			RigPose.pressLift(poseStack, pose.flags(), pose.grab());
 			RigPose.apply(poseStack, pose.rigYaw(), pose.lean(), pose.flip(), pose.slopePitch(), pose.slopeRoll());
 		}
 	}

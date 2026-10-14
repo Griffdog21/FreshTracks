@@ -54,7 +54,7 @@ public final class ClientRig implements RigClientHooks.Hooks {
 			shake = Math.max(shake, Mth.clamp((e.landingImpact - 0.3f) * 1.2f, 0f, 0.8f));
 			burst(level, rig, powder ? 30 : 14, 0.25 + e.landingImpact * 0.3);
 		}
-		if (e.trick != null && e.trick.airTicks() == 0) {
+		if (e.trick != null && e.trick.airTicks() == 0 && !e.groundTrick) {
 			// a linked powder turn: a softer call-out, a whoosh and a big plume of snow
 			TrickHud.showPowderTurn(e.trick);
 			ClientPlayNetworking.send(new TrickPayload(e.trick.name(), e.trick.points(), 0));
@@ -191,6 +191,7 @@ public final class ClientRig implements RigClientHooks.Hooks {
 	}
 
 	private static Surface surfaceUnder(RigEntity rig) {
+		if (rig.hasFlagOrLocal(RigEntity.FLAG_GRIND)) return Surface.PARK_SLIDE;
 		if (rig.isDrivenHere()) {
 			return rig.motion.surface;
 		}
@@ -212,6 +213,7 @@ public final class ClientRig implements RigClientHooks.Hooks {
 			return;
 		}
 		RigLoopSound[] created = new RigLoopSound[]{
+			loop(rig, ModSounds.ICE_SCRAPE, r -> r.hasFlagOrLocal(RigEntity.FLAG_GRIND) ? Math.min(0.8, r.visualSpeed() * 1.3) : 0, r -> 0.75 + r.visualSpeed() * 0.4),
 			loop(rig, ModSounds.CARVE, r -> snowLoudness(r, false) * (0.4 + Math.abs(r.lean(1f)) / 50.0), r -> 0.8 + r.visualSpeed() * 0.35),
 			loop(rig, ModSounds.POWDER, r -> snowLoudness(r, true), r -> 0.85 + r.visualSpeed() * 0.2),
 			loop(rig, ModSounds.SKID, r -> isSkidding(r) ? Math.min(1.0, r.visualSpeed() * 2.2) : 0, r -> 0.9 + r.visualSpeed() * 0.2),

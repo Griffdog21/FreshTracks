@@ -12,7 +12,15 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 </div>
 
-## New in 1.2.7
+## New in 1.2.8
+
+- **Working rails and boxes:** ride or land on a Park Rail, Park Box or Classic Red Park Box to engage a grind. The deck guides your travel while A/D rotates your skis or board into a slide. Sideways deck landings preserve momentum; Space loads and releases a pop off the feature.
+- **Ski and snowboard butters:** on skis or a snowboard while moving on snow, hold left click + W for a nose press or left click + S for a tail press. Add A/D to spin a butter; release left click to straighten into regular or switch riding. Left click alone defaults to a tail press. The same press controls work during rail/box slides.
+- Slides and butters earn trick points, combo credit and Ski Bucks through the existing scoring system. Standing still does not earn trick points.
+- Visible grind/butter HUD states, a sliding sound, crouched stance and board press poses. The trick button no longer breaks blocks while riding.
+- Narrow rails use their actual width and no longer create invisible snow ramps beside them.
+
+### Included from 1.2.7
 
 - **Helmet camera:** press **V** on skis or a snowboard to switch between first-person and chase views. Your riding view is remembered; stepping out restores your usual view. Full-motion helmet view follows airborne spins and flips, including upside-down rotation; Reduced motion and Off keep the steadier view.
 - **Feel your speed:** smooth speed FOV, gentle banking, a lower tuck stance and more progressive wind rush. Press **J** or use **`/ftride`** for camera, reduced-motion and wind settings.
@@ -81,12 +89,12 @@ Want to jump straight in? The **Fresh Tracks Test World** is a ready-made ski hi
 Everything comes as one file you import into a launcher. It makes its own separate game folder, so **your normal Minecraft worlds are never touched**.
 
 **Prism Launcher** (recommended, free: [prismlauncher.org](https://prismlauncher.org))
-1. Download **`FreshTracks-1.2.7.mrpack`** from the [releases page](../../releases/latest).
+1. Download **`FreshTracks-1.2.8.mrpack`** from the [releases page](../../releases/latest).
 2. In Prism: **Add Instance → Import** → pick the file → **OK**.
 3. Select the new **Fresh Tracks** instance and press **Launch**.
 
 **Modrinth App** ([modrinth.com/app](https://modrinth.com/app))
-1. Download **`FreshTracks-1.2.7.mrpack`**.
+1. Download **`FreshTracks-1.2.8.mrpack`**.
 2. **+ (Create instance) → Import from file** → pick it → **Play**.
 
 The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **Sodium, Iris (shaders) and Distant Horizons** as optional extras (untick them if your PC struggles). For the screenshots above: Iris with the *Complementary Unbound* shader pack.
@@ -97,7 +105,7 @@ The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **S
 <summary>Manual install (official launcher)</summary>
 
 1. Install Fabric for Minecraft 26.3 with the [Fabric installer](https://fabricmc.net/use/installer) (give the profile its own game directory so your normal worlds stay separate).
-2. Put `freshtracks-1.2.7.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
+2. Put `freshtracks-1.2.8.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
 </details>
 
 ## 🎮 Controls
@@ -110,12 +118,14 @@ The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **S
 | **A / D** | Lean onto an edge and carve | Steer the landing, spin *(after a jump)* |
 | **S + A or D** | Edge check: swing across the hill and dig in to slow down or stop | |
 | **Space** | Hold to crouch, release to ollie | Tap to throw a trick off a ledge |
-| **Left click** | | Grab |
+| **Left click** | Hold on moving skis or a board to butter; +W nose press, +S tail press, +A/D spin | Grab |
 | **Shift** | Hockey stop (step out when stopped) | |
 | **V** | Switch helmet / chase view (remembered) | Same |
 | **J** | Riding settings: camera, speed effects, wind volume | Same |
 
 Rebind V/J under **Options → Controls → Key Binds → Fresh Tracks riding**. `/ftride` opens riding settings; `/ftcamera helmet`, `/ftcamera chase` and `/ftcamera keep` choose your preferred view. Reduced motion keeps the horizon level and uses a smaller FOV change; Off disables riding camera motion/FOV effects. Minecraft's FOV Effects slider is also respected.
+
+**Parks:** approach along the length of a Park Rail or Park Box. Contact engages automatically. A/D rotates your stance; hold and release Space to pop off. No separate grind button is needed. Jump, spin, flip and grab controls still work in the air.
 
 Lifts: stand on **LOAD HERE**, the screen counts down to your chair. Hold Shift for a second to jump off. On a T-bar, Shift lets go.
 

@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import com.freshtracks.weather.SnowConditions;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -124,6 +124,22 @@ public final class RigMotion {
 	public boolean initialized;
 	public final TrickTracker tricks = new TrickTracker();
 	public final Events events = new Events();
+	/** Hardware contact is separate from snow carving: heading may rotate without steering the slide. */
+	public boolean grinding;
+	public boolean buttering;
+	public int press;
+	public double grindDistance;
+	public int grindTicks;
+	private @Nullable ParkContact grindContact;
+	private int grindDirection = 1;
+	private int grindCooldown;
+	private float grindSpin;
+	private int grindSideTicks;
+	private int grindPressTicks;
+	private int butterTicks;
+	private double butterDistance;
+	private float butterSpin;
+	private int butterPress;
 
 	public static final class Events {
 		public boolean launched;
@@ -136,6 +152,7 @@ public final class RigMotion {
 		public boolean wallBonk;
 		public boolean sank;
 		public boolean popped;
+		public boolean groundTrick;
 
 		void clear() {
 			launched = false;
@@ -148,6 +165,7 @@ public final class RigMotion {
 			wallBonk = false;
 			sank = false;
 			popped = false;
+			groundTrick = false;
 		}
 	}
 
@@ -177,6 +195,9 @@ public final class RigMotion {
 		flipVisual = flipVisualO = 0;
 		skid = 0;
 		initialized = true;
+		grinding = buttering = false;
+		grindContact = null;
+		grindCooldown = press = 0;
 	}
 
 	/**
@@ -190,13 +211,41 @@ public final class RigMotion {
 	public @Nullable Tow tow;
 
 	/** One physics tick. Returns the new position; the caller moves the entity there. */
-	public Vec3 step(Level level, Vec3 pos, RiderInput in, RigStats st, RigKind kind) {
+	public Vec3 step(BlockGetter level, Vec3 pos, RiderInput in, RigStats st, RigKind kind) {
 		events.clear();
 		leanO = lean;
 		flipVisualO = flipVisual;
 		steerYaw = 0;
-		Vec3 next = tow != null ? stepTowed(level, pos, tow, kind)
-			: grounded ? stepGround(level, pos, in, st, kind) : stepAir(level, pos, in, st, kind);
+		if (grindCooldown > 0) grindCooldown--;
+		Vec3 next;
+		if (tow != null) {
+			grinding = buttering = false;
+			press = 0;
+			next = stepTowed(level, pos, tow, kind);
+		} else if (grinding) {
+			next = stepGrind(level, pos, in, st, kind);
+		} else if (grounded) {
+			ParkContact contact = grindCooldown == 0
+				? ParkContact.find(level, pos.x, pos.z, pos.y - 0.22, pos.y + 0.22, 0.18) : null;
+			if (contact != null && speed() > 0.035) {
+				if (buttering) finishButter();
+				beginGrind(contact, kind);
+				next = stepGrind(level, new Vec3(pos.x, contact.height(), pos.z), in, st, kind);
+			} else {
+				SurfaceSampler.Ground snow = in.grab() && !in.brake() && speed() > 0.035
+					? SurfaceSampler.ground(level, pos.x, pos.z, pos.y) : null;
+				if (snow != null && snow.surface().snowy) {
+					next = stepButter(level, pos, snow, in, st, kind);
+				} else {
+					if (buttering) finishButter();
+					press = 0;
+					tricks.releaseGrab();
+					next = stepGround(level, pos, in, st, kind);
+				}
+			}
+		} else {
+			next = stepAir(level, pos, in, st, kind);
+		}
 		double sp = speed();
 		if (sp > MAX_SPEED) {
 			double k = MAX_SPEED / sp;
@@ -208,7 +257,224 @@ public final class RigMotion {
 
 	// ----------------------------------------------------------------------------------------- ground
 
-	private Vec3 stepGround(Level level, Vec3 pos, RiderInput in, RigStats st, RigKind kind) {
+	/** Sweep the boots, not just the end of a tick, so fast riders cannot skip a narrow feature. */
+	private @Nullable Vec3 tryGrind(BlockGetter level, Vec3 from, Vec3 to, boolean airborne, RigKind kind) {
+		if (grindCooldown > 0 || speed() < 0.035 || airborne && vy > 0) return null;
+		if (airborne && (Math.abs(Mth.wrapDegrees(flipVisual)) > 65 || vy < -1.25)) return null;
+		int steps = Math.max(1, (int) Math.ceil(to.subtract(from).length() / 0.18));
+		for (int i = 1; i <= steps; i++) {
+			double t = (double) i / steps;
+			double x = Mth.lerp(t, from.x, to.x), z = Mth.lerp(t, from.z, to.z);
+			double y = Mth.lerp(t, from.y, to.y);
+			ParkContact contact = ParkContact.find(level, x, z,
+				airborne ? y - 0.04 : y - 0.3, airborne ? from.y + 0.08 : y + 0.9, 0.18);
+			if (contact == null) continue;
+			double along = contact.axis() == net.minecraft.core.Direction.Axis.X ? vx : vz;
+			// A crossing at right angles is not a rail approach. The board can face sideways; its travel cannot.
+			if (Math.abs(along) < speed() * 0.45) continue;
+			if (!bodyClear(level, x, contact.height(), z)) continue;
+			if (buttering) finishButter();
+			beginGrind(contact, kind);
+			return new Vec3(x, contact.height(), z);
+		}
+		return null;
+	}
+
+	private void beginGrind(ParkContact contact, RigKind kind) {
+		grindContact = contact;
+		grinding = grounded = true;
+		buttering = false;
+		grindTicks = grindSideTicks = grindPressTicks = 0;
+		grindDistance = 0;
+		grindSpin = 0;
+		double along = contact.axis() == net.minecraft.core.Direction.Axis.X ? vx : vz;
+		grindDirection = along < 0 ? -1 : 1;
+		double glide = speed() * 0.98;
+		vx = contact.axis() == net.minecraft.core.Direction.Axis.X ? glide * grindDirection : 0;
+		vz = contact.axis() == net.minecraft.core.Direction.Axis.Z ? glide * grindDirection : 0;
+		vy = powderSink = 0;
+		surface = Surface.PARK_SLIDE;
+		edge = skid = lean = 0;
+		tuck = plow = hockeyStop = edgeCheck = false;
+		press = 0;
+		resetRotations();
+	}
+
+	private Vec3 stepGrind(BlockGetter level, Vec3 pos, RiderInput in, RigStats st, RigKind kind) {
+		ParkContact contact = ParkContact.find(level, pos.x, pos.z, pos.y - 0.12, pos.y + 0.12, 0.22);
+		if (contact == null || grindContact == null || !grindContact.continues(contact)) {
+			finishGrind(kind, true);
+			takeoff(pos.y, false);
+			return stepAir(level, pos, in, st, kind);
+		}
+		grindContact = contact;
+		grounded = true;
+		airTicks = 0;
+		groundTicks++;
+		grindTicks++;
+		tricks.tickGround();
+		surface = Surface.PARK_SLIDE;
+		edge = skid = 0;
+		lean *= 0.6f;
+		tuck = plow = hockeyStop = edgeCheck = false;
+		press = in.grab() ? in.pitch() : 0;
+		tricks.grab = press > 0 ? Grab.FORWARD : press < 0 ? Grab.BACK : Grab.NONE;
+		if (press != 0) grindPressTicks++;
+		float turn = in.steer() * 6f * st.spin();
+		heading = Mth.wrapDegrees(heading + turn);
+		steerYaw = turn;
+		grindSpin += turn;
+		float crossAngle = Math.abs(Mth.wrapDegrees(heading - yawOf(vx, vz))) % 180f;
+		if (crossAngle > 45 && crossAngle < 135) grindSideTicks++;
+		double glide = speed();
+		glide = Math.max(0, glide - 0.0003 - 0.0015 * glide * glide);
+		if (in.back() && !in.grab() || in.brake()) glide = Math.max(0, glide - 0.025 - glide * 0.025);
+		if (in.forward() && !in.grab() && glide < PUSH_MAX) glide += (kind.isBoard() ? PUSH_BOARD : PUSH_SKI) * st.push();
+		vx = contact.axis() == net.minecraft.core.Direction.Axis.X ? glide * grindDirection : 0;
+		vz = contact.axis() == net.minecraft.core.Direction.Axis.Z ? glide * grindDirection : 0;
+		vy = 0;
+		double pop = loadPop(in, st);
+		if (pop > 0) {
+			finishGrind(kind, false);
+			vy = pop;
+			takeoff(pos.y, true);
+			events.popped = true;
+			return pos;
+		}
+		// Gently center the boots. The original movement direction and speed are retained along the deck.
+		double nx = pos.x + vx, nz = pos.z + vz;
+		if (contact.axis() == net.minecraft.core.Direction.Axis.X) nz += Mth.clamp(contact.crossCenter() - nz, -0.12, 0.12);
+		else nx += Mth.clamp(contact.crossCenter() - nx, -0.12, 0.12);
+		int steps = Math.max(1, (int) Math.ceil(glide / 0.18));
+		double lastX = pos.x, lastZ = pos.z;
+		for (int i = 1; i <= steps; i++) {
+			double t = (double) i / steps;
+			double sx = Mth.lerp(t, pos.x, nx), sz = Mth.lerp(t, pos.z, nz);
+			if (!bodyClear(level, sx, pos.y, sz)) {
+				events.wallBonk = true;
+				finishGrind(kind, true);
+				vx = vz = 0;
+				return new Vec3(lastX, pos.y, lastZ);
+			}
+			ParkContact next = ParkContact.find(level, sx, sz, pos.y - 0.12, pos.y + 0.12, 0.22);
+			if (next == null || !contact.continues(next)) {
+				grindDistance += Math.hypot(lastX - pos.x, lastZ - pos.z);
+				finishGrind(kind, true);
+				takeoff(pos.y, false);
+				// Stop this tick at the first unsupported point; the next tick handles the landing.
+				return new Vec3(sx, pos.y, sz);
+			}
+			lastX = sx; lastZ = sz;
+		}
+		grindDistance += glide;
+		return new Vec3(nx, contact.height(), nz);
+	}
+
+	private void finishGrind(RigKind kind, boolean straighten) {
+		if (grinding && grindTicks >= 3 && grindDistance >= 1.0) {
+			String name = grindPressTicks > 4 ? "Press Slide" : grindSideTicks > 3
+				? kind.isBoard() ? "Boardslide" : "Rail Slide" : "50-50";
+			if (grindContact != null) name += grindContact.box() ? " Box" : " Grind";
+			events.trick = tricks.groundTrick(name, grindDistance, grindSpin, grindTicks);
+			events.groundTrick = true;
+		}
+		grinding = false;
+		grindContact = null;
+		grindCooldown = 5;
+		press = 0;
+		tricks.releaseGrab();
+		if (straighten) straightenStance();
+	}
+
+	private void straightenStance() {
+		if (speed() < 0.001) return;
+		float direction = yawOf(vx, vz);
+		switchStance = Math.abs(Mth.wrapDegrees(heading - direction)) > 90;
+		float target = Mth.wrapDegrees(direction + (switchStance ? 180 : 0));
+		steerYaw += Mth.wrapDegrees(target - heading);
+		heading = target;
+	}
+
+	private double loadPop(RiderInput in, RigStats st) {
+		if (in.jump()) {
+			jumpHeld = true;
+			jumpCharge = Math.min(1f, jumpCharge + 1f / 12f);
+		} else if (jumpHeld) {
+			jumpHeld = false;
+			double pop = (POP_BASE + POP_CHARGE * jumpCharge) * st.pop();
+			jumpCharge = 0;
+			return pop;
+		}
+		return 0;
+	}
+
+	/** Pressed skis or a snowboard pivot over the snow while momentum keeps moving down the hill. */
+	private Vec3 stepButter(BlockGetter level, Vec3 pos, SurfaceSampler.Ground ground, RiderInput in, RigStats st, RigKind kind) {
+		if (!buttering) { butterTicks = 0; butterDistance = 0; butterSpin = 0; butterPress = 0; }
+		buttering = true;
+		butterTicks++;
+		groundTicks++;
+		airTicks = 0;
+		tricks.tickGround();
+		surface = SnowConditions.adjust(ground.surface());
+		press = in.pitch() == 0 ? (butterPress == 0 ? -1 : butterPress) : in.pitch();
+		butterPress = press;
+		tricks.grab = press > 0 ? Grab.FORWARD : Grab.BACK;
+		tuck = plow = hockeyStop = edgeCheck = false;
+		edge = skid = 0;
+		lean += (in.steer() * 8f - lean) * 0.25f;
+		powderSink *= 0.8;
+		float turn = in.steer() * 5.5f * st.spin();
+		heading = Mth.wrapDegrees(heading + turn);
+		steerYaw = turn;
+		butterSpin += turn;
+		double gx = ground.gradX(), gz = ground.gradZ(), denom = 1 + gx * gx + gz * gz;
+		vx -= G_SLOPE * gx / denom;
+		vz -= G_SLOPE * gz / denom;
+		decelerate(0.001 + DRAG * 0.65 * speed() * speed());
+		double pop = loadPop(in, st);
+		Vec3 entry = pop == 0 ? tryGrind(level, pos, new Vec3(pos.x + vx, pos.y, pos.z + vz), false, kind) : null;
+		if (entry != null) return entry;
+		slopeGx = gx; slopeGz = gz;
+		double[] moved = moveHorizontal(level, pos.x, pos.y, pos.z, true);
+		double nx = moved[0], nz = moved[1];
+		SurfaceSampler.Ground next = SurfaceSampler.ground(level, nx, nz, pos.y);
+		double slopeVy = gx * (nx - pos.x) + gz * (nz - pos.z);
+		double floor = next.height() - powderSink;
+		butterDistance += Math.hypot(nx - pos.x, nz - pos.z);
+		if (floor > pos.y + Math.max(0, slopeVy) + SurfaceSampler.MAX_STEP + 0.2) {
+			vx = vz = 0;
+			events.wallBonk = true;
+			finishButter();
+			return pos;
+		}
+		if (events.crashed) {
+			buttering = false; press = 0; tricks.releaseGrab();
+			return new Vec3(nx, pos.y, nz);
+		}
+		if (pop > 0 || !next.found() || pos.y + Math.max(vy, slopeVy) - G_AIR - floor > STICK + STICK_SPEED * speed()) {
+			finishButter();
+			vy = pop > 0 ? Math.max(0, slopeVy) * 0.8 + pop : Math.max(vy, slopeVy);
+			takeoff(pos.y, pop > 0);
+			events.popped = pop > 0;
+			return new Vec3(nx, pos.y, nz);
+		}
+		vy = floor - pos.y;
+		return new Vec3(nx, floor, nz);
+	}
+
+	private void finishButter() {
+		if (buttering && butterTicks >= 12 && butterDistance >= 1.5) {
+			events.trick = tricks.groundTrick(butterPress > 0 ? "Nose Butter" : "Tail Butter", butterDistance, butterSpin, butterTicks);
+			events.groundTrick = true;
+		}
+		buttering = false;
+		press = 0;
+		tricks.releaseGrab();
+		straightenStance();
+	}
+
+	private Vec3 stepGround(BlockGetter level, Vec3 pos, RiderInput in, RigStats st, RigKind kind) {
 		double x = pos.x;
 		double y = pos.y;
 		double z = pos.z;
@@ -422,6 +688,8 @@ public final class RigMotion {
 		}
 
 		// Move sideways, stopping at walls and trees.
+		Vec3 deckEntry = pop == 0 ? tryGrind(level, pos, new Vec3(x + vx, y, z + vz), false, kind) : null;
+		if (deckEntry != null) return deckEntry;
 		slopeGx = gx;
 		slopeGz = gz;
 		double[] moved = moveHorizontal(level, x, y, z, true);
@@ -477,7 +745,7 @@ public final class RigMotion {
 	 * Linked turns in powder score: each time you roll from one edge to the other after a real turn, at speed, that's
 	 * a powder turn. Untracked fresh powder under you counts as first tracks.
 	 */
-	private void countPowderTurn(Level level, double x, double y, double z, double speed) {
+	private void countPowderTurn(BlockGetter level, double x, double y, double z, double speed) {
 		int side = edge > 0.45f ? 1 : edge < -0.45f ? -1 : 0;
 		if (side == 0 || side == turnEdge) {
 			return;
@@ -499,7 +767,7 @@ public final class RigMotion {
 	 * Riding a T-bar or platter: the bar does the work. The rider's skis run in the track behind the carrier, flat
 	 * and pointing uphill; the snow under them sets the height. Hooking on is a tug, not a teleport.
 	 */
-	private Vec3 stepTowed(Level level, Vec3 pos, Tow tow, RigKind kind) {
+	private Vec3 stepTowed(BlockGetter level, Vec3 pos, Tow tow, RigKind kind) {
 		grounded = true;
 		intendedAir = false;
 		airTicks = 0;
@@ -576,7 +844,7 @@ public final class RigMotion {
 
 	// ----------------------------------------------------------------------------------------- air
 
-	private Vec3 stepAir(Level level, Vec3 pos, RiderInput in, RigStats st, RigKind kind) {
+	private Vec3 stepAir(BlockGetter level, Vec3 pos, RiderInput in, RigStats st, RigKind kind) {
 		float headingBefore = heading;
 		double x = pos.x;
 		double y = pos.y;
@@ -657,6 +925,8 @@ public final class RigMotion {
 		flipVisual = tricks.flip;
 		tricks.tickAir(y);
 
+		Vec3 deckLanding = tryGrind(level, pos, new Vec3(x + vx, y + vy, z + vz), true, kind);
+		if (deckLanding != null) return deckLanding;
 		double[] moved = moveHorizontal(level, x, y, z, false);
 		double nx = moved[0];
 		double nz = moved[1];
@@ -666,7 +936,7 @@ public final class RigMotion {
 		}
 
 		// Bonk your head on a ceiling.
-		if (vy > 0 && !level.noBlockCollision(null, bodyBox(nx, ny + 0.1, nz))) {
+		if (vy > 0 && !bodyClear(level, nx, ny + 0.1, nz)) {
 			vy = 0;
 			ny = y;
 		}
@@ -824,7 +1094,7 @@ public final class RigMotion {
 	public static final double BODY_CLEARANCE = 1.15;
 
 	/** Moves by (vx, vz), sliding along walls. Fast head-on hits are crashes. */
-	private double[] moveHorizontal(Level level, double x, double y, double z, boolean onGround) {
+	private double[] moveHorizontal(BlockGetter level, double x, double y, double z, boolean onGround) {
 		double nx = x + vx;
 		double nz = z + vz;
 		// Already wedged in (a tip swung against a wall, landed half inside a block, snow piled up around you)? Then
@@ -881,7 +1151,7 @@ public final class RigMotion {
 	 * as an obstacle (facing down a steep pitch, the snow behind your tails is meant to be higher). Null if there's no
 	 * room at all.
 	 */
-	public static Float freeHeading(Level level, double x, double y, double z, float wanted) {
+	public static Float freeHeading(BlockGetter level, double x, double y, double z, float wanted) {
 		SurfaceSampler.Ground ground = SurfaceSampler.ground(level, x, z, y);
 		// Judge from the snow surface you'd stand on (snow layers sit above your feet), not from your feet.
 		double base = Math.max(y, ground.height());
@@ -896,7 +1166,7 @@ public final class RigMotion {
 	}
 
 	/** True if skis resting at (x, y, z) pointing {@code yaw} don't poke into a block (judged against the slope). */
-	private static boolean skisRestClear(Level level, double x, double y, double z, float yaw, double gradX, double gradZ) {
+	private static boolean skisRestClear(BlockGetter level, double x, double y, double z, float yaw, double gradX, double gradZ) {
 		double rad = Math.toRadians(yaw);
 		double fx = -Math.sin(rad);
 		double fz = Math.cos(rad);
@@ -912,7 +1182,7 @@ public final class RigMotion {
 		return true;
 	}
 
-	private boolean isFree(Level level, double x, double y, double z, boolean checkTips, boolean checkFeet, boolean checkBody) {
+	private boolean isFree(BlockGetter level, double x, double y, double z, boolean checkTips, boolean checkFeet, boolean checkBody) {
 		return (!checkTips || tipsClear(level, x, y, z, heading)) && (!checkFeet || feetClear(level, x, y, z))
 			&& (!checkBody || bodyClear(level, x, y, z));
 	}
@@ -921,7 +1191,7 @@ public final class RigMotion {
 	 * The ski tips and tails: they stop at walls too (two blocks or more above the slope there), so they never poke
 	 * into a wall or tree; one-block steps are still ridden up.
 	 */
-	private boolean tipsClear(Level level, double x, double y, double z, float yaw) {
+	private boolean tipsClear(BlockGetter level, double x, double y, double z, float yaw) {
 		double rad = Math.toRadians(yaw);
 		double fx = -Math.sin(rad);
 		double fz = Math.cos(rad);
@@ -941,7 +1211,7 @@ public final class RigMotion {
 	 * A column under the rider's feet is a wall if it stands well above where the slope we're riding says the snow
 	 * should be (so the uphill side of a steep traverse isn't a wall, but a tree trunk is).
 	 */
-	private boolean feetClear(Level level, double x, double y, double z) {
+	private boolean feetClear(BlockGetter level, double x, double y, double z) {
 		for (int corner = 0; corner < 4; corner++) {
 			double cx = x + ((corner & 1) == 0 ? -0.25 : 0.25);
 			double cz = z + ((corner & 2) == 0 ? -0.25 : 0.25);
@@ -956,7 +1226,7 @@ public final class RigMotion {
 	}
 
 	/** The rider's body from the knees up against solid blocks (leaves don't stop you). */
-	private static boolean bodyClear(Level level, double x, double y, double z) {
+	private static boolean bodyClear(BlockGetter level, double x, double y, double z) {
 		AABB box = bodyBox(x, y, z);
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 		int minX = Mth.floor(box.minX);

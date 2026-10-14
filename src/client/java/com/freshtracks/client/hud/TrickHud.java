@@ -156,6 +156,7 @@ public final class TrickHud {
 			graphics.fill(x - 4, sy - 3, width - 4, sy + 10, 0x66000000);
 			graphics.text(font, speed, x, sy, kmh > 90 ? 0xFFFF7A5C : kmh > 50 ? 0xFFFFE45C : 0xFFFFFFFF);
 			String mode = rig.motion.tow != null ? "tow" : !rig.motion.grounded ? "air"
+				: rig.motion.grinding ? "grind" : rig.motion.buttering ? "butter"
 				: rig.motion.hockeyStop || rig.motion.edgeCheck || rig.motion.plow ? "brake"
 				: Math.abs(rig.motion.edge) > 0.25f ? (rig.motion.skid > 0.3f ? "skid" : "carve")
 				: rig.motion.tuck ? "tuck" : "glide";

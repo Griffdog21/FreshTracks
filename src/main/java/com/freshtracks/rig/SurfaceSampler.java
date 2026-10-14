@@ -71,6 +71,8 @@ public final class SurfaceSampler {
 				continue;
 			}
 			Block block = state.getBlock();
+			// Hardware has an exact deck, sampled separately below. Never grow invisible snow ramps around rails.
+			if (block instanceof com.freshtracks.resort.ParkFeatureBlock) continue;
 			// Snow sitting on branches isn't the ground: look past it (and the leaves) to the real snow below.
 			if ((block instanceof SnowLayerBlock || block instanceof RideableSurface) && level.getBlockState(pos.below()).is(BlockTags.LEAVES)) {
 				continue;
@@ -133,6 +135,8 @@ public final class SurfaceSampler {
 
 	/** The ride surface at (x, z), its slope, and what it's made of. */
 	public static Ground ground(BlockGetter level, double x, double z, double refY) {
+		ParkContact deck = ParkContact.find(level, x, z, refY - SCAN_DOWN, refY + MAX_STEP, 0);
+		if (deck != null) return new Ground(deck.height(), 0, 0, Surface.PARK_SLIDE, Vec3.ZERO, true);
 		Patch patch = new Patch(level, Mth.floor(x), Mth.floor(z), refY);
 		Column own = patch.column(Mth.floor(x), Mth.floor(z));
 		double height = patch.surface(x, z);
