@@ -232,11 +232,27 @@ def write_groomed() -> None:
             "parent": "minecraft:block/block",
             "textures": {"particle": "minecraft:block/snow", "top": f"{NS}:block/{name}", "side": "minecraft:block/snow"},
             "elements": [element([0, 0, 0], [16, h, 16], tex, [0, 16 - h, 16, 16])]})
-        for axis, rot in (("z", 0), ("x", 90)):
-            v = {"model": model}
-            if rot:
-                v["y"] = rot
-            variants[f"axis={axis},layers={layers}"] = v
+        import copy
+        base = {"parent": "minecraft:block/block",
+                "textures": {"particle": "minecraft:block/snow", "top": f"{NS}:block/{name}", "side": "minecraft:block/snow"},
+                "elements": [element([0, 0, 0], [16, h, 16], tex, [0, 16 - h, 16, 16])]}
+        for wear in range(4):
+            suffix = f"_wear{wear}" if wear else ""
+            if wear:
+                worn = copy.deepcopy(base)
+                worn["textures"]["chop"] = "minecraft:block/snow"
+                for a, b, c, d in [(0, 2, 6, 7), (8, 9, 16, 13), (2, 12, 10, 16)][:wear]:
+                    worn["elements"].append({"from": [a, h - .015, b], "to": [c, h + .015, d],
+                        "faces": {"up": {"uv": [a, b, c, d], "texture": "#chop"}}})
+                if wear >= 2:
+                    worn["elements"].append({"from": [3, h, 4], "to": [5, h + .22, 11],
+                        "faces": {f: {"texture": "#chop"} for f in ["up", "north", "south", "east", "west"]}})
+                write_json(f"models/block/{name}_height{h}{suffix}.json", worn)
+            for axis, rot in (("z", 0), ("x", 90)):
+                v = {"model": model + suffix}
+                if rot:
+                    v["y"] = rot
+                variants[f"axis={axis},layers={layers},wear={wear}"] = v
     write_json(f"blockstates/{name}.json", {"variants": variants})
     write_json(f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}_height2"}})
     LANG[f"block.{NS}.{name}"] = "Groomed Snow"
@@ -350,6 +366,8 @@ SOUNDS: dict[str, tuple[list[str], str, bool]] = {
 }
 
 LANG: dict[str, str] = {
+    "block.freshtracks.park_rail": "Park Rail",
+    "block.freshtracks.park_box": "Park Box",
     "key.category.freshtracks.riding": "Fresh Tracks riding",
     "key.freshtracks.ride_camera": "Toggle helmet / chase camera",
     "key.freshtracks.ride_settings": "Riding settings",

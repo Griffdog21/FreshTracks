@@ -50,6 +50,7 @@ public class FreshTracks implements ModInitializer {
 		com.freshtracks.dev.ResortBuildCommands.init();
 		LiftManager.init();
 		SnowWeather.init();
+		com.freshtracks.weather.SlopeGrooming.init();
 		LOG.info("Fresh Tracks is waxing its skis");
 	}
 }

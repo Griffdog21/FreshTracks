@@ -42,7 +42,7 @@ public final class SnowConditions {
 	public static Surface adjust(Surface surface) {
 		switch (event.surface) {
 			case ICY -> {
-				if (surface == Surface.PACKED || surface == Surface.GROOMED) {
+				if (surface == Surface.PACKED || surface == Surface.GROOMED || surface == Surface.TRACKED || surface == Surface.CHOPPED || surface == Surface.SKIED_OFF) {
 					return Surface.ICE_CRUST;
 				}
 			}

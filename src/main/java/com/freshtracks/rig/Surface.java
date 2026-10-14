@@ -9,10 +9,13 @@ package com.freshtracks.rig;
 public enum Surface {
 	GROOMED(0.0008f, 1.05f, 1.0f, 0.0f, 0.6f, true),
 	PACKED(0.0011f, 0.95f, 1.0f, 0.0f, 0.8f, true),
+	TRACKED(0.0010f, 1.00f, 1.0f, 0.0f, 0.85f, true),
+	CHOPPED(0.0014f, 0.92f, 1.04f, 0.0f, 1.15f, true),
+	SKIED_OFF(0.0009f, 0.83f, 1.02f, 0.0f, 0.75f, true),
 	/** Packed snow on a cold snap: fast and chattery, hard to hold an edge. */
 	ICE_CRUST(0.0007f, 0.62f, 0.95f, 0.0f, 0.4f, true),
-	POWDER(0.0022f, 0.80f, 1.45f, 0.12f, 1.6f, true),
-	DEEP_POWDER(0.0035f, 0.70f, 1.9f, 0.28f, 2.2f, true),
+	POWDER(0.0022f, 0.80f, 1.30f, 0.08f, 1.6f, true),
+	DEEP_POWDER(0.0035f, 0.70f, 1.55f, 0.18f, 2.2f, true),
 	SLUSH(0.0040f, 0.85f, 1.25f, 0.05f, 1.0f, true),
 	ICE(0.0004f, 0.32f, 0.9f, 0.0f, 0.2f, false),
 	WATER(0.0120f, 0.30f, 2.5f, 0.10f, 1.2f, false),
@@ -21,6 +24,7 @@ public enum Surface {
 	ROCK(0.0350f, 0.55f, 1.1f, 0.0f, 0.3f, false),
 	WOOD(0.0150f, 0.65f, 1.0f, 0.0f, 0.1f, false),
 	HARD(0.0200f, 0.60f, 1.0f, 0.0f, 0.1f, false),
+	PARK_SLIDE(0.0003f, 0.65f, 0.70f, 0f, 0f, false),
 	AIR(0f, 0f, 1f, 0f, 0f, false);
 
 	public final float friction;

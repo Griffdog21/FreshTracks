@@ -1,0 +1,143 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "minecraft:block/snow",
+    "top": "freshtracks:block/groomed_snow",
+    "side": "minecraft:block/snow",
+    "chop": "minecraft:block/snow"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "down": {
+          "texture": "#side",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        15.985,
+        2
+      ],
+      "to": [
+        6,
+        16.015,
+        7
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            2,
+            6,
+            7
+          ],
+          "texture": "#chop"
+        }
+      }
+    },
+    {
+      "from": [
+        8,
+        15.985,
+        9
+      ],
+      "to": [
+        16,
+        16.015,
+        13
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            8,
+            9,
+            16,
+            13
+          ],
+          "texture": "#chop"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        16,
+        4
+      ],
+      "to": [
+        5,
+        16.22,
+        11
+      ],
+      "faces": {
+        "up": {
+          "texture": "#chop"
+        },
+        "north": {
+          "texture": "#chop"
+        },
+        "south": {
+          "texture": "#chop"
+        },
+        "east": {
+          "texture": "#chop"
+        },
+        "west": {
+          "texture": "#chop"
+        }
+      }
+    }
+  ]
+}

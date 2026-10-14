@@ -406,13 +406,16 @@ public class RigEntity extends Entity {
 	/** Fresh powder this rig rode through, packed into a track a moment later (so you ride the powder, not your track). */
 	private final java.util.ArrayDeque<long[]> pendingTracks = new java.util.ArrayDeque<>();
 	private static final int TRACK_DELAY = 10;
+	private final java.util.LinkedHashMap<Long, Integer> recentTracks = new java.util.LinkedHashMap<>();
 
 	/** Riding through fresh powder packs it down: your line stays on the mountain. */
 	private void leaveTracks(ServerLevel level, Vec3 from, Vec3 to) {
 		while (!pendingTracks.isEmpty() && pendingTracks.peekFirst()[1] <= this.tickCount) {
 			net.minecraft.core.BlockPos p = net.minecraft.core.BlockPos.of(pendingTracks.pollFirst()[0]);
 			net.minecraft.world.level.block.state.BlockState state = level.getBlockState(p);
-			if (state.getBlock() instanceof com.freshtracks.weather.FreshPowderBlock) {
+			if (state.getBlock() instanceof com.freshtracks.weather.GroomedSnowBlock) {
+				com.freshtracks.weather.GroomedSnowBlock.track(level, p, state);
+			} else if (state.getBlock() instanceof com.freshtracks.weather.FreshPowderBlock) {
 				com.freshtracks.weather.FreshPowderBlock.track(level, p, state);
 			} else if (state.getBlock() instanceof net.minecraft.world.level.block.SnowLayerBlock && state.getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS) >= 3) {
 				level.setBlock(p, state.setValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS, state.getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS) - 1), net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
@@ -432,9 +435,11 @@ public class RigEntity extends Entity {
 				net.minecraft.world.level.block.state.BlockState st = level.getBlockState(p);
 				boolean fresh = st.getBlock() instanceof com.freshtracks.weather.FreshPowderBlock;
 				boolean snow = st.getBlock() instanceof net.minecraft.world.level.block.SnowLayerBlock && !fresh;
-				if (fresh || (snow && st.getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS) >= 3)) {
+				if (fresh || st.getBlock() instanceof com.freshtracks.weather.GroomedSnowBlock || (snow && st.getValue(net.minecraft.world.level.block.SnowLayerBlock.LAYERS) >= 3)) {
 					long key = p.asLong();
-					if (pendingTracks.isEmpty() || pendingTracks.peekLast()[0] != key) {
+					if (this.tickCount - recentTracks.getOrDefault(key, -1000) >= 80) {
+						recentTracks.put(key, this.tickCount);
+						if (recentTracks.size() > 512) recentTracks.remove(recentTracks.keySet().iterator().next());
 						pendingTracks.addLast(new long[]{key, this.tickCount + TRACK_DELAY});
 					}
 					if (fresh && this.getFirstPassenger() instanceof ServerPlayer player) {
@@ -566,8 +571,8 @@ public class RigEntity extends Entity {
 	@Override
 	protected void positionRider(Entity passenger, Entity.MoveFunction moveFunction) {
 		super.positionRider(passenger, moveFunction);
-		if (isDrivenHere() && passenger == this.getControllingPassenger() && motion.grounded) {
-			// The camera swings round with your turns, like a boat.
+		if (isDrivenHere() && passenger == this.getControllingPassenger() && (motion.grounded || RigClientHooks.cameraFollowsAir())) {
+			// Follow ground turns, plus air rotations for the full-motion helmet view. Keep the mouse-look offset.
 			passenger.setYRot(passenger.getYRot() + motion.steerYaw * RigClientHooks.cameraFollow());
 			passenger.setYHeadRot(passenger.getYHeadRot() + motion.steerYaw * RigClientHooks.cameraFollow());
 			motion.steerYaw = 0;

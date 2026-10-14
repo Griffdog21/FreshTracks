@@ -33,6 +33,10 @@ public final class FreshTracksConfig {
 	public static boolean villageShops = true;
 	/** Landing tricks gives experience. */
 	public static boolean trickXp = true;
+	/** Restore designated groomers once each Minecraft morning, catching up when a chunk is loaded. */
+	public static boolean autoGroomRuns = true;
+	/** Ski traffic wears corduroy into tracked, chopped and skied-off snow. */
+	public static boolean slopeWear = true;
 
 	// ------------------------------------------------------------------ client
 	/** "kmh" or "mph" for the speedometer and wind. */
@@ -70,6 +74,8 @@ public final class FreshTracksConfig {
 				windStrength = clamp(num(json, "windStrength", windStrength), 0.0, 3.0);
 				villageShops = bool(json, "villageShops", villageShops);
 				trickXp = bool(json, "trickXp", trickXp);
+				autoGroomRuns = bool(json, "autoGroomRuns", autoGroomRuns);
+				slopeWear = bool(json, "slopeWear", slopeWear);
 				speedUnits = "mph".equalsIgnoreCase(str(json, "speedUnits", speedUnits)) ? "mph" : "kmh";
 				showSpeedometer = bool(json, "showSpeedometer", showSpeedometer);
 				autoThirdPerson = bool(json, "autoThirdPerson", autoThirdPerson);
@@ -93,6 +99,8 @@ public final class FreshTracksConfig {
 		json.addProperty("windStrength", windStrength);
 		json.addProperty("villageShops", villageShops);
 		json.addProperty("trickXp", trickXp);
+		json.addProperty("autoGroomRuns", autoGroomRuns);
+		json.addProperty("slopeWear", slopeWear);
 		json.addProperty("speedUnits", speedUnits);
 		json.addProperty("showSpeedometer", showSpeedometer);
 		json.addProperty("autoThirdPerson", autoThirdPerson);

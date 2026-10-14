@@ -14,10 +14,18 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 ## New in 1.2.7
 
-- **Helmet camera:** press **V** on skis or a snowboard to switch between first-person and chase views. Your riding view is remembered; stepping out restores your usual view.
+- **Helmet camera:** press **V** on skis or a snowboard to switch between first-person and chase views. Your riding view is remembered; stepping out restores your usual view. Full-motion helmet view follows airborne spins and flips, including upside-down rotation; Reduced motion and Off keep the steadier view.
 - **Feel your speed:** smooth speed FOV, gentle banking, a lower tuck stance and more progressive wind rush. Press **J** or use **`/ftride`** for camera, reduced-motion and wind settings.
 - **Smoother turns:** A/D carves wider at speed instead of forcing a skid. Edge changes and pushing off are quicker; S and Shift still scrub speed deliberately.
 - The ride HUD shows tucking, carving, skidding and braking, with an edge indicator. Speed readings and the top-speed limit are unchanged.
+
+### Snow through the day
+
+Clean linked carves preserve more momentum and give a small downhill pressure release. Powder planes sooner and keeps more speed through turns; powder gear floats earlier. Braking, skidding and uphill travel still lose speed.
+
+Groomed Snow is refreshed once each Minecraft morning. Traffic progresses through tracked, chopped and skied-off appearances and grip, without digging holes into groomers. Unloaded sections catch up when visited; reloading a chunk or restarting the server does not reset that day's tracks. Existing Groomed Snow works in any world; a private map can designate additional groomed runs. Set `autoGroomRuns` or `slopeWear` to `false` in `config/freshtracks.json` to disable either feature.
+
+Park Rail and Park Box are available in the Fresh Tracks creative tab. Their slippery riding surface preserves momentum without rock damage to equipment.
 
 ### Included from 1.2.6
 

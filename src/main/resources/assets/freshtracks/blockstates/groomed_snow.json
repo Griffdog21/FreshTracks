@@ -1,60 +1,228 @@
 {
   "variants": {
-    "axis=z,layers=1": {
-      "model": "freshtracks:block/groomed_snow_height2"
-    },
-    "axis=x,layers=1": {
+    "axis=x,layers=1,wear=0": {
       "model": "freshtracks:block/groomed_snow_height2",
       "y": 90
     },
-    "axis=z,layers=2": {
-      "model": "freshtracks:block/groomed_snow_height4"
+    "axis=z,layers=1,wear=0": {
+      "model": "freshtracks:block/groomed_snow_height2"
     },
-    "axis=x,layers=2": {
+    "axis=x,layers=1,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height2_wear1",
+      "y": 90
+    },
+    "axis=z,layers=1,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height2_wear1"
+    },
+    "axis=x,layers=1,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height2_wear2",
+      "y": 90
+    },
+    "axis=z,layers=1,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height2_wear2"
+    },
+    "axis=x,layers=1,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height2_wear3",
+      "y": 90
+    },
+    "axis=z,layers=1,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height2_wear3"
+    },
+    "axis=x,layers=2,wear=0": {
       "model": "freshtracks:block/groomed_snow_height4",
       "y": 90
     },
-    "axis=z,layers=3": {
-      "model": "freshtracks:block/groomed_snow_height6"
+    "axis=z,layers=2,wear=0": {
+      "model": "freshtracks:block/groomed_snow_height4"
     },
-    "axis=x,layers=3": {
+    "axis=x,layers=2,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height4_wear1",
+      "y": 90
+    },
+    "axis=z,layers=2,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height4_wear1"
+    },
+    "axis=x,layers=2,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height4_wear2",
+      "y": 90
+    },
+    "axis=z,layers=2,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height4_wear2"
+    },
+    "axis=x,layers=2,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height4_wear3",
+      "y": 90
+    },
+    "axis=z,layers=2,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height4_wear3"
+    },
+    "axis=x,layers=3,wear=0": {
       "model": "freshtracks:block/groomed_snow_height6",
       "y": 90
     },
-    "axis=z,layers=4": {
-      "model": "freshtracks:block/groomed_snow_height8"
+    "axis=z,layers=3,wear=0": {
+      "model": "freshtracks:block/groomed_snow_height6"
     },
-    "axis=x,layers=4": {
+    "axis=x,layers=3,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height6_wear1",
+      "y": 90
+    },
+    "axis=z,layers=3,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height6_wear1"
+    },
+    "axis=x,layers=3,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height6_wear2",
+      "y": 90
+    },
+    "axis=z,layers=3,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height6_wear2"
+    },
+    "axis=x,layers=3,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height6_wear3",
+      "y": 90
+    },
+    "axis=z,layers=3,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height6_wear3"
+    },
+    "axis=x,layers=4,wear=0": {
       "model": "freshtracks:block/groomed_snow_height8",
       "y": 90
     },
-    "axis=z,layers=5": {
-      "model": "freshtracks:block/groomed_snow_height10"
+    "axis=z,layers=4,wear=0": {
+      "model": "freshtracks:block/groomed_snow_height8"
     },
-    "axis=x,layers=5": {
+    "axis=x,layers=4,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height8_wear1",
+      "y": 90
+    },
+    "axis=z,layers=4,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height8_wear1"
+    },
+    "axis=x,layers=4,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height8_wear2",
+      "y": 90
+    },
+    "axis=z,layers=4,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height8_wear2"
+    },
+    "axis=x,layers=4,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height8_wear3",
+      "y": 90
+    },
+    "axis=z,layers=4,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height8_wear3"
+    },
+    "axis=x,layers=5,wear=0": {
       "model": "freshtracks:block/groomed_snow_height10",
       "y": 90
     },
-    "axis=z,layers=6": {
-      "model": "freshtracks:block/groomed_snow_height12"
+    "axis=z,layers=5,wear=0": {
+      "model": "freshtracks:block/groomed_snow_height10"
     },
-    "axis=x,layers=6": {
+    "axis=x,layers=5,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height10_wear1",
+      "y": 90
+    },
+    "axis=z,layers=5,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height10_wear1"
+    },
+    "axis=x,layers=5,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height10_wear2",
+      "y": 90
+    },
+    "axis=z,layers=5,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height10_wear2"
+    },
+    "axis=x,layers=5,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height10_wear3",
+      "y": 90
+    },
+    "axis=z,layers=5,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height10_wear3"
+    },
+    "axis=x,layers=6,wear=0": {
       "model": "freshtracks:block/groomed_snow_height12",
       "y": 90
     },
-    "axis=z,layers=7": {
-      "model": "freshtracks:block/groomed_snow_height14"
+    "axis=z,layers=6,wear=0": {
+      "model": "freshtracks:block/groomed_snow_height12"
     },
-    "axis=x,layers=7": {
+    "axis=x,layers=6,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height12_wear1",
+      "y": 90
+    },
+    "axis=z,layers=6,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height12_wear1"
+    },
+    "axis=x,layers=6,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height12_wear2",
+      "y": 90
+    },
+    "axis=z,layers=6,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height12_wear2"
+    },
+    "axis=x,layers=6,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height12_wear3",
+      "y": 90
+    },
+    "axis=z,layers=6,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height12_wear3"
+    },
+    "axis=x,layers=7,wear=0": {
       "model": "freshtracks:block/groomed_snow_height14",
       "y": 90
     },
-    "axis=z,layers=8": {
-      "model": "freshtracks:block/groomed_snow_height16"
+    "axis=z,layers=7,wear=0": {
+      "model": "freshtracks:block/groomed_snow_height14"
     },
-    "axis=x,layers=8": {
+    "axis=x,layers=7,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height14_wear1",
+      "y": 90
+    },
+    "axis=z,layers=7,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height14_wear1"
+    },
+    "axis=x,layers=7,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height14_wear2",
+      "y": 90
+    },
+    "axis=z,layers=7,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height14_wear2"
+    },
+    "axis=x,layers=7,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height14_wear3",
+      "y": 90
+    },
+    "axis=z,layers=7,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height14_wear3"
+    },
+    "axis=x,layers=8,wear=0": {
       "model": "freshtracks:block/groomed_snow_height16",
       "y": 90
+    },
+    "axis=z,layers=8,wear=0": {
+      "model": "freshtracks:block/groomed_snow_height16"
+    },
+    "axis=x,layers=8,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height16_wear1",
+      "y": 90
+    },
+    "axis=z,layers=8,wear=1": {
+      "model": "freshtracks:block/groomed_snow_height16_wear1"
+    },
+    "axis=x,layers=8,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height16_wear2",
+      "y": 90
+    },
+    "axis=z,layers=8,wear=2": {
+      "model": "freshtracks:block/groomed_snow_height16_wear2"
+    },
+    "axis=x,layers=8,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height16_wear3",
+      "y": 90
+    },
+    "axis=z,layers=8,wear=3": {
+      "model": "freshtracks:block/groomed_snow_height16_wear3"
     }
   }
 }

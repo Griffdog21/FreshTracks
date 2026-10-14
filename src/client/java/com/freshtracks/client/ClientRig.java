@@ -83,6 +83,13 @@ public final class ClientRig implements RigClientHooks.Hooks {
 	}
 
 	@Override
+	public boolean cameraFollowsAir() {
+		Minecraft mc = Minecraft.getInstance();
+		return RideCamera.active(mc) && mc.options.getCameraType().isFirstPerson()
+			&& "full".equals(com.freshtracks.FreshTracksConfig.rideEffects);
+	}
+
+	@Override
 	public float cameraFollow() {
 		return 1f;
 	}

@@ -51,6 +51,10 @@ public final class ModBlocks {
 	public static final Block FRESH_POWDER = register("fresh_powder", FreshPowderBlock::new,
 		BlockBehaviour.Properties.ofFullCopy(Blocks.SNOW).mapColor(MapColor.SNOW));
 	/** Corduroy: freshly groomed snow, lines along the fall line. */
+    public static final Block PARK_RAIL = register("park_rail", p -> new com.freshtracks.resort.ParkFeatureBlock(false,p),
+        BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2f).sound(SoundType.METAL).noOcclusion());
+    public static final Block PARK_BOX = register("park_box", p -> new com.freshtracks.resort.ParkFeatureBlock(true,p),
+        BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2f).sound(SoundType.METAL).noOcclusion());
 	public static final Block GROOMED_SNOW = register("groomed_snow", com.freshtracks.weather.GroomedSnowBlock::new,
 		BlockBehaviour.Properties.ofFullCopy(Blocks.SNOW).mapColor(MapColor.SNOW));
 	/** A service road under a skin of packed snow: skiable, the gravel and tyre ruts showing. */

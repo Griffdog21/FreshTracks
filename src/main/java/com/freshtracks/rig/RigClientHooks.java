@@ -15,6 +15,8 @@ public final class RigClientHooks {
 		void onRiderRemoved(RigEntity rig, Entity passenger);
 
 		float cameraFollow();
+
+		default boolean cameraFollowsAir() { return false; }
 	}
 
 	private static Hooks hooks = new Hooks() {
@@ -53,6 +55,10 @@ public final class RigClientHooks {
 
 	static void onRiderRemoved(RigEntity rig, Entity passenger) {
 		hooks.onRiderRemoved(rig, passenger);
+	}
+
+	static boolean cameraFollowsAir() {
+		return hooks.cameraFollowsAir();
 	}
 
 	static float cameraFollow() {

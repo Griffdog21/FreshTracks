@@ -38,7 +38,7 @@ public final class RigMotion {
 	// Sidecut radius at full edge, blocks.
 	private static final double R_FULL = 5.5;
 	// How much of an edge's turning beyond what the snow can hold still rotates the skis (as a skid).
-	private static final double OVERSTEER = 0.12;
+	private static final double OVERSTEER = 0.0;
 	// Lateral grip: how much sideways acceleration the snow holds (b/t^2) flat and at full edge.
 	private static final double LAT_FLAT = 0.010;
 	private static final double LAT_EDGE = 0.045;
@@ -229,8 +229,8 @@ public final class RigMotion {
 		hockeyStop = in.brake() && speed > 0.08;
 
 		// Powder: you sink in when you're slow and plane up on top once you get going.
-		powderPlane = surface.isPowder() ? smoothstep(0.03, 0.26, speed) : 1.0;
-		double sinkTarget = surface.isPowder() ? surface.sink * (1.0 - powderPlane) : 0.0;
+		powderPlane = surface.isPowder() ? smoothstep(0.02, 0.20 / Math.max(0.7, st.flotation()), speed) : 1.0;
+		double sinkTarget = surface.isPowder() ? surface.sink * (1.0 - powderPlane) / Math.max(0.7, st.flotation()) : 0.0;
 		powderSink += (sinkTarget - powderSink) * 0.15;
 
 		// Edge: release quickly, engage gradually (that's the bite you feel build up).
@@ -333,7 +333,7 @@ public final class RigMotion {
 			skid = (float) Mth.clamp(sinRem * 1.4, 0.0, 1.0);
 			double scrub = sinRem * (SKID_DECEL + SKID_DECEL_V * speed) * (2.0 - surface.grip * 0.8);
 			if (surface.isPowder()) {
-				scrub *= 0.6; // soft snow: a smeared, surfy turn keeps its speed
+				scrub *= 0.30; // pressure steers a planing ski through soft snow without acting like a hardpack skid
 			}
 			if (edgeCheck) {
 				scrub *= 0.75; // a strong but progressive stop, not a wall
@@ -348,12 +348,18 @@ public final class RigMotion {
 		double surfaceDrag = surface.drag;
 		if (surface.isPowder()) {
 			// bogged down when slow, floating and gliding once you're planing
-			friction *= 1.15 - 0.75 * powderPlane;
-			surfaceDrag = 1.0 + (surface.drag - 1.0) * (1.0 - 0.9 * powderPlane);
+			friction *= 0.85 - 0.60 * powderPlane;
+			surfaceDrag = 1.0 + (surface.drag - 1.0) * (1.0 - 0.95 * powderPlane);
 		}
 		// Tucking buys straight-line speed; rolling onto an edge progressively opens the stance.
 		double tuckBlend = tuck ? 1.0 - absEdge * 0.65 : 0.0;
 		double dragCoeff = (DRAG + (TUCK_DRAG - DRAG) * tuckBlend) * (1.0 + (surfaceDrag - 1.0) / st.flotation()) / st.speed();
+		// A held clean edge preserves glide. Gravity still accelerates down the fall line, while deliberate
+		// braking and transverse slides keep their normal losses. This is based on traction, not a speed boost key.
+		double cleanCarve = !edgeCheck && !plow && !boardBrake && !hockeyStop && surface.snowy
+			? absEdge * smoothstep(0.12, 0.45, speed) * (1.0 - Mth.clamp(skid * 3, 0, 1)) : 0;
+		friction *= 1.0 - cleanCarve * 0.55;
+		dragCoeff *= 1.0 - cleanCarve * (surface.isPowder() ? 0.38 : 0.32);
 		if (plow) {
 			friction += 0.006 + 0.020 * speed;
 			skid = Math.max(skid, 0.45f);
@@ -374,7 +380,7 @@ public final class RigMotion {
 		if (!edgeCheck && !plow && !boardBrake && !hockeyStop && Math.abs(edge) > 0.5f && skid < 0.2f && speed > 0.08 && speed < 1.4) {
 			double rad = Math.toRadians(travelHeading());
 			double downhill = Math.max(0, gx * Math.sin(rad) - gz * Math.cos(rad));
-			double drive = 0.0045 * Math.min(1, downhill * 4) * Math.abs(edge) * (1.0 - speed / 1.5) * st.turn();
+			double drive = (surface.isPowder() ? 0.011 : 0.009) * Math.min(1, downhill * 4) * cleanCarve * (1.0 - speed / 1.5) * st.turn();
 			vx += -Math.sin(rad) * drive;
 			vz += Math.cos(rad) * drive;
 		}
@@ -553,7 +559,7 @@ public final class RigMotion {
 	/** Sideways grip the snow can give, b/t^2. */
 	private double lateralGrip(double absEdge, RigStats st) {
 		// once you're planing, powder holds a big surfy turn
-		double grip = surface.grip + (surface.isPowder() ? 0.22 * powderPlane : 0.0);
+		double grip = surface.grip + (surface.isPowder() ? 0.32 * powderPlane : 0.0);
 		return (LAT_FLAT + LAT_EDGE * absEdge) * grip * st.grip();
 	}
 
@@ -571,6 +577,7 @@ public final class RigMotion {
 	// ----------------------------------------------------------------------------------------- air
 
 	private Vec3 stepAir(Level level, Vec3 pos, RiderInput in, RigStats st, RigKind kind) {
+		float headingBefore = heading;
 		double x = pos.x;
 		double y = pos.y;
 		double z = pos.z;
@@ -643,6 +650,8 @@ public final class RigMotion {
 			}
 		}
 		heading = Mth.wrapDegrees(heading + spinRate);
+		// Includes controlled air steering and landing assistance; wrapping must not turn a 359/0 crossing into a full spin.
+		steerYaw = Mth.wrapDegrees(heading - headingBefore);
 		tricks.spin += spinRate;
 		tricks.flip += flipRate;
 		flipVisual = tricks.flip;
