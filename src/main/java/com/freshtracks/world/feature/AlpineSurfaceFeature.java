@@ -86,7 +86,7 @@ public record AlpineSurfaceFeature() implements Feature {
 				placed = true;
 			}
 		}
-		return placed;
+		return com.freshtracks.world.ski.GeneratedParks.decorate(level, baseX, baseZ) || placed;
 	}
 
 	/**

@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "axis=z": {
+      "model": "freshtracks:block/classic_park_box"
+    },
+    "axis=x": {
+      "model": "freshtracks:block/classic_park_box",
+      "y": 90
+    }
+  }
+}

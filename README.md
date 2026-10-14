@@ -25,7 +25,9 @@ Clean linked carves preserve more momentum and give a small downhill pressure re
 
 Groomed Snow is refreshed once each Minecraft morning. Traffic progresses through tracked, chopped and skied-off appearances and grip, without digging holes into groomers. Unloaded sections catch up when visited; reloading a chunk or restarting the server does not reset that day's tracks. Existing Groomed Snow works in any world; a private map can designate additional groomed runs. Set `autoGroomRuns` or `slopeWear` to `false` in `config/freshtracks.json` to disable either feature.
 
-Park Rail and Park Box are available in the Fresh Tracks creative tab. Their slippery riding surface preserves momentum without rock damage to equipment.
+Newly generated **Ski Mountains** terrain includes seeded progression parks with tabletop jumps, a halfpipe, boxes and rails. Glade pillow lines follow the downhill slope with broader rounded snow caps and varied buried rocks. Existing explored terrain is preserved.
+
+Park Rail, Park Box and an optional Classic Red Park Box are available in the Fresh Tracks creative tab. Their slippery riding surface preserves momentum without rock damage to equipment.
 
 ### Included from 1.2.6
 

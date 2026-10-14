@@ -273,5 +273,6 @@
   "weather.freshtracks.thundersnow": "Thundersnow",
   "weather.freshtracks.thundersnow.desc": "Lightning in a snowstorm! Lifts are closed until it passes.",
   "block.freshtracks.park_rail": "Park Rail",
-  "block.freshtracks.park_box": "Park Box"
+  "block.freshtracks.park_box": "Park Box",
+  "block.freshtracks.classic_park_box": "Classic Red Park Box"
 }

@@ -53,6 +53,9 @@ public final class ModBlocks {
 	/** Corduroy: freshly groomed snow, lines along the fall line. */
     public static final Block PARK_RAIL = register("park_rail", p -> new com.freshtracks.resort.ParkFeatureBlock(false,p),
         BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2f).sound(SoundType.METAL).noOcclusion());
+    /** Optional historical styling; generated parks use the neutral box. */
+    public static final Block CLASSIC_PARK_BOX = register("classic_park_box", p -> new com.freshtracks.resort.ParkFeatureBlock(true,p),
+        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(2f).sound(SoundType.METAL).noOcclusion());
     public static final Block PARK_BOX = register("park_box", p -> new com.freshtracks.resort.ParkFeatureBlock(true,p),
         BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2f).sound(SoundType.METAL).noOcclusion());
 	public static final Block GROOMED_SNOW = register("groomed_snow", com.freshtracks.weather.GroomedSnowBlock::new,
