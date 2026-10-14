@@ -70,6 +70,7 @@ public class FreshTracksClient implements ClientModInitializer {
 		LevelRenderEvents.COLLECT_SUBMITS.register(com.freshtracks.client.weather.Aurora::collect);
 		ClientLifts.init();
 		RigClientHooks.install(ClientRig.INSTANCE);
+		RideCamera.init();
 
 		HudElementRegistry.attachElementAfter(VanillaHudElements.MISC_OVERLAYS, FreshTracks.id("weather_overlay"), WeatherHud::renderOverlay);
 		HudElementRegistry.attachElementAfter(VanillaHudElements.SUBTITLES, FreshTracks.id("tricks"), TrickHud::render);

@@ -3,6 +3,7 @@
 	"package": "com.freshtracks.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
+		"CameraMixin",
 		"AvatarRendererMixin",
 		"ClientPacketListenerMixin",
 		"FogRendererMixin",

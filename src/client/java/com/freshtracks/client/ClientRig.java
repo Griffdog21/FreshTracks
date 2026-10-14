@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.ToDoubleFunction;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,8 +30,6 @@ public final class ClientRig implements RigClientHooks.Hooks {
 
 	private final Map<RigEntity, RigLoopSound[]> loops = new WeakHashMap<>();
 	private final RandomSource random = RandomSource.create();
-	private CameraType cameraBefore;
-	private boolean riding;
 	/** Screen shake left, 0..1, fed by landings and bonks. */
 	public float shake;
 
@@ -98,23 +95,11 @@ public final class ClientRig implements RigClientHooks.Hooks {
 		}
 	}
 
-	/** Third-person on click-in, back to how it was on click-out. */
+	/** Riding preferences and interpolated camera feedback. */
 	public void tickCamera(Minecraft mc) {
-		boolean nowRiding = mc.player != null && mc.player.getVehicle() instanceof RigEntity;
-		if (nowRiding && !riding) {
-			cameraBefore = mc.options.getCameraType();
-			if (cameraBefore.isFirstPerson() && com.freshtracks.FreshTracksConfig.autoThirdPerson) {
-				mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
-			}
-		} else if (!nowRiding && riding && cameraBefore != null) {
-			mc.options.setCameraType(cameraBefore);
-			cameraBefore = null;
-		}
-		riding = nowRiding;
+		RideCamera.tick(mc);
 		shake *= 0.82f;
-		if (shake < 0.01f) {
-			shake = 0;
-		}
+		if (shake < 0.01f) shake = 0;
 	}
 
 	// --------------------------------------------------------------------------------- every rig
@@ -223,12 +208,19 @@ public final class ClientRig implements RigClientHooks.Hooks {
 			loop(rig, ModSounds.CARVE, r -> snowLoudness(r, false) * (0.4 + Math.abs(r.lean(1f)) / 50.0), r -> 0.8 + r.visualSpeed() * 0.35),
 			loop(rig, ModSounds.POWDER, r -> snowLoudness(r, true), r -> 0.85 + r.visualSpeed() * 0.2),
 			loop(rig, ModSounds.SKID, r -> isSkidding(r) ? Math.min(1.0, r.visualSpeed() * 2.2) : 0, r -> 0.9 + r.visualSpeed() * 0.2),
-			loop(rig, ModSounds.WIND, r -> Mth.clamp((r.visualSpeed3() - 0.35) * 0.9, 0, 0.9) * (r.getFirstPassenger() == mc.player ? 1.0 : 0.35), r -> 0.7 + r.visualSpeed3() * 0.3),
+			loop(rig, ModSounds.WIND, r -> windLoudness(r, mc), r -> 0.65 + Mth.clamp(r.visualSpeed(), 0, 2.1) * 0.5),
 		};
 		loops.put(rig, created);
 		for (RigLoopSound sound : created) {
 			mc.getSoundManager().play(sound);
 		}
+	}
+
+	private static double windLoudness(RigEntity rig, Minecraft mc) {
+		if (!rig.isVehicle()) return 0;
+		double speed = Mth.clamp((rig.visualSpeed() - 0.16) / 1.5, 0, 1);
+		double rush = 0.95 * Math.pow(speed, 1.35);
+		return rush * (rig.getFirstPassenger() == mc.player ? com.freshtracks.FreshTracksConfig.rideWindVolume : 0.2);
 	}
 
 	private static boolean isSkidding(RigEntity rig) {

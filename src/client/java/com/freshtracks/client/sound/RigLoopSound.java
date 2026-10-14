@@ -24,7 +24,12 @@ public class RigLoopSound extends AbstractTickableSoundInstance {
 		this.looping = true;
 		this.delay = 0;
 		this.volume = 0.0001f;
-		this.attenuation = SoundInstance.Attenuation.LINEAR;
+		// The local rider hears wind/edges in their helmet even with the chase camera pulled back.
+		if (rig.getFirstPassenger() == net.minecraft.client.Minecraft.getInstance().player) {
+			this.attenuation = SoundInstance.Attenuation.NONE;
+		} else {
+			this.attenuation = SoundInstance.Attenuation.LINEAR;
+		}
 		this.x = rig.getX();
 		this.y = rig.getY();
 		this.z = rig.getZ();

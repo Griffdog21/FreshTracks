@@ -32,16 +32,16 @@ public final class RigMotion {
 	public static final double MAX_SPEED = 2.1;
 
 	// Edges: per-tick change of the edge value (0..1).
-	private static final float SKI_ENGAGE = 0.20f;
-	private static final float BOARD_ENGAGE = 0.15f;
+	private static final float SKI_ENGAGE = 0.24f;
+	private static final float BOARD_ENGAGE = 0.19f;
 	private static final float RELEASE = 0.45f;
 	// Sidecut radius at full edge, blocks.
 	private static final double R_FULL = 5.5;
 	// How much of an edge's turning beyond what the snow can hold still rotates the skis (as a skid).
-	private static final double OVERSTEER = 0.75;
+	private static final double OVERSTEER = 0.12;
 	// Lateral grip: how much sideways acceleration the snow holds (b/t^2) flat and at full edge.
 	private static final double LAT_FLAT = 0.010;
-	private static final double LAT_EDGE = 0.034;
+	private static final double LAT_EDGE = 0.045;
 	// Turning on the spot at walking speed, deg/tick.
 	private static final float PIVOT = 8.0f;
 
@@ -56,9 +56,9 @@ public final class RigMotion {
 	private static final double SKID_DECEL_V = 0.035;
 
 	// Pushing / skating on the flats.
-	private static final double PUSH_SKI = 0.0070;
-	private static final double PUSH_BOARD = 0.0045;
-	private static final double PUSH_MAX = 0.19;
+	private static final double PUSH_SKI = 0.0110;
+	private static final double PUSH_BOARD = 0.0080;
+	private static final double PUSH_MAX = 0.26;
 
 	// Air.
 	private static final double POP_BASE = 0.30;
@@ -273,9 +273,11 @@ public final class RigMotion {
 		double latMax = lateralGrip(absEdge, st);
 		double omegaGeom = Math.pow(absEdge, 1.2) * steerSpeed / (R_FULL / st.turn());
 		double omegaGrip = latMax / steerSpeed;
-		// Carve as tight as the snow allows; edging harder than that swings the skis further and they skid.
+		// At speed, keyboard edging widens the carve to the available grip instead of instantly turning every
+		// held A/D into a sideways skid. Deliberate edge checks and hockey stops still break traction below.
 		double omegaCarve = Math.min(omegaGeom, omegaGrip);
-		double omegaDemand = (omegaCarve + Math.max(0.0, omegaGeom - omegaCarve) * OVERSTEER) * (tuck ? 0.55 : 1.0);
+		double oversteer = Math.min(Math.max(0.0, omegaGeom - omegaCarve), omegaGrip * OVERSTEER);
+		double omegaDemand = (omegaCarve + oversteer) * (tuck ? 0.82 : 1.0);
 		float pivot = (float) (PIVOT * (1.0 - smoothstep(0.03, 0.40, speed)));
 		float steerDeg = (float) (Math.signum(edge) * Math.toDegrees(omegaDemand)) + in.steer() * pivot;
 		float twist = 0;
@@ -349,7 +351,9 @@ public final class RigMotion {
 			friction *= 1.15 - 0.75 * powderPlane;
 			surfaceDrag = 1.0 + (surface.drag - 1.0) * (1.0 - 0.9 * powderPlane);
 		}
-		double dragCoeff = (tuck ? TUCK_DRAG : DRAG) * (1.0 + (surfaceDrag - 1.0) / st.flotation()) / st.speed();
+		// Tucking buys straight-line speed; rolling onto an edge progressively opens the stance.
+		double tuckBlend = tuck ? 1.0 - absEdge * 0.65 : 0.0;
+		double dragCoeff = (DRAG + (TUCK_DRAG - DRAG) * tuckBlend) * (1.0 + (surfaceDrag - 1.0) / st.flotation()) / st.speed();
 		if (plow) {
 			friction += 0.006 + 0.020 * speed;
 			skid = Math.max(skid, 0.45f);
@@ -366,11 +370,11 @@ public final class RigMotion {
 			skid = Math.max(skid, 0.6f);
 		}
 		decelerate(friction + dragCoeff * speed * speed);
-		// Carving drive: a clean carve (edge on, not skidding) turns the hill's pull into speed you can feel, and a
-		// wider turn across the fall line is faster than stalling straight. Eases off toward the top speed.
+		// A small release of pressure out of a clean downhill carve. No free acceleration uphill or on flat snow.
 		if (!edgeCheck && !plow && !boardBrake && !hockeyStop && Math.abs(edge) > 0.5f && skid < 0.2f && speed > 0.08 && speed < 1.4) {
 			double rad = Math.toRadians(travelHeading());
-			double drive = 0.0035 * Math.abs(edge) * (1.0 - speed / 1.5) * st.turn();
+			double downhill = Math.max(0, gx * Math.sin(rad) - gz * Math.cos(rad));
+			double drive = 0.0045 * Math.min(1, downhill * 4) * Math.abs(edge) * (1.0 - speed / 1.5) * st.turn();
 			vx += -Math.sin(rad) * drive;
 			vz += Math.cos(rad) * drive;
 		}

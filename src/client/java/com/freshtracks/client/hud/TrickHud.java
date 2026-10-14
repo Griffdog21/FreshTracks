@@ -155,11 +155,22 @@ public final class TrickHud {
 			int sy = height - 22;
 			graphics.fill(x - 4, sy - 3, width - 4, sy + 10, 0x66000000);
 			graphics.text(font, speed, x, sy, kmh > 90 ? 0xFFFF7A5C : kmh > 50 ? 0xFFFFE45C : 0xFFFFFFFF);
+			String mode = rig.motion.tow != null ? "tow" : !rig.motion.grounded ? "air"
+				: rig.motion.hockeyStop || rig.motion.edgeCheck || rig.motion.plow ? "brake"
+				: Math.abs(rig.motion.edge) > 0.25f ? (rig.motion.skid > 0.3f ? "skid" : "carve")
+				: rig.motion.tuck ? "tuck" : "glide";
+			String label = net.minecraft.network.chat.Component.translatable("ride.freshtracks.state." + mode).getString();
+			graphics.text(font, label, width - font.width(label) - 8, sy - 13, 0xFFBFEFFF);
+			int barLeft = width - 88;
+			graphics.fill(barLeft, sy + 13, width - 8, sy + 15, 0x774A6170);
+			int edgePixels = (int) (rig.motion.edge * 39);
+			graphics.fill(Math.min(barLeft + 40, barLeft + 40 + edgePixels), sy + 13,
+				Math.max(barLeft + 41, barLeft + 41 + edgePixels), sy + 15, 0xFF7FE0FF);
 			int score = rig.motion.tricks.runScore;
 			if (score > 0) {
 				String s = String.format(Locale.ROOT, "%,d pts", score);
 				int sx = width - font.width(s) - 8;
-				graphics.text(font, s, sx, sy - 12, 0xFF7FE0FF);
+				graphics.text(font, s, sx, sy - 26, 0xFF7FE0FF);
 			}
 		}
 	}

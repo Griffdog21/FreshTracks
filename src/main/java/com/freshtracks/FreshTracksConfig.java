@@ -42,6 +42,13 @@ public final class FreshTracksConfig {
 	/** Switch to third person when you click in. */
 	public static boolean autoThirdPerson = true;
 
+	/** Preferred riding view: helmet, chase, or keep the current Minecraft view. */
+	public static String rideCamera = "chase";
+	/** full, reduced (gentle FOV, no banking), or off. */
+	public static String rideEffects = "full";
+	/** Wind rush volume for the local skier, independently adjustable from world sounds. */
+	public static double rideWindVolume = 1.0;
+
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	private FreshTracksConfig() {
@@ -66,6 +73,9 @@ public final class FreshTracksConfig {
 				speedUnits = "mph".equalsIgnoreCase(str(json, "speedUnits", speedUnits)) ? "mph" : "kmh";
 				showSpeedometer = bool(json, "showSpeedometer", showSpeedometer);
 				autoThirdPerson = bool(json, "autoThirdPerson", autoThirdPerson);
+				rideCamera = choice(str(json, "rideCamera", autoThirdPerson ? "chase" : "keep"), "chase", "helmet", "chase", "keep");
+				rideEffects = choice(str(json, "rideEffects", rideEffects), "full", "full", "reduced", "off");
+				rideWindVolume = clamp(num(json, "rideWindVolume", rideWindVolume), 0, 1);
 			} catch (IOException | RuntimeException e) {
 				FreshTracks.LOG.warn("Could not read {} ({}); using defaults for anything unreadable", path, e.toString());
 			}
@@ -86,6 +96,9 @@ public final class FreshTracksConfig {
 		json.addProperty("speedUnits", speedUnits);
 		json.addProperty("showSpeedometer", showSpeedometer);
 		json.addProperty("autoThirdPerson", autoThirdPerson);
+		json.addProperty("rideCamera", rideCamera);
+		json.addProperty("rideEffects", rideEffects);
+		json.addProperty("rideWindVolume", rideWindVolume);
 		try {
 			Files.createDirectories(file().getParent());
 			try (Writer writer = Files.newBufferedWriter(file(), StandardCharsets.UTF_8)) {
@@ -114,7 +127,14 @@ public final class FreshTracksConfig {
 		return json.has(key) && json.get(key).isJsonPrimitive() ? json.get(key).getAsString() : fallback;
 	}
 
+	private static String choice(String value, String fallback, String... choices) {
+		for (String option : choices) {
+			if (option.equalsIgnoreCase(value)) return option;
+		}
+		return fallback;
+	}
+
 	private static double clamp(double v, double lo, double hi) {
-		return Math.max(lo, Math.min(hi, v));
+		return Double.isFinite(v) ? Math.max(lo, Math.min(hi, v)) : lo;
 	}
 }
