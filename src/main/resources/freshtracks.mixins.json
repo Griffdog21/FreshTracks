@@ -5,6 +5,8 @@
 	"mixins": [
 		"OverworldBiomeBuilderMixin",
 		"PlayerMixin",
+		"ItemEntityAccessor",
+		"HopperBlockEntityMixin",
 		"PowderSnowBlockMixin",
 		"WorldDimensionsMixin",
 		"ServerGamePacketListenerImplMixin",

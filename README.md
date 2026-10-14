@@ -12,7 +12,14 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 </div>
 
-## New in 1.2.8
+## New in 1.2.9
+
+- **Keep your crash gear:** skis and snowboards dropped by a wipeout or full inventory can only be picked up by their rider, including after a world reload.
+- **Protect earned Ski Bucks:** rewards that do not fit in your inventory wait for you as owner-only drops. Hoppers and hopper minecarts cannot collect protected gear or currency.
+- Shop payments still use the existing merchant trades and displayed prices. Ski Bucks remain ordinary spendable items; deliberately dropping an item still lets you give it to a friend.
+- Trick rewards require an active ski or snowboard ride; non-positive and invalid air-time claims are ignored.
+
+### Included from 1.2.8
 
 - **Working rails and boxes:** ride or land on a Park Rail, Park Box or Classic Red Park Box to engage a grind. The deck guides your travel while A/D rotates your skis or board into a slide. Sideways deck landings preserve momentum; Space loads and releases a pop off the feature.
 - **Ski and snowboard butters:** on skis or a snowboard while moving on snow, hold left click + W for a nose press or left click + S for a tail press. Add A/D to spin a butter; release left click to straighten into regular or switch riding. Left click alone defaults to a tail press. The same press controls work during rail/box slides.

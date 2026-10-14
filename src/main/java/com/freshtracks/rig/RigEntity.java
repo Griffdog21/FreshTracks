@@ -522,6 +522,7 @@ public class RigEntity extends Entity {
 		if (!stack.isEmpty()) {
 			if (player == null || !player.getInventory().add(stack)) {
 				ItemEntity drop = new ItemEntity(level, this.getX(), this.getY() + 0.3, this.getZ(), stack);
+				drop.setTarget(player != null ? player.getUUID() : lastRider);
 				drop.setUnlimitedLifetime();
 				level.addFreshEntity(drop);
 			}
@@ -539,6 +540,7 @@ public class RigEntity extends Entity {
 		if (!stack.isEmpty()) {
 			ItemEntity drop = new ItemEntity(level, this.getX(), this.getY() + 0.5, this.getZ(), stack,
 				velocity.x * 0.8 + (this.random.nextDouble() - 0.5) * 0.4, 0.35, velocity.z * 0.8 + (this.random.nextDouble() - 0.5) * 0.4);
+			drop.setTarget(player.getUUID());
 			drop.setUnlimitedLifetime();
 			drop.setPickUpDelay(15);
 			level.addFreshEntity(drop);

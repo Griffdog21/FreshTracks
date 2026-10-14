@@ -75,7 +75,7 @@ public final class ModNetworking {
 	}
 
 	private static void onTrick(ServerPlayer player, TrickPayload payload) {
-		if (!(player.getVehicle() instanceof RigEntity) && player.getVehicle() != null) {
+		if (!(player.getVehicle() instanceof RigEntity) || payload.points() <= 0 || payload.airTicks() < 0) {
 			return;
 		}
 		int points = Mth.clamp(payload.points(), 0, 100_000);
@@ -85,7 +85,11 @@ public final class ModNetworking {
 			int payout = Math.min(bucks, ModItems.SKI_BUCK.getDefaultMaxStackSize());
 			ItemStack stack = new ItemStack(ModItems.SKI_BUCK, payout);
 			if (!player.getInventory().add(stack)) {
-				player.level().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack.copy()));
+				// Inventory.add leaves only the remainder in stack; never pay that amount twice.
+				var drop = new net.minecraft.world.entity.item.ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack.copy());
+				drop.setTarget(player.getUUID());
+				drop.setUnlimitedLifetime();
+				player.level().addFreshEntity(drop);
 			}
 			bucks -= payout;
 		}
