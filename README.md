@@ -12,6 +12,10 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 </div>
 
+## Like the mod? Join the server
+
+Come ski Snowmass with us—shared laps, park sessions, powder days and Base Village after dark. [**See the server and how to join →**](https://griffdog21.github.io/FreshTracks/server.html)
+
 ## New in 1.2.9
 
 - **Keep your crash gear:** skis and snowboards dropped by a wipeout or full inventory can only be picked up by their rider, including after a world reload.
