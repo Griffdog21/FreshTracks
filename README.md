@@ -26,7 +26,7 @@ Come ski Snowmass with us—shared laps, park sessions, powder days and Base Vil
 ### Included from 1.2.8
 
 - **Working rails and boxes:** ride or land on a Park Rail, Park Box or Classic Red Park Box to engage a grind. The deck guides your travel while A/D rotates your skis or board into a slide. Sideways deck landings preserve momentum; Space loads and releases a pop off the feature.
-- **Ski and snowboard butters:** on skis or a snowboard while moving on snow, hold left click + W for a nose press or left click + S for a tail press. Add A/D to spin a butter; release left click to straighten into regular or switch riding. Left click alone defaults to a tail press. The same press controls work during rail/box slides.
+- **Ski and snowboard butters:** on skis or a snowboard while moving on snow, hold left click + W for a nose press or left click + S for a tail press. Add A/D to spin a butter; release left click to straighten into regular or switch riding. Left click alone defaults to a tail press. The same press controls work during rail/box slides. On a snowboard the board pivots faster and scores real board tricks (Nose Press, Tail Press, Nose Roll 180/360, Tail Roll 180/360), and jumping out of a press pops a bigger nollie or ollie that chains into your combo.
 - Slides and butters earn trick points, combo credit and Ski Bucks through the existing scoring system. Standing still does not earn trick points.
 - Visible grind/butter HUD states, a sliding sound, crouched stance and board press poses. The trick button no longer breaks blocks while riding.
 - Narrow rails use their actual width and no longer create invisible snow ramps beside them.

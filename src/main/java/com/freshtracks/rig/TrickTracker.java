@@ -104,8 +104,15 @@ public final class TrickTracker {
 
 	/** Award travel and rotation, never time spent standing still on a feature. */
 	public Result groundTrick(String name, double distance, float rotation, int ticks) {
+		return groundTrick(name, distance, rotation, ticks, "");
+	}
+
+	/** A ground trick; {@code exit} names how it ended (" to Nollie" off a press), worth a bonus. */
+	public Result groundTrick(String name, double distance, float rotation, int ticks, String exit) {
 		int halfTurns = (int) (Math.abs(rotation) / 180f);
 		if (halfTurns > 0) name += " " + halfTurns * 180;
+		name += exit;
+		if (!exit.isEmpty()) distance += 6; // popping out of it is worth more
 		combo = comboTimer > 0 ? combo + 1 : 0;
 		comboTimer = COMBO_WINDOW;
 		int base = 60 + (int) (Math.min(distance, 40) * 18) + Math.min(halfTurns, 8) * 100;

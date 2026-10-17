@@ -250,7 +250,14 @@ public final class RigMotion {
 				if (snow != null && snow.surface().snowy) {
 					next = stepButter(level, pos, snow, in, st, kind);
 				} else {
-					if (buttering) finishButter();
+					if (buttering) {
+						if (jumpHeld && !in.jump() && kind.isBoard()) {
+							// let go of the press and popped at once: still a butter pop
+							butterPopKind = butterPress > 0 ? " to Nollie" : " to Ollie";
+							butterPopBoost = true;
+						}
+						finishButter();
+					}
 					press = 0;
 					tricks.releaseGrab();
 					next = stepGround(level, pos, in, st, kind);
@@ -427,6 +434,7 @@ public final class RigMotion {
 	private Vec3 stepButter(BlockGetter level, Vec3 pos, SurfaceSampler.Ground ground, RiderInput in, RigStats st, RigKind kind) {
 		if (!buttering) { butterTicks = 0; butterDistance = 0; butterSpin = 0; butterPress = 0; }
 		buttering = true;
+		butterKind = kind;
 		butterTicks++;
 		groundTicks++;
 		airTicks = 0;
@@ -439,7 +447,8 @@ public final class RigMotion {
 		edge = skid = 0;
 		lean += (in.steer() * 8f - lean) * 0.25f;
 		powderSink *= 0.8;
-		float turn = in.steer() * 5.5f * st.spin();
+		// a board pivots on its nose or tail far more freely than skis: nose and tail rolls
+		float turn = in.steer() * (kind.isBoard() ? 8.5f : 5.5f) * st.spin();
 		heading = Mth.wrapDegrees(heading + turn);
 		steerYaw = turn;
 		butterSpin += turn;
@@ -468,7 +477,12 @@ public final class RigMotion {
 			return new Vec3(nx, pos.y, nz);
 		}
 		if (pop > 0 || !next.found() || pos.y + Math.max(vy, slopeVy) - G_AIR - floor > STICK + STICK_SPEED * speed()) {
-			finishButter();
+			if (pop > 0 && kind.isBoard()) {
+				// popping out of a press loads the board's flex: a bigger pop (a nollie off the nose, an ollie off the tail)
+				pop *= 1.2;
+				butterPopKind = butterPress > 0 ? " to Nollie" : " to Ollie";
+			}
+			finishButter(kind);
 			vy = pop > 0 ? Math.max(0, slopeVy) * 0.8 + pop : Math.max(vy, slopeVy);
 			takeoff(pos.y, pop > 0);
 			events.popped = pop > 0;
@@ -478,11 +492,34 @@ public final class RigMotion {
 		return new Vec3(nx, floor, nz);
 	}
 
+	/** Set just before a butter ends in a pop on a board: added to the trick's name. */
+	private String butterPopKind = "";
+
+	/** What the rider was buttering on (names the trick when the butter ends from anywhere). */
+	private RigKind butterKind = RigKind.SKIS;
+	/** The next ground pop comes out of a board press: a little extra flex. */
+	private boolean butterPopBoost;
+
 	private void finishButter() {
-		if (buttering && butterTicks >= 12 && butterDistance >= 1.5) {
-			events.trick = tricks.groundTrick(butterPress > 0 ? "Nose Butter" : "Tail Butter", butterDistance, butterSpin, butterTicks);
+		finishButter(butterKind);
+	}
+
+	private void finishButter(@Nullable RigKind kind) {
+		boolean board = kind != null && kind.isBoard();
+		boolean popped = !butterPopKind.isEmpty();
+		if (buttering && (butterTicks >= 12 && butterDistance >= 1.5 || popped && butterTicks >= 6)) {
+			String name;
+			if (board) {
+				// snowboard names: a press held straight, a roll once it comes round
+				boolean rolled = Math.abs(butterSpin) >= 180f;
+				name = butterPress > 0 ? (rolled ? "Nose Roll" : "Nose Press") : (rolled ? "Tail Roll" : "Tail Press");
+			} else {
+				name = butterPress > 0 ? "Nose Butter" : "Tail Butter";
+			}
+			events.trick = tricks.groundTrick(name, butterDistance, butterSpin, butterTicks, butterPopKind);
 			events.groundTrick = true;
 		}
+		butterPopKind = "";
 		buttering = false;
 		press = 0;
 		tricks.releaseGrab();
@@ -740,6 +777,10 @@ public final class RigMotion {
 		double ny;
 		if (pop > 0) {
 			ny = Math.max(y, floor);
+			if (butterPopBoost) {
+				pop *= 1.2;
+				butterPopBoost = false;
+			}
 			// popped right as the snow drops away (a kicker lip, a ledge, the crest of a roller): extra height
 			if (speed > 0.15 && fall > 0.12) {
 				pop *= 1.35;
