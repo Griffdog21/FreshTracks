@@ -70,7 +70,13 @@ public final class ModItems {
 			Consumables.defaultDrink().onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(ModEffects.WARMTH, 6000))).build())
 		.usingConvertsTo(Items.BOWL));
 	/** Spendable resort currency earned from skiing tricks. */
-	public static final Item SKI_BUCK = register("ski_buck", Item::new, new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON));
+	public static final Item SKI_BUCK = register("ski_buck", p -> new com.freshtracks.economy.BillItem(p, 1), new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON));
+	public static final Item SKI_BUCK_HUNDRED = register("ski_buck_hundred", p -> new com.freshtracks.economy.BillItem(p, 100), new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON));
+	public static final Item SKI_BUCK_THOUSAND = register("ski_buck_thousand", p -> new com.freshtracks.economy.BillItem(p, 1000), new Item.Properties().stacksTo(64).rarity(Rarity.RARE));
+	/** Found very rarely while skiing; the bank pays well for one, and the best shops take them. */
+	public static final Item GOLDEN_TICKET = register("golden_ticket", Item::new, new Item.Properties().stacksTo(16).rarity(Rarity.EPIC));
+	/** A collectible resort pin (the shop names each one). */
+	public static final Item COLLECTOR_PIN = register("collector_pin", Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
 
 	private ModItems() {
 	}

@@ -276,5 +276,9 @@
   "block.freshtracks.park_box": "Park Box",
   "block.freshtracks.classic_park_box": "Classic Red Park Box",
   "ride.freshtracks.state.grind": "Grinding",
-  "ride.freshtracks.state.butter": "Butter / press"
+  "ride.freshtracks.state.butter": "Butter / press",
+  "item.freshtracks.ski_buck_hundred": "Hundred-Buck Bill",
+  "item.freshtracks.ski_buck_thousand": "Thousand-Buck Bill",
+  "item.freshtracks.golden_ticket": "Golden Ticket",
+  "item.freshtracks.collector_pin": "Collector Pin"
 }

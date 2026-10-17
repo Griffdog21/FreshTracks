@@ -1,0 +1,215 @@
+package com.freshtracks.economy;
+
+import com.freshtracks.registry.ModItems;
+import java.time.LocalDate;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+
+/**
+ * Where Ski Bucks come from: tricks (as before), every bit of vertical you ski, the first chair of the day, each day
+ * on the mountain (more on a streak), three daily challenges, and - very rarely - a Golden Ticket.
+ */
+public final class Economy {
+	/** Vertical blocks skied per Ski Buck. */
+	private static final double VERTICAL_PER_BUCK = 20;
+	/** Riding time that makes a day count (10 minutes). */
+	private static final int DAY_TICKS = 12_000;
+	private static final int FIRST_CHAIR = 50;
+
+	private Economy() {
+	}
+
+	public static String today() {
+		return LocalDate.now().toString();
+	}
+
+	public static SkierProfile profile(ServerPlayer player) {
+		SkierProfile p = SkierData.get(player.level().getServer()).profile(player.getUUID());
+		roll(p);
+		return p;
+	}
+
+	private static void dirty(ServerPlayer player) {
+		SkierData.get(player.level().getServer()).setDirty();
+	}
+
+	/** New day: reset the ride clock and the challenges. */
+	private static void roll(SkierProfile p) {
+		String day = today();
+		if (!day.equals(p.today)) {
+			p.today = day;
+			p.rideTicksToday = 0;
+			p.todayCounted = false;
+		}
+		if (!day.equals(p.challengeDay)) {
+			p.challengeDay = day;
+			p.progress = new int[Challenges.PER_DAY];
+			p.challengesDone = 0;
+		}
+	}
+
+	/** Pays the player and counts it toward their pass. {@code why} shows above the hotbar (null: quietly). */
+	public static void earn(ServerPlayer player, int amount, String why) {
+		if (amount <= 0) {
+			return;
+		}
+		SkierProfile p = profile(player);
+		PassTier before = PassTier.of(p);
+		SkiBucks.give(player, amount, 1000);
+		p.lifetimeEarned += amount;
+		dirty(player);
+		if (why != null) {
+			player.sendOverlayMessage(Component.literal("+" + SkiBucks.format(amount) + " Ski Bucks  ·  " + why).withStyle(ChatFormatting.GOLD));
+		}
+		checkTier(player, p, before);
+	}
+
+	private static void checkTier(ServerPlayer player, SkierProfile p, PassTier before) {
+		PassTier now = PassTier.of(p);
+		if (now.ordinal() > before.ordinal()) {
+			player.sendSystemMessage(Component.literal("Pass upgraded: ").withStyle(ChatFormatting.GOLD)
+				.append(Component.literal(now.title).withStyle(now.color, ChatFormatting.BOLD))
+				.append(Component.literal("  New gear is unlocked in the shops.").withStyle(ChatFormatting.GRAY)));
+			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 0.8f, 1f);
+			for (ServerPlayer other : player.level().getServer().getPlayerList().getPlayers()) {
+				if (other != player) {
+					other.sendSystemMessage(Component.literal(player.getPlainTextName() + " reached ").withStyle(ChatFormatting.GRAY)
+						.append(Component.literal(now.title).withStyle(now.color)));
+				}
+			}
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------------ hooks
+
+	/** A landed trick (the server already checked it's a real ride). */
+	public static void trick(ServerPlayer player, int points, int airTicks, String name) {
+		SkierProfile p = profile(player);
+		int bucks = points / 100;
+		if (bucks > 0) {
+			earn(player, bucks, null); // the trick HUD shows the payout already
+		}
+		progress(player, p, Challenges.Kind.TRICKS, 1, false);
+		progress(player, p, Challenges.Kind.POINTS, points, false);
+		progress(player, p, Challenges.Kind.BIG_TRICK, points >= Challenges.Kind.BIG_TRICK.target ? 1 : 0, false);
+		progress(player, p, Challenges.Kind.HANG_TIME, airTicks, true);
+		String n = name.toLowerCase(java.util.Locale.ROOT);
+		if (n.contains("press") || n.contains("butter") || n.contains("roll")) {
+			progress(player, p, Challenges.Kind.BUTTERS, 1, false);
+		}
+		if (points >= 1500 && player.getRandom().nextInt(1500) == 0) {
+			goldenTicket(player, p, "off a " + SkiBucks.format(points) + "-point trick");
+		}
+	}
+
+	/** Every server tick a player rides skis or a board. */
+	public static void ride(ServerPlayer player, Vec3 moved, double speed) {
+		SkierProfile p = profile(player);
+		if (speed > 0.05) {
+			p.rideTicksToday++;
+			progress(player, p, Challenges.Kind.RIDE_TIME, 1, false);
+			if (!p.todayCounted && p.rideTicksToday >= DAY_TICKS) {
+				countDay(player, p);
+			}
+		}
+		if (moved.y < 0 && moved.y > -3) {
+			p.verticalCarry -= moved.y;
+			while (p.verticalCarry >= 1) {
+				p.verticalCarry -= 1;
+				p.verticalTotal++;
+				progress(player, p, Challenges.Kind.VERTICAL, 1, false);
+				p.pendingVertical++;
+			}
+			// pay vertical as it adds up, in small batches so the hotbar isn't spammed
+			int owed = (int) (p.pendingVertical / VERTICAL_PER_BUCK);
+			if (owed >= 5) {
+				p.pendingVertical -= (int) (owed * VERTICAL_PER_BUCK);
+				long now = player.level().getGameTime();
+				boolean say = now - p.lastPayMessage > 400;
+				if (say) {
+					p.lastPayMessage = now;
+				}
+				earn(player, owed, say ? "vertical" : null);
+			}
+		}
+		int kmh = (int) (moved.horizontalDistance() * 72);
+		if (kmh > 0 && kmh < 200) {
+			progress(player, p, Challenges.Kind.SPEED, kmh, true);
+		}
+	}
+
+	/** Boarded a lift: the first one of the day pays the first-chair bonus. */
+	public static void lift(ServerPlayer player) {
+		SkierProfile p = profile(player);
+		progress(player, p, Challenges.Kind.LIFTS, 1, false);
+		if (!today().equals(p.bonusDay)) {
+			p.bonusDay = today();
+			dirty(player);
+			earn(player, FIRST_CHAIR, "first chair of the day");
+		}
+	}
+
+	private static void countDay(ServerPlayer player, SkierProfile p) {
+		PassTier before = PassTier.of(p);
+		p.todayCounted = true;
+		String yesterday = LocalDate.now().minusDays(1).toString();
+		p.streak = yesterday.equals(p.lastDay) ? p.streak + 1 : 1;
+		p.bestStreak = Math.max(p.bestStreak, p.streak);
+		p.lastDay = p.today;
+		p.daysSkied++;
+		dirty(player);
+		int bonus = 100 + 50 * Math.min(p.streak - 1, 6);
+		player.sendSystemMessage(Component.literal("Day " + p.daysSkied + " on the mountain").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
+			.append(Component.literal(p.streak > 1 ? "  ·  " + p.streak + "-day streak" : "").withStyle(ChatFormatting.YELLOW)));
+		earn(player, bonus, p.streak > 1 ? p.streak + "-day streak" : "a day on the mountain");
+		if (p.streak > 0 && p.streak % 7 == 0) {
+			goldenTicket(player, p, "for a " + p.streak + "-day streak");
+		}
+		checkTier(player, p, before);
+	}
+
+	/** Adds to a challenge (or raises it to {@code value} for best-of kinds) and pays out when it's done. */
+	private static void progress(ServerPlayer player, SkierProfile p, Challenges.Kind kind, int value, boolean best) {
+		Challenges.Kind[] today = Challenges.today(p.challengeDay);
+		for (int i = 0; i < today.length; i++) {
+			if (today[i] != kind || (p.challengesDone & (1 << i)) != 0) {
+				continue;
+			}
+			p.progress[i] = best ? Math.max(p.progress[i], value) : p.progress[i] + value;
+			if (p.progress[i] >= kind.target * kind.scale()) {
+				p.challengesDone |= 1 << i;
+				player.sendSystemMessage(Component.literal("Challenge complete: ").withStyle(ChatFormatting.GREEN)
+					.append(Component.literal(kind.describe()).withStyle(ChatFormatting.WHITE)));
+				player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.6f, 1.4f);
+				earn(player, kind.reward, "challenge");
+				if ((p.challengesDone & 7) == 7 && (p.challengesDone & 0x80) == 0) {
+					p.challengesDone |= 0x80;
+					player.sendSystemMessage(Component.literal("All three of today's challenges done!").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+					earn(player, Challenges.ALL_BONUS, "daily sweep");
+					if (player.getRandom().nextInt(40) == 0) {
+						goldenTicket(player, p, "for sweeping the daily challenges");
+					}
+				}
+			}
+			dirty(player);
+		}
+	}
+
+	private static void goldenTicket(ServerPlayer player, SkierProfile p, String how) {
+		p.ticketsFound++;
+		dirty(player);
+		ItemStack ticket = new ItemStack(ModItems.GOLDEN_TICKET);
+		if (!player.getInventory().add(ticket)) {
+			SkiBucks.dropFor(player, ticket);
+		}
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1f, 1.2f);
+		for (ServerPlayer other : player.level().getServer().getPlayerList().getPlayers()) {
+			other.sendSystemMessage(Component.literal("★ " + player.getPlainTextName() + " found a Golden Ticket " + how + "!").withStyle(ChatFormatting.GOLD));
+		}
+	}
+}

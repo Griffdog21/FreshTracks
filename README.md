@@ -16,7 +16,16 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 Come ski Snowmass with us—shared laps, park sessions, powder days and Base Village after dark. [**See the server and how to join →**](https://griffdog21.github.io/FreshTracks/server.html)
 
-## New in 1.3.0
+## New in 1.4.0: Ski Bucks you can chase for weeks
+
+- **Earn for everything:** tricks as before, plus every bit of vertical you ski, the first chair of the day, and a bonus for each day on the mountain (bigger on a streak).
+- **Daily challenges:** three a day, the same for everyone on the server ("Ski 1,500 blocks of vertical", "Land a 2,000-point trick"...), each with a bounty and a bonus for sweeping all three. Type `/skibucks` to see them, your wallet and your pass.
+- **Passes that take weeks:** Day Ticket, Local, Season Pass, Ski Bum, Legend and Founders' Circle. Each needs days on the mountain (a day counts once you ride 10 minutes) and lifetime earnings. The best shop gear stays locked until you get there.
+- **Pro shop:** ski and board techs now sell branded, tuned gear for Ski Bucks: skis and boards that ride a few percent better, jackets with extra warmth, up to numbered limited editions like The Golden Skis (ten per world).
+- **Real money:** Ski Bucks come as 1s, $100 and $1,000 bills. Shops make change automatically; use a bill to break it, sneak-use to tidy your wallet.
+- **Golden Tickets:** very rare finds from big tricks, streaks and daily sweeps, wanted by the best shops.
+
+### Included from 1.3.0
 
 - **Real pole pushes:** hold W with poles in hand for rhythmic double-pole plants, each a real shove (about 30 km/h on the flats). Without poles you skate; on a board you push with one foot.
 - **Realistic ollies:** a tap is a knee-high hop, a full charge about three-quarters of a block. Big air comes from your speed off kickers and rollers, so you land on rails and boxes instead of sailing over them.
@@ -26,7 +35,7 @@ Come ski Snowmass with us—shared laps, park sessions, powder days and Base Vil
 - **Snowboard butters:** presses and rolls score as real board tricks (Nose Press, Tail Press, Nose/Tail Roll 180, 360...), the board pivots faster on its nose or tail, and jumping out of a press pops a bigger nollie or ollie that chains into your combo.
 - **Sky Cab ("the Skittles")** now runs four groups of three cabins, each group one colour (red, blue, green, yellow) with a black band, like the real lift.
 
-### Included from 1.2.9
+#### Included from 1.2.9
 
 - **Keep your crash gear:** skis and snowboards dropped by a wipeout or full inventory can only be picked up by their rider, including after a world reload.
 - **Protect earned Ski Bucks:** rewards that do not fit in your inventory wait for you as owner-only drops. Hoppers and hopper minecarts cannot collect protected gear or currency.
@@ -110,12 +119,12 @@ Want to jump straight in? The **Fresh Tracks Test World** is a ready-made ski hi
 Everything comes as one file you import into a launcher. It makes its own separate game folder, so **your normal Minecraft worlds are never touched**.
 
 **Prism Launcher** (recommended, free: [prismlauncher.org](https://prismlauncher.org))
-1. Download **`FreshTracks-1.3.0.mrpack`** from the [releases page](../../releases/latest).
+1. Download **`FreshTracks-1.4.0.mrpack`** from the [releases page](../../releases/latest).
 2. In Prism: **Add Instance → Import** → pick the file → **OK**.
 3. Select the new **Fresh Tracks** instance and press **Launch**.
 
 **Modrinth App** ([modrinth.com/app](https://modrinth.com/app))
-1. Download **`FreshTracks-1.3.0.mrpack`**.
+1. Download **`FreshTracks-1.4.0.mrpack`**.
 2. **+ (Create instance) → Import from file** → pick it → **Play**.
 
 The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **Sodium, Iris (shaders) and Distant Horizons** as optional extras (untick them if your PC struggles). For the screenshots above: Iris with the *Complementary Unbound* shader pack.
@@ -126,7 +135,7 @@ The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **S
 <summary>Manual install (official launcher)</summary>
 
 1. Install Fabric for Minecraft 26.3 with the [Fabric installer](https://fabricmc.net/use/installer) (give the profile its own game directory so your normal worlds stay separate).
-2. Put `freshtracks-1.3.0.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
+2. Put `freshtracks-1.4.0.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
 </details>
 
 ## 🎮 Controls

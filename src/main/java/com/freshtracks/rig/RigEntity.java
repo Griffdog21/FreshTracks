@@ -117,7 +117,11 @@ public class RigEntity extends Entity {
 	}
 
 	public RigStats stats() {
-		return getItem().getItem() instanceof RigItem rig ? rig.stats() : RigStats.BASELINE;
+		if (!(getItem().getItem() instanceof RigItem rig)) {
+			return RigStats.BASELINE;
+		}
+		com.freshtracks.economy.Tune tune = getItem().get(ModComponents.TUNE);
+		return tune == null ? rig.stats() : tune.apply(rig.stats());
 	}
 
 	/** The rig's stats with the rider's kit: matching boots, poles in hand (skis), and wax. */
@@ -405,6 +409,7 @@ public class RigEntity extends Entity {
 			burnWax();
 			leaveTracks(level, previous, now);
 			com.freshtracks.race.RaceTiming.sweep(level, player, previous, now);
+			com.freshtracks.economy.Economy.ride(player, moved, serverSpeed);
 			if (moved.horizontalDistance() * 72.0 >= 100.0 && this.tickCount % 10 == 0) {
 				com.freshtracks.advancement.ModCriteria.fire(player, "speed_100");
 			}

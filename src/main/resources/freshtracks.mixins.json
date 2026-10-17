@@ -10,7 +10,9 @@
 		"PowderSnowBlockMixin",
 		"WorldDimensionsMixin",
 		"ServerGamePacketListenerImplMixin",
-		"StructureTemplatePoolAccessor"
+		"StructureTemplatePoolAccessor",
+		"MerchantMenuMixin",
+		"AbstractVillagerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

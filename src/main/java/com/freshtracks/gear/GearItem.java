@@ -39,12 +39,17 @@ public class GearItem extends Item {
 		for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
 			ItemStack stack = entity.getItemBySlot(slot);
 			if (stack.getItem() instanceof GearItem gear) {
-				total += gear.warmth;
+				total += gear.warmth + extraWarmth(stack);
 			} else if (stack.is(net.minecraft.tags.ItemTags.FREEZE_IMMUNE_WEARABLES)) {
 				total += 1;
 			}
 		}
 		return total;
+	}
+
+	private static int extraWarmth(ItemStack stack) {
+		com.freshtracks.economy.Tune tune = stack.get(com.freshtracks.registry.ModComponents.TUNE);
+		return tune == null ? 0 : tune.warmth();
 	}
 
 	public static boolean hasPerk(LivingEntity entity, Perk perk) {
@@ -58,9 +63,10 @@ public class GearItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
-		if (warmth > 0) {
+		int total = warmth + extraWarmth(stack);
+		if (total > 0) {
 			builder.accept(Component.translatable("tooltip.freshtracks.warmth")
-				.append(Component.literal(" " + "❄".repeat(warmth)).withStyle(ChatFormatting.AQUA)));
+				.append(Component.literal(" " + "❄".repeat(total)).withStyle(extraWarmth(stack) > 0 ? ChatFormatting.LIGHT_PURPLE : ChatFormatting.AQUA)));
 		}
 		if (perk != Perk.NONE) {
 			builder.accept(Component.translatable("tooltip.freshtracks.perk." + perk.name().toLowerCase()).withStyle(ChatFormatting.GRAY));

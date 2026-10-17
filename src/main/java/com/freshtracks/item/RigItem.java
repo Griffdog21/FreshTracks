@@ -80,12 +80,17 @@ public class RigItem extends Item {
 		if (wax != null && wax > 0) {
 			builder.accept(Component.translatable("tooltip.freshtracks.waxed", com.freshtracks.gear.SkiWaxItem.minutes(wax)).withStyle(ChatFormatting.AQUA));
 		}
-		stat(builder, "speed", stats.speed());
-		stat(builder, "grip", stats.grip());
-		stat(builder, "turn", stats.turn());
-		stat(builder, "float", stats.flotation());
-		stat(builder, "pop", stats.pop());
-		stat(builder, "spin", stats.spin());
+		com.freshtracks.economy.Tune tune = stack.get(com.freshtracks.registry.ModComponents.TUNE);
+		RigStats s = tune == null ? stats : tune.apply(stats);
+		if (tune != null) {
+			builder.accept(Component.literal("Pro tune").withStyle(ChatFormatting.LIGHT_PURPLE));
+		}
+		stat(builder, "speed", s.speed());
+		stat(builder, "grip", s.grip());
+		stat(builder, "turn", s.turn());
+		stat(builder, "float", s.flotation());
+		stat(builder, "pop", s.pop());
+		stat(builder, "spin", s.spin());
 	}
 
 	private static void stat(Consumer<Component> builder, String name, float value) {

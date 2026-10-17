@@ -16,7 +16,7 @@ public abstract class HopperBlockEntityMixin {
     @Inject(method="addItem(Lnet/minecraft/world/Container;Lnet/minecraft/world/entity/item/ItemEntity;)Z", at=@At("HEAD"), cancellable=true)
     private static void freshtracks$protectDrops(Container container, ItemEntity drop, CallbackInfoReturnable<Boolean> result) {
         if (((ItemEntityAccessor) drop).freshtracks$pickupOwner() != null
-                && (drop.getItem().is(ModItems.SKI_BUCK) || drop.getItem().getItem() instanceof RigItem)) {
+                && (drop.getItem().getItem() instanceof com.freshtracks.economy.BillItem || drop.getItem().getItem() instanceof RigItem)) {
             result.setReturnValue(false);
         }
     }

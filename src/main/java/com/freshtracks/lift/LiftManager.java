@@ -498,6 +498,7 @@ public final class LiftManager {
 			if (player.startRiding(seat, true, true)) {
 				if (player instanceof ServerPlayer sp) {
 					com.freshtracks.advancement.ModCriteria.fire(sp, "lift");
+					com.freshtracks.economy.Economy.lift(sp);
 				}
 				taken.add(seat);
 				boarded++;

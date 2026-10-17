@@ -160,6 +160,35 @@ public final class DevBridge {
 						net.minecraft.world.phys.Vec3.atCenterOf(pos).relative(face, 0.5), face, pos, false);
 					return "{\"result\":" + json(mc.gameMode.useItemOn(mc.player, net.minecraft.world.InteractionHand.MAIN_HAND, hit).toString()) + "}";
 				});
+				case "/selecttrade" -> onMain(() -> {
+					Minecraft mc = Minecraft.getInstance();
+					int i = Integer.parseInt(q.getOrDefault("i", "0"));
+					if (mc.player != null && mc.player.containerMenu instanceof net.minecraft.world.inventory.MerchantMenu menu) {
+						menu.setSelectionHint(i);
+						menu.tryMoveItems(i);
+						mc.getConnection().send(new net.minecraft.network.protocol.game.ServerboundSelectTradePacket(i));
+						return "{\"result\":\"selected\"}";
+					}
+					return "{\"error\":\"no trade screen\"}";
+				});
+				case "/inv" -> onMain(() -> {
+					Minecraft mc = Minecraft.getInstance();
+					StringBuilder b = new StringBuilder("[");
+					var inv = mc.player.getInventory();
+					for (int i = 0; i < inv.getContainerSize(); i++) {
+						var st = inv.getItem(i);
+						if (!st.isEmpty()) {
+							b.append(b.length() > 1 ? "," : "").append(json(st.getCount() + "x" + net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(st.getItem())));
+						}
+					}
+					if (mc.player.containerMenu instanceof net.minecraft.world.inventory.MerchantMenu menu) {
+						for (int i = 0; i < 3; i++) {
+							var st = menu.getSlot(i).getItem();
+							b.append(",").append(json("slot" + i + ":" + st.getCount() + "x" + net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(st.getItem())));
+						}
+					}
+					return "{\"inv\":" + b.append("]") + "}";
+				});
 				case "/interact" -> onMain(() -> {
 					// right-click the entity under the crosshair (or the nearest one within 6 blocks)
 					Minecraft mc = Minecraft.getInstance();

@@ -79,20 +79,8 @@ public final class ModNetworking {
 			return;
 		}
 		int points = Mth.clamp(payload.points(), 0, 100_000);
-		// Keep the trick score for the HUD, and also pay it out as resort currency.
-		int bucks = points / 100;
-		while (bucks > 0) {
-			int payout = Math.min(bucks, ModItems.SKI_BUCK.getDefaultMaxStackSize());
-			ItemStack stack = new ItemStack(ModItems.SKI_BUCK, payout);
-			if (!player.getInventory().add(stack)) {
-				// Inventory.add leaves only the remainder in stack; never pay that amount twice.
-				var drop = new net.minecraft.world.entity.item.ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack.copy());
-				drop.setTarget(player.getUUID());
-				drop.setUnlimitedLifetime();
-				player.level().addFreshEntity(drop);
-			}
-			bucks -= payout;
-		}
+		// Keep the trick score for the HUD, and also pay it out as resort currency (and count it for the challenges).
+		com.freshtracks.economy.Economy.trick(player, points, payload.airTicks(), payload.name());
 		if (payload.airTicks() >= 30) {
 			com.freshtracks.advancement.ModCriteria.fire(player, "big_air");
 		}
