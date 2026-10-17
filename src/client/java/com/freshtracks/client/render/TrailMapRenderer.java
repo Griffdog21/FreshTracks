@@ -35,6 +35,7 @@ public class TrailMapRenderer implements BlockEntityRenderer<TrailMapBlockEntity
 	public static class State extends BlockEntityRenderState {
 		Direction facing = Direction.NORTH;
 		Identifier texture = BLANK;
+		float mapHeight = H;
 		float dotU = -1;
 		float dotV = -1;
 	}
@@ -57,6 +58,7 @@ public class TrailMapRenderer implements BlockEntityRenderer<TrailMapBlockEntity
 		TrailMaps.Map2 map = TrailMaps.get(be.mapId());
 		if (map == null) {
 			state.texture = BLANK;
+			state.mapHeight = H;
 			state.dotU = -1;
 			state.dotV = -1;
 		} else {
@@ -64,8 +66,13 @@ public class TrailMapRenderer implements BlockEntityRenderer<TrailMapBlockEntity
 			double x = be.getBlockPos().getX() + 0.5;
 			double z = be.getBlockPos().getZ() + 0.5;
 			state.texture = map.texture();
+			state.mapHeight = Math.clamp(W / map.aspectRatio(), 1f, H);
 			state.dotU = (float) ((map.x1() - x) / (map.x1() - map.x0()));
 			state.dotV = (float) ((map.z1() - z) / (map.z1() - map.z0()));
+			if (be.markerU() >= 0 && be.markerU() <= 1 && be.markerV() >= 0 && be.markerV() <= 1) {
+				state.dotU = be.markerU();
+				state.dotV = be.markerV();
+			}
 		}
 	}
 
@@ -76,7 +83,7 @@ public class TrailMapRenderer implements BlockEntityRenderer<TrailMapBlockEntity
 		// local +Z (the board's front) turns to face the block's facing; +X is then the viewer's right
 		poseStack.rotateDegrees(Axis.YP, (float) Math.toDegrees(Math.atan2(state.facing.getStepX(), state.facing.getStepZ())));
 		int light = state.lightCoords;
-		float top = BOTTOM + H;
+		float top = BOTTOM + state.mapHeight;
 		collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(FRAME), (pose, buf) -> {
 			// posts, the back panel, and the frame round the map
 			box(pose, buf, light, -W / 2 - 0.25f, 0f, -0.12f, -W / 2 - 0.05f, top + 0.35f, 0.08f);
@@ -93,8 +100,8 @@ public class TrailMapRenderer implements BlockEntityRenderer<TrailMapBlockEntity
 			quad(pose, buf, light, -W / 2, BOTTOM, W / 2, top, 0.001f, 0f, 0f, 1f, 1f));
 		if (state.dotU >= 0 && state.dotU <= 1 && state.dotV >= 0 && state.dotV <= 1) {
 			float cx = -W / 2 + state.dotU * W;
-			float cy = top - state.dotV * H;
-			float r = 0.11f;
+			float cy = top - state.dotV * state.mapHeight;
+			float r = 0.055f;
 			collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(DOT), (pose, buf) ->
 				quad(pose, buf, light, cx - r, cy - r, cx + r, cy + r, 0.006f, 0f, 0f, 1f, 1f));
 		}

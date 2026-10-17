@@ -47,6 +47,20 @@ public final class ClientRig implements RigClientHooks.Hooks {
 		if (e.popped) {
 			level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), ModSounds.POP, SoundSource.PLAYERS, 0.7f, 0.9f + random.nextFloat() * 0.2f, false);
 		}
+		if (e.perfectPop) {
+			TrickHud.showMessage("Perfect pop!", 0xFFD84A);
+		}
+		if (e.stroke == 2) {
+			// the pole tips biting into the snow, a puff either side
+			level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), net.minecraft.sounds.SoundEvents.SNOW_STEP, SoundSource.PLAYERS, 0.8f, 1.25f + random.nextFloat() * 0.15f, false);
+			burst(level, rig, 5, 0.12);
+		} else if (e.stroke == 1) {
+			level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), net.minecraft.sounds.SoundEvents.SNOW_STEP, SoundSource.PLAYERS, 0.55f, 0.9f + random.nextFloat() * 0.15f, false);
+			burst(level, rig, 3, 0.1);
+		}
+		if (e.boost) {
+			level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), ModSounds.TRICK, SoundSource.PLAYERS, 0.35f, 1.5f, false);
+		}
 		if (e.landed && !e.crashed) {
 			boolean powder = m.surface.isPowder();
 			float vol = Mth.clamp(e.landingImpact * 1.4f, 0.25f, 1.0f);

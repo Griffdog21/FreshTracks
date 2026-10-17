@@ -16,6 +16,9 @@ import net.minecraft.world.level.storage.ValueOutput;
  */
 public class TrailMapBlockEntity extends BlockEntity {
 	private String mapId = "";
+	private float markerU = -1, markerV = -1;
+	public float markerU() { return markerU; }
+	public float markerV() { return markerV; }
 
 	public TrailMapBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.TRAIL_MAP, pos, state);
@@ -29,12 +32,16 @@ public class TrailMapBlockEntity extends BlockEntity {
 	protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
 		output.putString("map", mapId);
+		output.putFloat("marker_u", markerU);
+		output.putFloat("marker_v", markerV);
 	}
 
 	@Override
 	protected void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);
 		this.mapId = input.getStringOr("map", "");
+		this.markerU = input.getFloatOr("marker_u", -1);
+		this.markerV = input.getFloatOr("marker_v", -1);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import org.jspecify.annotations.Nullable;
 /** Trail map pictures the server sent (in pieces), turned into textures for the boards. */
 public final class TrailMaps {
 	/** A received map: its texture and the world area it shows (picture bottom-left = (x0, z0), top-right = (x1, z1)). */
-	public record Map2(Identifier texture, double x0, double z0, double x1, double z1) {
+	public record Map2(Identifier texture, double x0, double z0, double x1, double z1, float aspectRatio) {
 	}
 
 	private static final Map<String, Map2> MAPS = new HashMap<>();
@@ -60,7 +60,7 @@ public final class TrailMaps {
 			Identifier id = FreshTracks.id(path);
 			Minecraft mc = Minecraft.getInstance();
 			mc.getTextureManager().register(id, new DynamicTexture(() -> "freshtracks trail map " + p.mapId(), image));
-			MAPS.put(p.mapId(), new Map2(id, p.x0(), p.z0(), p.x1(), p.z1()));
+			MAPS.put(p.mapId(), new Map2(id, p.x0(), p.z0(), p.x1(), p.z1(), (float) image.getWidth() / image.getHeight()));
 		} catch (Exception e) {
 			FreshTracks.LOG.warn("Couldn't read the trail map {} from the server", p.mapId(), e);
 		}

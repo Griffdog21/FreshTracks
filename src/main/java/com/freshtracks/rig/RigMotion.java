@@ -99,6 +99,10 @@ public final class RigMotion {
 	public int airTicks;
 	public float jumpCharge;
 	public boolean jumpHeld;
+	/** Ticks until the next push stroke can land. */
+	public int strokeTimer;
+	/** Spin wound up while loading an ollie (A/D held), -1..1. */
+	public float windUp;
 	/** This air was on purpose (an ollie, or launched up off a lip): flips are allowed. Rolling off a bump isn't. */
 	public boolean intendedAir;
 	public boolean tuck;
@@ -153,6 +157,12 @@ public final class RigMotion {
 		public boolean sank;
 		public boolean popped;
 		public boolean groundTrick;
+		/** A push stroke this tick: 0 none, 1 a skate stride, 2 a double-pole plant. */
+		public int stroke;
+		/** A stomped landing gave a burst of speed this tick. */
+		public boolean boost;
+		/** The ollie was timed right at a lip and went higher. */
+		public boolean perfectPop;
 
 		void clear() {
 			launched = false;
@@ -166,6 +176,9 @@ public final class RigMotion {
 			sank = false;
 			popped = false;
 			groundTrick = false;
+			stroke = 0;
+			boost = false;
+			perfectPop = false;
 		}
 	}
 
@@ -399,6 +412,8 @@ public final class RigMotion {
 		if (in.jump()) {
 			jumpHeld = true;
 			jumpCharge = Math.min(1f, jumpCharge + 1f / 12f);
+			// hold A/D while loading to wind up a spin: you take off already rotating
+			windUp = approach(windUp, in.steer(), 0.12f);
 		} else if (jumpHeld) {
 			jumpHeld = false;
 			double pop = (POP_BASE + POP_CHARGE * jumpCharge) * st.pop();
@@ -651,18 +666,32 @@ public final class RigMotion {
 			vz += Math.cos(rad) * drive;
 		}
 
-		// Pushing with poles / skating on the flats.
+		// Pushing: hold W for rhythmic strokes. With poles in hand it's a strong double-pole plant every half second
+		// (good up to ~40 km/h); without them a skate stride; on a board a one-footed skate. Each stroke is a real shove
+		// that fades as you get going, so it's punchy from a standstill and still useful across a flat.
 		speed = speed();
-		if (in.forward() && speed < PUSH_MAX && !in.back()) {
+		if (strokeTimer > 0) {
+			strokeTimer--;
+		}
+		boolean poles = !board && st.push() > 1.2f;
+		double strokeCap = board ? 0.30 : poles ? 0.55 : 0.38;
+		if (in.forward() && !in.back() && !in.jump() && speed < strokeCap) {
 			if (switchStance && speed < 0.04) {
 				// pushing off from (nearly) a standstill goes the way the skis point
 				switchStance = false;
 				travel = travelHeading();
 			}
-			double push = (board ? PUSH_BOARD : PUSH_SKI) * st.push();
-			double rad = Math.toRadians(travel);
-			vx += -Math.sin(rad) * push;
-			vz += Math.cos(rad) * push;
+			if (strokeTimer == 0) {
+				double base = board ? 0.034 : poles ? 0.085 : 0.046;
+				double impulse = base * Math.min(1.3, st.push() / (poles ? 1.45 : 1.0)) * (0.35 + 0.65 * (1 - speed / strokeCap));
+				double rad = Math.toRadians(travel);
+				vx += -Math.sin(rad) * impulse;
+				vz += Math.cos(rad) * impulse;
+				strokeTimer = poles ? 11 : 9;
+				events.stroke = poles ? 2 : 1;
+			}
+		} else if (!in.forward()) {
+			strokeTimer = Math.min(strokeTimer, 3); // a fresh press strokes almost at once
 		}
 		if (speed() < 0.003 && ground.slope() < 0.08 && !in.forward()) {
 			vx = 0;
@@ -676,16 +705,8 @@ public final class RigMotion {
 			events.sank = true;
 		}
 
-		// Ollie: hold jump to load up, release to pop.
-		double pop = 0;
-		if (in.jump()) {
-			jumpHeld = true;
-			jumpCharge = Math.min(1f, jumpCharge + 1f / 12f);
-		} else if (jumpHeld) {
-			jumpHeld = false;
-			pop = (POP_BASE + POP_CHARGE * jumpCharge) * st.pop();
-			jumpCharge = 0;
-		}
+		// Ollie: hold jump to load up (A/D at the same time winds up a spin), release to pop.
+		double pop = loadPop(in, st);
 
 		// Move sideways, stopping at walls and trees.
 		Vec3 deckEntry = pop == 0 ? tryGrind(level, pos, new Vec3(x + vx, y, z + vz), false, kind) : null;
@@ -719,9 +740,18 @@ public final class RigMotion {
 		double ny;
 		if (pop > 0) {
 			ny = Math.max(y, floor);
+			// popped right as the snow drops away (a kicker lip, a ledge, the crest of a roller): extra height
+			if (speed > 0.15 && fall > 0.12) {
+				pop *= 1.35;
+				events.perfectPop = true;
+			}
 			vy = Math.max(slopeVy, 0) * 0.8 + pop;
 			takeoff(ny, true);
 			events.popped = true;
+			if (Math.abs(windUp) > 0.3f) {
+				spinRate = windUp * SPIN_MAX * st.spin() * (kind.isBoard() ? 1.08f : 1f) * 0.85f;
+			}
+			windUp = 0;
 		} else if (!next.found() || (speed > 0.12 && fall > STICK + STICK_SPEED * speed)) {
 			ny = expectedY;
 			vy = Math.max(vy, slopeVy);
@@ -1063,6 +1093,13 @@ public final class RigMotion {
 		}
 		if (tricks.airTicks >= 6) {
 			events.trick = tricks.land(kind, quality);
+		}
+		if (quality == TrickTracker.Landing.STOMPED && tricks.airTicks >= 10) {
+			// a stomped landing rides away with a burst of speed: land clean, keep the run flowing
+			double k = Math.min(1.12, (speed() + 0.06) / Math.max(0.05, speed()));
+			vx *= k;
+			vz *= k;
+			events.boost = true;
 		}
 		// Straighten up: the noses follow the direction of travel.
 		if (speed > 0.05) {
