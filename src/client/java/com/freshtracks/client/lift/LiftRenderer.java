@@ -143,7 +143,8 @@ public final class LiftRenderer {
 			double time = (double) level.getGameTime() + partial;
 			for (int chair = 0; chair < line.chairCount(); chair++) {
 				if (line.name.equals("Sky Cab") && line.style == ChairStyle.PULSE_GONDOLA) {
-					texture = SKITTLES_TEXTURES[chair % SKITTLES_TEXTURES.length];
+					// each group of three is one colour, like the real Skittles
+					texture = SKITTLES_TEXTURES[(chair / LiftLine.PULSE_CABINS) % SKITTLES_TEXTURES.length];
 				}
 				LiftLine.RopePoint rope = line.ropeAt(line.chairS(phase, chair));
 				Vec3 p = rope.pos();

@@ -227,7 +227,8 @@ public final class LiftLine {
 		chairCount = Math.max(2, (int) Math.floor(cycleLength / Math.max(4.0, spacing)));
 		if (style.pulse()) {
 			// a few groups spread round the loop; spacing sets how many
-			int groups = Mth.clamp((int) Math.round(loopLength / Math.max(60.0, spacing * 20)), 2, 4);
+			// one group per ~160 blocks of loop: Sky Cab gets its real four groups of three
+			int groups = Mth.clamp((int) Math.round(loopLength / 160.0), 2, 4);
 			chairCount = groups * PULSE_CABINS;
 		}
 	}

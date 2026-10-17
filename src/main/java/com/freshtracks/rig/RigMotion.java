@@ -61,8 +61,9 @@ public final class RigMotion {
 	private static final double PUSH_MAX = 0.26;
 
 	// Air.
-	private static final double POP_BASE = 0.30;
-	private static final double POP_CHARGE = 0.17;
+	// A real ollie is a knee-high hop: a tap ~0.3 blocks, fully loaded ~0.75 (big air comes from speed off a lip).
+	private static final double POP_BASE = 0.165;
+	private static final double POP_CHARGE = 0.10;
 	private static final float SPIN_MAX = 23f;
 	private static final float SPIN_ACCEL = 4.2f;
 	private static final float SPIN_DECAY = 4.0f;

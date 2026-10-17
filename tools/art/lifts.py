@@ -203,6 +203,20 @@ def _recolor(painter, accent):
     return paint
 
 
+def skittles_texture(accent):
+    """Sky Cab's Sigma cabins: the whole body in the group's colour, a black band along the bottom."""
+    body, dark = accent
+    swap = {CABIN_WHITE: body, CABIN_RED: hexc("#1E1F22"), ROOF: body, ROOF_D: dark}
+    img = canvas(256, 256)
+    for name, (w, h, d), painter in GONDOLA_PARTS:
+        def p(face, s, t, x, y, painter=painter):
+            c = painter(face, s, t, x, y)
+            return swap.get(c, c)
+        u, v = GONDOLA_UV[name]
+        paint_box(img, u, v, w, h, d, p)
+    return img
+
+
 def gondola_texture(accent=None):
     """accent: replaces the cabin red (the Sky Cab pulse cabins are blue)."""
     img = canvas(256, 256)
@@ -479,10 +493,10 @@ def main(preview_dir: str | None):
         "entity/lift/platter": flat_texture(hexc("#2B2D33"), hexc("#1C1D21")),
         "entity/lift/gondola": gondola_texture(),
         "entity/lift/gondola_glass": gondola_glass_texture(),
-        "entity/lift/gondola_pulse": gondola_texture((hexc("#2F6FD0"), hexc("#1E4A93"))),
-        "entity/lift/gondola_pulse_red": gondola_texture((hexc("#D2232A"), hexc("#8E1820"))),
-        "entity/lift/gondola_pulse_green": gondola_texture((hexc("#31924A"), hexc("#1D6130"))),
-        "entity/lift/gondola_pulse_yellow": gondola_texture((hexc("#F2C330"), hexc("#B98D18"))),
+        "entity/lift/gondola_pulse": skittles_texture((hexc("#1F5FC4"), hexc("#16448C"))),
+        "entity/lift/gondola_pulse_red": skittles_texture((hexc("#D8262C"), hexc("#97191E"))),
+        "entity/lift/gondola_pulse_green": skittles_texture((hexc("#2E9A48"), hexc("#1E6A31"))),
+        "entity/lift/gondola_pulse_yellow": skittles_texture((hexc("#F4C51E"), hexc("#B48E12"))),
         **{f"entity/lift/housing_{k}": housing_texture(k) for k in LIVERIES},
         **{f"entity/lift/fixed_{k}": fixed_texture(k) for k in LIVERIES},
         "entity/lift/bullwheel": bullwheel_texture(),
