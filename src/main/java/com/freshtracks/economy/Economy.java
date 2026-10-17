@@ -117,8 +117,9 @@ public final class Economy {
 				countDay(player, p);
 			}
 		}
-		if (moved.y < 0 && moved.y > -3) {
-			p.verticalCarry -= moved.y;
+		if (moved.y > -3 && moved.y < 3) {
+			// net descent: bumps on the way down cancel out (a short climb can owe a few blocks, never more)
+			p.verticalCarry = Math.max(-4, p.verticalCarry - moved.y);
 			while (p.verticalCarry >= 1) {
 				p.verticalCarry -= 1;
 				p.verticalTotal++;

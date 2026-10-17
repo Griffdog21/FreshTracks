@@ -13,6 +13,10 @@ import net.minecraft.util.Mth;
 
 /** Trick call-outs, combo counter and a small speedometer while riding. */
 public final class TrickHud {
+	private static long lastWallet = -1;
+	private static long walletGain;
+	private static long walletTick = -1000;
+
 	private static final int SHOW_TICKS = 50;
 	private static final Deque<Popup> POPUPS = new ArrayDeque<>();
 	private static int runScore;
@@ -173,6 +177,30 @@ public final class TrickHud {
 				int sx = width - font.width(s) - 8;
 				graphics.text(font, s, sx, sy - 26, 0xFF7FE0FF);
 			}
+			// the wallet, and what just came in
+			long wallet = 0;
+			var inv = mc.player.getInventory();
+			for (int i = 0; i < inv.getContainerSize(); i++) {
+				if (inv.getItem(i).getItem() instanceof com.freshtracks.economy.BillItem bill) {
+					wallet += (long) bill.value() * inv.getItem(i).getCount();
+				}
+			}
+			if (wallet > lastWallet && lastWallet >= 0) {
+				walletGain += wallet - lastWallet;
+				walletTick = now;
+			}
+			lastWallet = wallet;
+			String w = String.format(Locale.ROOT, "%,d Ski Bucks", wallet);
+			graphics.text(font, w, width - font.width(w) - 8, sy - 39, 0xFFFFD166);
+			if (now - walletTick < 60 && walletGain > 0) {
+				String g = String.format(Locale.ROOT, "+%,d", walletGain);
+				int a = Mth.clamp((int) ((60 - (now - walletTick)) * 8), 8, 255);
+				graphics.text(font, g, width - font.width(w) - font.width(g) - 14, sy - 39, (a << 24) | 0x9CFF7A);
+			} else {
+				walletGain = 0;
+			}
+		} else {
+			lastWallet = -1;
 		}
 	}
 }
