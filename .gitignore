@@ -43,7 +43,7 @@ replay_*.log
 run2/
 run-prod/
 run-vanilla/
-play/
+/play/
 *.log
 visual-mods/
 dist/

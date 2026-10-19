@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play on Snowmass</title>
+<meta name="description" content="Wake the Fresh Tracks Snowmass server and join: Minecraft Java 26.3 with the Fresh Tracks mod pack.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Outfit:wght@700;800;900&display=swap">
+<style>
+  :root { --bg:#f4f7fb; --panel:#fff; --ink:#0f1d2e; --muted:#51627a; --line:#dbe3ee; --accent:#1f6fe0; --accent-ink:#fff;
+    --ok:#22964a; --wait:#c98a00; --off:#7d8fa3; color-scheme:light; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0b1320; --panel:#121c2c; --ink:#e8eff8;
+    --muted:#9fb0c6; --line:#22314a; --accent:#5aa0ff; --accent-ink:#06121f; --ok:#4cd97b; --wait:#ffd166; --off:#7d8fa3; color-scheme:dark; } }
+  :root[data-theme="dark"] { --bg:#0b1320; --panel:#121c2c; --ink:#e8eff8; --muted:#9fb0c6; --line:#22314a; --accent:#5aa0ff;
+    --accent-ink:#06121f; --ok:#4cd97b; --wait:#ffd166; --off:#7d8fa3; color-scheme:dark; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 Inter, system-ui, sans-serif; }
+  main { max-width:620px; margin:0 auto; padding:48px 16px 64px; }
+  h1 { font:800 34px/1.1 Outfit, Inter, sans-serif; margin:0 0 6px; }
+  .sub { color:var(--muted); margin:0 0 28px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px; margin-bottom:18px; }
+  .status { display:flex; align-items:center; gap:12px; font-weight:600; font-size:20px; }
+  .dot { width:14px; height:14px; border-radius:50%; background:var(--off); flex:none; }
+  .dot.online { background:var(--ok); } .dot.starting, .dot.stopping { background:var(--wait); animation:pulse 1.2s infinite; }
+  @keyframes pulse { 50% { opacity:.35; } }
+  .detail { color:var(--muted); margin:8px 0 18px; }
+  button { font:600 16px Inter, sans-serif; background:var(--accent); color:var(--accent-ink); border:0; border-radius:10px;
+    padding:12px 20px; cursor:pointer; } button:disabled { opacity:.5; cursor:default; }
+  .addr { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  code { font:600 20px ui-monospace, Consolas, monospace; background:var(--bg); border:1px solid var(--line); padding:10px 14px;
+    border-radius:10px; user-select:all; }
+  .copy { background:transparent; color:var(--accent); border:1px solid var(--line); padding:10px 14px; }
+  ol { padding-left:20px; margin:0; } li { margin:6px 0; } a { color:var(--accent); }
+</style></head>
+<body><main>
+  <h1>Play on Snowmass</h1>
+  <p class="sub">The Fresh Tracks server sleeps when nobody's skiing. Wake it here, then join from Minecraft.</p>
+
+  <div class="card">
+    <div class="status"><span class="dot" id="dot"></span><span id="headline">Checking…</span></div>
+    <p class="detail" id="detail">One moment.</p>
+    <button id="wake" disabled>Wake the server</button>
+  </div>
+
+  <div class="card">
+    <p style="margin-top:0">Server address</p>
+    <div class="addr"><code id="address">18.227.232.192</code><button class="copy" id="copy">Copy</button></div>
+  </div>
+
+  <div class="card">
+    <ol>
+      <li>Install the <a href="https://github.com/Griffdog21/FreshTracks/releases/latest">Fresh Tracks mod pack</a> for Minecraft Java 26.3
+        (import the <b>.mrpack</b> into Prism Launcher or the Modrinth App).</li>
+      <li>Wake the server above and wait for <b>Online</b> (about two minutes).</li>
+      <li>In Minecraft: <b>Multiplayer → Add Server</b>, paste the address, join.</li>
+      <li>First time? Type <b>/register</b> for your free skis, snowboard and gear.</li>
+      <li>Optional: keep <b>Simple Voice Chat</b> ticked in the pack to talk to people near you on the hill.</li>
+    </ol>
+  </div>
+</main>
+<script>
+  const API = "https://ork6byv4t2uetr6qwcwngnof4i0hzcmu.lambda-url.us-east-2.on.aws/";
+  const text = {
+    online: ["Online", "The lifts are running. Jump in."],
+    starting: ["Waking up…", "The mountain is opening; this takes about two minutes."],
+    stopping: ["Closing for the night…", "It just went to sleep. Wake it again in a minute."],
+    asleep: ["Asleep", "Nobody's on. Press the button to open the mountain."],
+  };
+  let timer = null;
+  function show(s) {
+    const [h, d] = text[s.state] || ["Unknown", "Try again in a moment."];
+    document.getElementById("dot").className = "dot " + s.state;
+    document.getElementById("headline").textContent = h;
+    document.getElementById("detail").textContent = d;
+    document.getElementById("wake").disabled = s.state !== "asleep";
+    if (s.address) document.getElementById("address").textContent = s.address;
+    clearTimeout(timer);
+    if (s.state === "starting" || s.state === "stopping") timer = setTimeout(check, 8000);
+  }
+  async function check(start) {
+    try {
+      const r = await fetch(API + "?json=1&start=" + (start ? "1" : "0"), { method: start ? "POST" : "GET", cache: "no-store" });
+      show(await r.json());
+    } catch (e) {
+      show({ state: "unknown" });
+    }
+  }
+  document.getElementById("wake").onclick = () => { document.getElementById("wake").disabled = true; check(true); };
+  document.getElementById("copy").onclick = () => navigator.clipboard.writeText(document.getElementById("address").textContent);
+  check(false);
+</script>
+</body></html>
