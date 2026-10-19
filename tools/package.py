@@ -32,6 +32,13 @@ VISUAL_MODS = {
     "lithium-fabric-0.26.2+mc26.3.jar": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/xS0Q8LSi/lithium-fabric-0.26.2%2Bmc26.3.jar",
     "ferritecore-9.0.0-fabric.jar": "https://cdn.modrinth.com/data/uXXizFIs/versions/d5ddUdiB/ferritecore-9.0.0-fabric.jar",
 }
+# The shader pack Iris loads by default (Complementary Unbound), downloaded by the launcher from Modrinth.
+SHADER_PACK = ("ComplementaryUnbound_r5.9.3.zip", "https://cdn.modrinth.com/data/R6NEzAwj/versions/B1kyfoUZ/ComplementaryUnbound_r5.9.3.zip")
+IRIS_PROPERTIES = """# Fresh Tracks pack: Complementary Unbound on by default with Iris (press K in game to toggle shaders)
+enableShaders=true
+shaderPack=ComplementaryUnbound_r5.9.3.zip
+maxShadowRenderDistance=32
+"""
 # Optional mods that work on both sides (the Snowmass server runs them): proximity voice chat on the slopes.
 SHARED_MODS = {
     "voicechat-fabric-2.6.24+26.3.jar": "https://cdn.modrinth.com/data/9eGKb6K1/versions/OLnMVWXy/voicechat-fabric-2.6.24%2B26.3.jar",
@@ -162,10 +169,20 @@ def main() -> None:
                 "downloads": [url],
                 "fileSize": os.path.getsize(path),
             })
+    shader = os.path.join(visual, SHADER_PACK[0])
+    if os.path.exists(shader):
+        index["files"].append({
+            "path": f"shaderpacks/{SHADER_PACK[0]}",
+            "hashes": {"sha1": sha(shader, "sha1"), "sha512": sha(shader, "sha512")},
+            "env": {"client": "optional", "server": "unsupported"},
+            "downloads": [SHADER_PACK[1]],
+            "fileSize": os.path.getsize(shader),
+        })
     mrpack = os.path.join(DIST, f"FreshTracks-{v}.mrpack")
     with zipfile.ZipFile(mrpack, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr("modrinth.index.json", json.dumps(index, indent=2))
         z.write(jar, f"overrides/mods/freshtracks-{v}.jar")
+        z.writestr("overrides/config/iris.properties", IRIS_PROPERTIES)
 
     # 3. server pack
     server = os.path.join(DIST, f"FreshTracks-{v}-server.zip")
