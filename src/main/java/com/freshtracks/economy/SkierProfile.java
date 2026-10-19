@@ -51,6 +51,10 @@ public final class SkierProfile {
 	public int ticketsFound;
 	/** Not saved: rate limits for messages. */
 	transient long lastPayMessage;
+	/** Trick earnings today (the daily cap); not saved, a restart starts the count again. */
+	transient String trickDay = "";
+	transient int trickBucksToday;
+	transient boolean toldTrickCap;
 	transient int pendingVertical;
 
 	public SkierProfile() {

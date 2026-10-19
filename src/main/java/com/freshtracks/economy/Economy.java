@@ -24,6 +24,20 @@ public final class Economy {
 	private Economy() {
 	}
 
+	/** Trick pay: a Ski Buck per 100 points up to 1,500 points, then less and less for bigger tricks, at most 40. */
+	public static int trickBucks(int points) {
+		if (points <= 0) {
+			return 0;
+		}
+		if (points <= 1500) {
+			return points / 100;
+		}
+		return Math.min(40, 15 + (int) Math.round(Math.sqrt(points - 1500) / 5));
+	}
+
+	/** Ski Bucks from tricks per day before the rest pay a quarter (skiing, challenges and streaks aren't capped). */
+	public static final int TRICK_DAILY_FULL = 800;
+
 	public static String today() {
 		return LocalDate.now().toString();
 	}
@@ -90,7 +104,22 @@ public final class Economy {
 	/** A landed trick (the server already checked it's a real ride). */
 	public static void trick(ServerPlayer player, int points, int airTicks, String name) {
 		SkierProfile p = profile(player);
-		int bucks = points / 100;
+		int bucks = trickBucks(points);
+		if (!today().equals(p.trickDay)) {
+			p.trickDay = today();
+			p.trickBucksToday = 0;
+			p.toldTrickCap = false;
+		}
+		if (p.trickBucksToday >= TRICK_DAILY_FULL) {
+			bucks = (bucks + 3) / 4;
+			if (bucks > 0 && !p.toldTrickCap) {
+				p.toldTrickCap = true;
+				player.sendSystemMessage(Component.literal("You've earned " + TRICK_DAILY_FULL
+					+ " Ski Bucks from tricks today; more tricks pay a quarter until tomorrow. Skiing vertical and challenges still pay in full.")
+					.withStyle(ChatFormatting.GRAY));
+			}
+		}
+		p.trickBucksToday += bucks;
 		if (bucks > 0) {
 			earn(player, bucks, null); // the trick HUD shows the payout already
 		}
