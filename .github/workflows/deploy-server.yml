@@ -1,0 +1,48 @@
+name: Deploy release to the Snowmass server
+
+# A new Fresh Tracks release goes onto the Snowmass server automatically (the server restarts with it once nobody is
+# online), so the server always matches the mod pack players download.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency: snowmass-deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ vars.DEPLOY_BUCKET != '' }}
+    env:
+      BUCKET: ${{ vars.DEPLOY_BUCKET }}
+      INSTANCE: ${{ vars.INSTANCE_ID }}
+    steps:
+      - name: Download the release jar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${{ github.event.release.tag_name }}"
+          [ -n "$tag" ] || tag=$(gh release view -R "$GITHUB_REPOSITORY" --json tagName -q .tagName)
+          gh release download "$tag" -R "$GITHUB_REPOSITORY" --pattern 'freshtracks-*.jar'
+          ls -la
+          echo "TAG=$tag" >> "$GITHUB_ENV"
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Upload and tell the server
+        run: |
+          jar=$(ls freshtracks-[0-9]*.jar | grep -v sources | head -1)
+          aws s3 cp "$jar" "s3://$BUCKET/mods/freshtracks.jar" --only-show-errors
+          echo "$TAG" | aws s3 cp - "s3://$BUCKET/meta/RELEASE"
+          state=$(aws ec2 describe-instances --instance-ids "$INSTANCE" --query 'Reservations[0].Instances[0].State.Name' --output text)
+          if [ "$state" = "running" ]; then
+            aws ssm send-command --instance-ids "$INSTANCE" --document-name AWS-RunShellScript \
+              --parameters 'commands=["/usr/local/bin/snowmass-deploy.sh"]' --query Command.CommandId --output text
+          else
+            echo "Server is asleep; it loads $TAG next time it wakes."
+          fi

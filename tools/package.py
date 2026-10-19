@@ -28,6 +28,13 @@ VISUAL_MODS = {
     "sodium-fabric-0.9.2+mc26.3.jar": "https://cdn.modrinth.com/data/AANobbMI/versions/bAZQdGpg/sodium-fabric-0.9.2%2Bmc26.3.jar",
     "iris-fabric-1.11.7+mc26.3.jar": "https://cdn.modrinth.com/data/YL57xq9U/versions/vTN4NRGW/iris-fabric-1.11.7%2Bmc26.3.jar",
     "DistantHorizons-3.3.4-26.3-fabric-neoforge.jar": "https://cdn.modrinth.com/data/uCdwusMi/versions/TGgEbP9A/DistantHorizons-3.3.4-26.3-fabric-neoforge.jar",
+    # performance (also run on the Snowmass server)
+    "lithium-fabric-0.26.2+mc26.3.jar": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/xS0Q8LSi/lithium-fabric-0.26.2%2Bmc26.3.jar",
+    "ferritecore-9.0.0-fabric.jar": "https://cdn.modrinth.com/data/uXXizFIs/versions/d5ddUdiB/ferritecore-9.0.0-fabric.jar",
+}
+# Optional mods that work on both sides (the Snowmass server runs them): proximity voice chat on the slopes.
+SHARED_MODS = {
+    "voicechat-fabric-2.6.24+26.3.jar": "https://cdn.modrinth.com/data/9eGKb6K1/versions/OLnMVWXy/voicechat-fabric-2.6.24%2B26.3.jar",
 }
 FABRIC_API_SHA1 = "273cd2dcbd92d1559edcc91c9f23fee47f6ff93f"
 
@@ -142,6 +149,16 @@ def main() -> None:
                 "path": f"mods/{name}",
                 "hashes": {"sha1": sha(path, "sha1"), "sha512": sha(path, "sha512")},
                 "env": {"client": "optional", "server": "unsupported"},
+                "downloads": [url],
+                "fileSize": os.path.getsize(path),
+            })
+    for name, url in SHARED_MODS.items():
+        path = os.path.join(visual, name)
+        if os.path.exists(path):
+            index["files"].append({
+                "path": f"mods/{name}",
+                "hashes": {"sha1": sha(path, "sha1"), "sha512": sha(path, "sha512")},
+                "env": {"client": "optional", "server": "optional"},
                 "downloads": [url],
                 "fileSize": os.path.getsize(path),
             })

@@ -14,7 +14,13 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 ## Like the mod? Join the server
 
-Come ski Snowmass with us—shared laps, park sessions, powder days and Base Village after dark. [**See the server and how to join →**](https://griffdog21.github.io/FreshTracks/server.html)
+Come ski Snowmass with us—shared laps, park sessions, powder days and Base Village after dark.
+
+1. Install the Fresh Tracks mod pack (below) for Minecraft Java 26.3.
+2. **Wake the server:** open **[griffdog21.github.io/FreshTracks/play](https://griffdog21.github.io/FreshTracks/play/)** and press *Wake the server*. It sleeps when nobody's on and takes about two minutes to open.
+3. In Minecraft: **Multiplayer → Add Server → `18.227.232.192`**, join, and type `/register` for your free skis, snowboard and gear.
+
+Keep **Simple Voice Chat** ticked in the pack to talk to skiers near you. [More about the server →](https://griffdog21.github.io/FreshTracks/server.html)
 
 ## New in 1.4.0: Ski Bucks you can chase for weeks
 
@@ -23,6 +29,7 @@ Come ski Snowmass with us—shared laps, park sessions, powder days and Base Vil
 - **Passes that take weeks:** Day Ticket, Local, Season Pass, Ski Bum, Legend and Founders' Circle. Each needs days on the mountain (a day counts once you ride 10 minutes) and lifetime earnings. The best shop gear stays locked until you get there.
 - **Pro shop:** ski and board techs now sell branded, tuned gear for Ski Bucks: skis and boards that ride a few percent better, jackets with extra warmth, up to numbered limited editions like The Golden Skis (ten per world).
 - **Real money:** Ski Bucks come as 1s, $100 and $1,000 bills. Shops make change automatically; use a bill to break it, sneak-use to tidy your wallet.
+- **Voice chat and smoother play:** the mod pack now offers Simple Voice Chat (talk to skiers near you on the Snowmass server), Lithium and FerriteCore. All optional; untick any in your launcher.
 - **Wallet on screen:** while you ride, your Ski Bucks total sits above the speedometer and every payout flashes in.
 - **Golden Tickets:** very rare finds from big tricks, streaks and daily sweeps, wanted by the best shops.
 
@@ -120,12 +127,12 @@ Want to jump straight in? The **Fresh Tracks Test World** is a ready-made ski hi
 Everything comes as one file you import into a launcher. It makes its own separate game folder, so **your normal Minecraft worlds are never touched**.
 
 **Prism Launcher** (recommended, free: [prismlauncher.org](https://prismlauncher.org))
-1. Download **`FreshTracks-1.4.1.mrpack`** from the [releases page](../../releases/latest).
+1. Download **`FreshTracks-1.4.2.mrpack`** from the [releases page](../../releases/latest).
 2. In Prism: **Add Instance → Import** → pick the file → **OK**.
 3. Select the new **Fresh Tracks** instance and press **Launch**.
 
 **Modrinth App** ([modrinth.com/app](https://modrinth.com/app))
-1. Download **`FreshTracks-1.4.1.mrpack`**.
+1. Download **`FreshTracks-1.4.2.mrpack`**.
 2. **+ (Create instance) → Import from file** → pick it → **Play**.
 
 The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **Sodium, Iris (shaders) and Distant Horizons** as optional extras (untick them if your PC struggles). For the screenshots above: Iris with the *Complementary Unbound* shader pack.
@@ -136,7 +143,7 @@ The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **S
 <summary>Manual install (official launcher)</summary>
 
 1. Install Fabric for Minecraft 26.3 with the [Fabric installer](https://fabricmc.net/use/installer) (give the profile its own game directory so your normal worlds stay separate).
-2. Put `freshtracks-1.4.1.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
+2. Put `freshtracks-1.4.2.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
 </details>
 
 ## 🎮 Controls
