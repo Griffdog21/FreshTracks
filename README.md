@@ -22,7 +22,13 @@ Come ski Snowmass with us—shared laps, park sessions, powder days and Base Vil
 
 Keep **Simple Voice Chat** ticked in the pack to talk to skiers near you. [More about the server →](https://griffdog21.github.io/FreshTracks/server.html)
 
-## New in 1.4.0: Ski Bucks you can chase for weeks
+## New in 1.5.0: Ski School and leaderboards
+
+- **Ski School:** seven short lessons for your first day on the mountain: click in, ride a lift, ski some vertical, hit 50 km/h, land a trick, try a butter and buy something. Each pays Ski Bucks, and graduating earns 200 more and the Ski School Graduate Pin. New skiers get a nudge toward the next lesson when they join.
+- **Leaderboards:** `/leaderboard` ranks everyone who's ever skied the server: most Ski Bucks earned, most days, best streak, most vertical, biggest trick (with its name), longest air and top speed. `/leaderboard trick` (or `earned`, `air`...) shows the top ten.
+- **The leaderboard board:** on the Snowmass server, a timber board on the Base Village plaza, right where new skiers arrive, shows the champions live.
+
+### Included from 1.4.0: Ski Bucks you can chase for weeks
 
 - **Earn for everything:** tricks as before, plus every bit of vertical you ski, the first chair of the day, and a bonus for each day on the mountain (bigger on a streak).
 - **Daily challenges:** three a day, the same for everyone on the server ("Ski 1,500 blocks of vertical", "Land a 2,000-point trick"...), each with a bounty and a bonus for sweeping all three. Type `/skibucks` to see them, your wallet and your pass.
@@ -129,12 +135,12 @@ Want to jump straight in? The **Fresh Tracks Test World** is a ready-made ski hi
 Everything comes as one file you import into a launcher. It makes its own separate game folder, so **your normal Minecraft worlds are never touched**.
 
 **Prism Launcher** (recommended, free: [prismlauncher.org](https://prismlauncher.org))
-1. Download **`FreshTracks-1.4.4.mrpack`** from the [releases page](../../releases/latest).
+1. Download **`FreshTracks-1.5.0.mrpack`** from the [releases page](../../releases/latest).
 2. In Prism: **Add Instance → Import** → pick the file → **OK**.
 3. Select the new **Fresh Tracks** instance and press **Launch**.
 
 **Modrinth App** ([modrinth.com/app](https://modrinth.com/app))
-1. Download **`FreshTracks-1.4.4.mrpack`**.
+1. Download **`FreshTracks-1.5.0.mrpack`**.
 2. **+ (Create instance) → Import from file** → pick it → **Play**.
 
 The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **Sodium, Iris (shaders) and Distant Horizons** as optional extras (untick them if your PC struggles). For the screenshots above: Iris with the *Complementary Unbound* shader pack.
@@ -145,7 +151,7 @@ The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **S
 <summary>Manual install (official launcher)</summary>
 
 1. Install Fabric for Minecraft 26.3 with the [Fabric installer](https://fabricmc.net/use/installer) (give the profile its own game directory so your normal worlds stay separate).
-2. Put `freshtracks-1.4.4.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
+2. Put `freshtracks-1.5.0.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
 </details>
 
 ## 🎮 Controls

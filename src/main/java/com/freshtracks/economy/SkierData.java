@@ -45,6 +45,10 @@ public final class SkierData extends SavedData {
 		});
 	}
 
+	public java.util.Collection<SkierProfile> all() {
+		return skiers.values();
+	}
+
 	public int sold(String edition) {
 		return editions.getOrDefault(edition, 0);
 	}

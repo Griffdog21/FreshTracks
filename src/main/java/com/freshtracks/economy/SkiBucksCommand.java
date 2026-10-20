@@ -25,6 +25,11 @@ public final class SkiBucksCommand {
 		dispatcher.register(Commands.literal("skibucks")
 			.executes(c -> show(c.getSource().getPlayerOrException()))
 			.then(Commands.literal("top").executes(c -> top(c.getSource()))));
+		var board = Commands.literal("leaderboard").executes(c -> leaderboard(c.getSource(), null));
+		for (Board b : Board.values()) {
+			board.then(Commands.literal(b.key).executes(c -> leaderboard(c.getSource(), b)));
+		}
+		dispatcher.register(board);
 	}
 
 	private static int show(ServerPlayer player) {
@@ -61,6 +66,13 @@ public final class SkiBucksCommand {
 			line(player, row);
 		}
 		line(player, Component.literal(" All three: +" + Challenges.ALL_BONUS + " more").withStyle(ChatFormatting.DARK_GRAY));
+		if (!p.records.graduated) {
+			SkiSchool.Lesson lesson = SkiSchool.next(p);
+			if (lesson != null) {
+				line(player, Component.literal("Ski School " + SkiSchool.count(p) + "/" + SkiSchool.Lesson.values().length + ": next - " + lesson.text)
+					.withStyle(ChatFormatting.AQUA));
+			}
+		}
 		if (p.ticketsFound > 0 || !p.owned.isEmpty()) {
 			line(player, Component.literal("Golden Tickets found: " + p.ticketsFound + "   Collection: " + p.owned.size() + " pieces").withStyle(ChatFormatting.GRAY));
 		}
@@ -79,6 +91,63 @@ public final class SkiBucksCommand {
 				.append(Component.literal("  " + p.daysSkied + " days, " + SkiBucks.format(p.lifetimeEarned) + " earned").withStyle(ChatFormatting.GRAY)));
 		}
 		return players.size();
+	}
+
+	/** The leaderboards: what's ranked and how it reads. */
+	public enum Board {
+		EARNED("earned", "Most Ski Bucks earned", p -> p.lifetimeEarned, v -> SkiBucks.format(v)),
+		DAYS("days", "Most days on the mountain", p -> p.daysSkied, v -> v + " days"),
+		STREAK("streak", "Best streak", p -> p.bestStreak, v -> v + " days"),
+		VERTICAL("vertical", "Most vertical skied", p -> p.verticalTotal, v -> SkiBucks.format(v) + " blocks"),
+		TRICK("trick", "Biggest trick", p -> p.records.bestTrick, v -> SkiBucks.format(v) + " pts"),
+		AIR("air", "Longest air", p -> p.records.longestAir, v -> String.format(java.util.Locale.ROOT, "%.1f s", v / 20.0)),
+		SPEED("speed", "Top speed", p -> p.records.topKmh, v -> v + " km/h");
+
+		public final String key;
+		public final String title;
+		public final java.util.function.ToLongFunction<SkierProfile> value;
+		public final java.util.function.LongFunction<String> format;
+
+		Board(String key, String title, java.util.function.ToLongFunction<SkierProfile> value, java.util.function.LongFunction<String> format) {
+			this.key = key;
+			this.title = title;
+			this.value = value;
+			this.format = format;
+		}
+
+		/** The top n skiers on this board (named, with a score above zero). */
+		public List<SkierProfile> top(net.minecraft.server.MinecraftServer server, int n) {
+			return SkierData.get(server).all().stream().filter(p -> !p.records.name.isEmpty() && value.applyAsLong(p) > 0)
+				.sorted(Comparator.comparingLong(value).reversed()).limit(n).toList();
+		}
+	}
+
+	private static int leaderboard(CommandSourceStack source, Board only) {
+		for (Board b : Board.values()) {
+			if (only != null && b != only) {
+				continue;
+			}
+			int n = only == null ? 3 : 10;
+			List<SkierProfile> top = b.top(source.getServer(), n);
+			source.sendSystemMessage(Component.literal("── " + b.title + " ──").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+			if (top.isEmpty()) {
+				source.sendSystemMessage(Component.literal("  nobody yet: be the first").withStyle(ChatFormatting.DARK_GRAY));
+			}
+			for (int i = 0; i < top.size(); i++) {
+				SkierProfile p = top.get(i);
+				MutableComponent row = Component.literal(" " + (i + 1) + ". ").withStyle(i == 0 ? ChatFormatting.GOLD : ChatFormatting.GRAY)
+					.append(Component.literal(p.records.name).withStyle(ChatFormatting.WHITE))
+					.append(Component.literal("  " + b.format.apply(b.value.applyAsLong(p))).withStyle(ChatFormatting.AQUA));
+				if (b == Board.TRICK && !p.records.bestTrickName.isEmpty()) {
+					row.append(Component.literal("  " + p.records.bestTrickName).withStyle(ChatFormatting.DARK_GRAY));
+				}
+				source.sendSystemMessage(row);
+			}
+		}
+		if (only == null) {
+			source.sendSystemMessage(Component.literal("Full lists: /leaderboard earned|days|streak|vertical|trick|air|speed").withStyle(ChatFormatting.DARK_GRAY));
+		}
+		return 1;
 	}
 
 	private static void line(ServerPlayer player, Component c) {

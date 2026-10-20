@@ -45,6 +45,11 @@ public final class Economy {
 	public static SkierProfile profile(ServerPlayer player) {
 		SkierProfile p = SkierData.get(player.level().getServer()).profile(player.getUUID());
 		roll(p);
+		String name = player.getPlainTextName();
+		if (!name.equals(p.records.name)) {
+			p.records.name = name;
+			SkierData.get(player.level().getServer()).setDirty();
+		}
 		return p;
 	}
 
@@ -123,6 +128,16 @@ public final class Economy {
 		if (bucks > 0) {
 			earn(player, bucks, null); // the trick HUD shows the payout already
 		}
+		if (points > p.records.bestTrick) {
+			p.records.bestTrick = points;
+			p.records.bestTrickName = name.length() > 48 ? name.substring(0, 48) : name;
+			dirty(player);
+		}
+		if (airTicks > p.records.longestAir && airTicks < 400) {
+			p.records.longestAir = airTicks;
+			dirty(player);
+		}
+		SkiSchool.complete(player, p, SkiSchool.Lesson.TRICK);
 		progress(player, p, Challenges.Kind.TRICKS, 1, false);
 		progress(player, p, Challenges.Kind.POINTS, points, false);
 		progress(player, p, Challenges.Kind.BIG_TRICK, points >= Challenges.Kind.BIG_TRICK.target ? 1 : 0, false);
@@ -130,6 +145,7 @@ public final class Economy {
 		String n = name.toLowerCase(java.util.Locale.ROOT);
 		if (n.contains("press") || n.contains("butter") || n.contains("roll")) {
 			progress(player, p, Challenges.Kind.BUTTERS, 1, false);
+			SkiSchool.complete(player, p, SkiSchool.Lesson.BUTTER);
 		}
 		if (points >= 1500 && player.getRandom().nextInt(1500) == 0) {
 			goldenTicket(player, p, "off a " + SkiBucks.format(points) + "-point trick");
@@ -140,6 +156,7 @@ public final class Economy {
 	public static void ride(ServerPlayer player, Vec3 moved, double speed) {
 		SkierProfile p = profile(player);
 		if (speed > 0.05) {
+			SkiSchool.complete(player, p, SkiSchool.Lesson.CLICK_IN);
 			p.rideTicksToday++;
 			progress(player, p, Challenges.Kind.RIDE_TIME, 1, false);
 			if (!p.todayCounted && p.rideTicksToday >= DAY_TICKS) {
@@ -167,7 +184,18 @@ public final class Economy {
 				earn(player, owed, say ? "vertical" : null);
 			}
 		}
-		int kmh = (int) (moved.horizontalDistance() * 72);
+		// the rig's smoothed speed: a single-tick jump (clicking in, a teleport) doesn't count as a top speed
+		int kmh = (int) (speed * 72);
+		if (p.verticalTotal >= 200) {
+			SkiSchool.complete(player, p, SkiSchool.Lesson.VERTICAL);
+		}
+		if (kmh >= 50 && kmh < 200) {
+			SkiSchool.complete(player, p, SkiSchool.Lesson.SPEED);
+		}
+		if (kmh > p.records.topKmh && kmh < 160) {
+			p.records.topKmh = kmh;
+			dirty(player);
+		}
 		if (kmh > 0 && kmh < 200) {
 			progress(player, p, Challenges.Kind.SPEED, kmh, true);
 		}
@@ -177,6 +205,7 @@ public final class Economy {
 	public static void lift(ServerPlayer player) {
 		SkierProfile p = profile(player);
 		progress(player, p, Challenges.Kind.LIFTS, 1, false);
+		SkiSchool.complete(player, p, SkiSchool.Lesson.LIFT);
 		if (!today().equals(p.bonusDay)) {
 			p.bonusDay = today();
 			dirty(player);

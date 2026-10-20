@@ -167,6 +167,7 @@ public final class Catalog {
 			return;
 		}
 		SkierData data = SkierData.get(player.level().getServer());
+		SkiSchool.complete(player, Economy.profile(player), SkiSchool.Lesson.SHOP);
 		if (e.unique) {
 			Economy.profile(player).owned.add(e.id);
 			data.setDirty();

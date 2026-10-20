@@ -23,7 +23,7 @@ public final class SkierProfile {
 		Codec.INT.listOf().optionalFieldOf("challenge_progress", List.of()).forGetter(p -> toList(p.progress)),
 		Codec.INT.optionalFieldOf("challenges_done", 0).forGetter(p -> p.challengesDone),
 		Codec.STRING.listOf().optionalFieldOf("owned", List.of()).forGetter(p -> new ArrayList<>(p.owned)),
-		Codec.DOUBLE.optionalFieldOf("vertical_carry", 0.0).forGetter(p -> p.verticalCarry),
+		SkierRecords.CODEC.optionalFieldOf("records", new SkierRecords()).forGetter(p -> p.records),
 		Codec.LONG.optionalFieldOf("vertical_total", 0L).forGetter(p -> p.verticalTotal),
 		Codec.INT.optionalFieldOf("tickets_found", 0).forGetter(p -> p.ticketsFound)
 	).apply(i, SkierProfile::new));
@@ -46,7 +46,9 @@ public final class SkierProfile {
 	public int challengesDone;
 	/** Unique catalog items this skier has bought (one each, ever). */
 	public final Set<String> owned = new HashSet<>();
-	public double verticalCarry;
+	/** Fraction of a block of vertical not yet counted (not saved). */
+	public transient double verticalCarry;
+	public SkierRecords records = new SkierRecords();
 	public long verticalTotal;
 	public int ticketsFound;
 	/** Not saved: rate limits for messages. */
@@ -62,7 +64,7 @@ public final class SkierProfile {
 
 	private SkierProfile(long lifetime, int days, String today, int rideTicks, boolean counted, String lastDay, int streak,
 		int bestStreak, String bonusDay, String challengeDay, List<Integer> progress, int done, List<String> owned,
-		double verticalCarry, long verticalTotal, int tickets) {
+		SkierRecords records, long verticalTotal, int tickets) {
 		this.lifetimeEarned = lifetime;
 		this.daysSkied = days;
 		this.today = today;
@@ -78,7 +80,7 @@ public final class SkierProfile {
 		}
 		this.challengesDone = done;
 		this.owned.addAll(owned);
-		this.verticalCarry = verticalCarry;
+		this.records = records;
 		this.verticalTotal = verticalTotal;
 		this.ticketsFound = tickets;
 	}
