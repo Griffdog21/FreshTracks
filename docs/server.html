@@ -1,273 +1,452 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Join the Snowmass server · Fresh Tracks</title>
-<meta name="description" content="Like Fresh Tracks? Join us on Snowmass for shared laps, park sessions, powder days and nights in Base Village.">
-<meta property="og:title" content="Like Fresh Tracks? Come ski with us."><meta property="og:image" content="https://griffdog21.github.io/FreshTracks/images/server-mountain.jpg">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Outfit:wght@700;800;900&display=swap">
+<title>Snowmass Server · Fresh Tracks</title>
+<meta name="description" content="A Snowmass-inspired Minecraft ski resort running Fresh Tracks. Working lifts, real village restaurants, powder days and northern lights. Come ski with us.">
+<meta property="og:title" content="Snowmass, in Minecraft. Come ski with us.">
+<meta property="og:description" content="Working lifts, two real villages, powder days and northern lights on a shared Fresh Tracks server.">
+<meta property="og:image" content="https://griffdog21.github.io/FreshTracks/images/server-aurora-village.jpg">
+<meta name="theme-color" content="#060b16">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
   :root {
-    --bg: #f4f7fb;
-    --panel: #ffffff;
-    --ink: #0f1d2e;
-    --muted: #51627a;
-    --line: #dbe3ee;
-    --accent: #1f6fe0;
-    --accent-ink: #ffffff;
-    --accent-soft: #e5efff;
-    --green: #22964a;
-    --blue: #1f5fd1;
-    --black: #17181b;
-    --shadow: 0 18px 40px -22px rgba(15, 29, 46, 0.45);
-    color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #0b1320;
-      --panel: #121c2c;
-      --ink: #e8eff8;
-      --muted: #9fb0c6;
-      --line: #22314a;
-      --accent: #5aa0ff;
-      --accent-ink: #06121f;
-      --accent-soft: #15253d;
-      --black: #e8eff8;
-      --shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.8);
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #0b1320;
-    --panel: #121c2c;
-    --ink: #e8eff8;
-    --muted: #9fb0c6;
-    --line: #22314a;
-    --accent: #5aa0ff;
-    --accent-ink: #06121f;
-    --accent-soft: #15253d;
-    --black: #e8eff8;
-    --shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.8);
+    --night: #060b16;
+    --night-2: #0b1424;
+    --panel: rgba(255, 255, 255, 0.045);
+    --panel-solid: #101b2e;
+    --line: rgba(255, 255, 255, 0.1);
+    --ink: #eef4fb;
+    --muted: #a3b3c8;
+    --dim: #6f8098;
+    --aurora: #5cf2b4;
+    --aurora-2: #7c8cff;
+    --ice: #9fd8ff;
+    --ember: #ffb35c;
+    --green: #2ec267;
+    --blue: #3d82ff;
+    --radius: 22px;
     color-scheme: dark;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
     margin: 0;
-    background: var(--bg);
+    background: var(--night);
     color: var(--ink);
     font: 17px/1.6 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
   img { max-width: 100%; display: block; }
-  a { color: var(--accent); }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  a { color: var(--ice); }
+  :focus-visible { outline: 3px solid var(--ember); outline-offset: 4px; border-radius: 6px; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, Consolas, monospace; }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    border-bottom: 1px solid transparent;
+  }
+  .nav.solid { background: rgba(6, 11, 22, 0.78); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-color: var(--line); }
+  .nav .wrap { display: flex; align-items: center; gap: 18px; height: 64px; }
+  .brand { font: 800 19px/1 Outfit, sans-serif; letter-spacing: 0.02em; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+  .brand svg { width: 26px; height: 26px; }
+  .nav .links { display: flex; gap: 22px; margin-left: auto; }
+  .nav .links a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 15px; }
+  .nav .links a:hover { color: #fff; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08); border: 1px solid var(--line); font-weight: 600; font-size: 14px; color: #fff; text-decoration: none;
+    white-space: nowrap;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dim); flex: none; }
+  .dot.online { background: var(--aurora); box-shadow: 0 0 0 0 rgba(92, 242, 180, 0.6); animation: pulse 2s infinite; }
+  .dot.starting, .dot.stopping { background: var(--ember); animation: pulse-amber 1.4s infinite; }
+  .dot.asleep { background: #7d8ba3; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(92, 242, 180, 0.55); } 70% { box-shadow: 0 0 0 10px rgba(92, 242, 180, 0); } 100% { box-shadow: 0 0 0 0 rgba(92, 242, 180, 0); } }
+  @keyframes pulse-amber { 0% { box-shadow: 0 0 0 0 rgba(255, 179, 92, 0.55); } 70% { box-shadow: 0 0 0 10px rgba(255, 179, 92, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 179, 92, 0); } }
 
   /* ---------- hero ---------- */
-  .hero {
-    position: relative;
-    min-height: min(92vh, 860px);
-    display: flex;
-    align-items: flex-end;
-    color: #fff;
-    background: #0b1320 url("images/carving.jpg") center / cover no-repeat;
-    overflow: hidden;
+  .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; }
+  .hero-bg {
+    position: absolute; inset: -4%; z-index: -2;
+    background: var(--night) url("images/server-aurora-village.jpg") center 30% / cover no-repeat;
+    animation: drift 40s ease-in-out infinite alternate;
   }
-  .hero::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+  @keyframes drift { from { transform: scale(1.02) translate3d(0, 0, 0); } to { transform: scale(1.1) translate3d(-1.5%, -1%, 0); } }
+  .hero::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
     background:
-      linear-gradient(90deg, rgba(6, 14, 28, 0.72) 0%, rgba(6, 14, 28, 0.38) 45%, rgba(6, 14, 28, 0) 75%),
-      linear-gradient(180deg, rgba(6, 14, 28, 0.1) 0%, rgba(6, 14, 28, 0) 40%, rgba(6, 14, 28, 0.7) 100%);
+      radial-gradient(120% 70% at 20% 100%, rgba(6, 11, 22, 0.92) 0%, rgba(6, 11, 22, 0.55) 45%, rgba(6, 11, 22, 0) 75%),
+      linear-gradient(180deg, rgba(6, 11, 22, 0.55) 0%, rgba(6, 11, 22, 0) 22%, rgba(6, 11, 22, 0) 55%, var(--night) 100%);
   }
-  .hero .wrap { position: relative; z-index: 1; padding-bottom: 64px; width: 100%; }
-  .snow { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+  #snow { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .hero .wrap { position: relative; z-index: 1; width: 100%; padding-top: 120px; padding-bottom: 72px; }
   .eyebrow {
-    display: inline-block;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.16);
-    backdrop-filter: blur(6px);
+    display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--aurora);
   }
+  .eyebrow::before { content: ""; width: 28px; height: 2px; background: currentColor; border-radius: 2px; }
   h1 {
-    font-family: Outfit, Inter, sans-serif;
-    font-weight: 900;
-    font-size: clamp(54px, 11vw, 128px);
-    line-height: 0.92;
-    letter-spacing: -0.02em;
-    margin: 18px 0 14px;
-    text-shadow: 0 6px 30px rgba(0, 0, 0, 0.35);
+    font: 900 clamp(60px, 13vw, 168px)/0.86 Outfit, Inter, sans-serif;
+    letter-spacing: -0.03em; margin: 18px 0 20px;
+    background: linear-gradient(180deg, #ffffff 30%, #bfe6ff 75%, #8fd3c4 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 10px 40px rgba(0, 0, 0, 0.45));
   }
-  .lede { font-size: clamp(18px, 2.4vw, 23px); max-width: 640px; margin: 0 0 30px; color: #f1f6fc; text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45); }
-  .buttons { display: flex; flex-wrap: wrap; gap: 12px; }
+  .lede { font-size: clamp(18px, 2.3vw, 22px); max-width: 600px; margin: 0 0 32px; color: #dbe6f3; }
+  .hero-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: stretch; }
   .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 22px;
-    border-radius: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 24px; border-radius: 14px;
+    font: 700 16px/1.2 Inter, sans-serif; text-decoration: none; cursor: pointer; border: 0;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
   }
-  .btn:hover { transform: translateY(-2px); }
-  .btn-primary { background: #ffffff; color: #0f1d2e; box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5); }
-  .btn-ghost { color: #fff; border: 1.5px solid rgba(255, 255, 255, 0.55); background: rgba(255, 255, 255, 0.08); }
-  .btn small { font-weight: 500; opacity: 0.7; }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); }
+  .btn:disabled { opacity: 0.55; cursor: default; }
+  .btn-aurora { background: linear-gradient(135deg, var(--aurora), #46d7e8 60%, var(--aurora-2)); color: #04121a; box-shadow: 0 14px 40px -14px rgba(92, 242, 180, 0.7); }
+  .btn-glass { background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); backdrop-filter: blur(8px); }
+
+  /* live status card */
+  .status-card {
+    display: grid; gap: 12px; padding: 18px 20px; border-radius: 18px; min-width: 300px;
+    background: rgba(8, 15, 28, 0.62); border: 1px solid var(--line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  .status-top { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
+  .status-top small { font-weight: 500; color: var(--muted); font-size: 14px; margin-left: auto; }
+  .status-detail { color: var(--muted); font-size: 14px; margin: -4px 0 0; }
+  .addr-row { display: flex; gap: 8px; align-items: center; }
+  .addr {
+    flex: 1; font: 700 16px/1 "JetBrains Mono", ui-monospace, Consolas, monospace; padding: 12px 14px; border-radius: 11px;
+    background: rgba(255, 255, 255, 0.06); border: 1px dashed rgba(255, 255, 255, 0.22); color: #fff; letter-spacing: 0.02em;
+  }
+  .icon-btn {
+    padding: 11px 14px; border-radius: 11px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.08); color: #fff;
+    font: 600 14px/1 Inter, sans-serif; cursor: pointer;
+  }
+  .icon-btn:hover { background: rgba(255, 255, 255, 0.14); }
+
+  .scroll-cue { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 1; color: var(--muted); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; }
+  .scroll-cue::after { content: ""; display: block; width: 1px; height: 34px; margin: 8px auto 0; background: linear-gradient(var(--muted), transparent); animation: cue 2s ease-in-out infinite; }
+  @keyframes cue { 0%, 100% { transform: scaleY(0.4); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } }
+
+  /* ---------- stats ---------- */
+  .stats { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: linear-gradient(90deg, rgba(92, 242, 180, 0.05), rgba(124, 140, 255, 0.06)); }
+  .stats .wrap { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .stat { padding: 30px 12px; text-align: center; border-right: 1px solid var(--line); }
+  .stat:last-child { border-right: 0; }
+  .stat b { display: block; font: 800 clamp(34px, 5vw, 52px)/1 Outfit, sans-serif; letter-spacing: -0.02em; color: #fff; }
+  .stat span { color: var(--muted); font-size: 14px; font-weight: 600; letter-spacing: 0.04em; }
 
   /* ---------- sections ---------- */
-  section { padding: 84px 0; }
-  .kicker { font-weight: 700; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; font-size: 13px; }
-  h2 {
-    font-family: Outfit, Inter, sans-serif;
-    font-weight: 800;
-    font-size: clamp(32px, 5vw, 48px);
-    line-height: 1.05;
-    margin: 8px 0 18px;
-    letter-spacing: -0.01em;
-  }
-  .sub { color: var(--muted); max-width: 680px; margin: 0 0 40px; font-size: 18px; }
+  section { padding: 100px 0; position: relative; }
+  .kicker { font-weight: 700; color: var(--aurora); letter-spacing: 0.14em; text-transform: uppercase; font-size: 13px; }
+  h2 { font: 800 clamp(36px, 5.6vw, 64px)/1 Outfit, Inter, sans-serif; letter-spacing: -0.02em; margin: 10px 0 18px; }
+  h2 em { font-style: normal; background: linear-gradient(90deg, var(--aurora), var(--ice), var(--aurora-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { color: var(--muted); max-width: 640px; margin: 0 0 44px; font-size: 18px; }
 
-  .features { display: grid; gap: 28px; }
-  .feature {
-    display: grid;
-    grid-template-columns: 1.15fr 1fr;
-    gap: 36px;
-    align-items: center;
-    background: var(--panel);
+  /* a day on the mountain */
+  .day { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(300px, 380px); gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 16px 24px; margin: 0 -16px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent; }
+  .moment { scroll-snap-align: start; position: relative; margin: 0; border-radius: var(--radius); overflow: hidden; height: clamp(420px, 62vh, 540px); background: var(--panel-solid); border: 1px solid var(--line); }
+  .moment img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+  .moment:hover img { transform: scale(1.06); }
+  .moment::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6, 11, 22, 0) 40%, rgba(6, 11, 22, 0.92) 100%); }
+  .moment .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px; z-index: 1; }
+  .moment time { font: 700 13px/1 "JetBrains Mono", monospace; color: var(--ember); letter-spacing: 0.06em; }
+  .moment h3 { font: 800 26px/1.1 Outfit, sans-serif; margin: 8px 0 6px; }
+  .moment p { margin: 0; color: #c8d5e5; font-size: 15px; }
+
+  /* bento */
+  .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  .tile { position: relative; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); padding: 26px; overflow: hidden; isolation: isolate; }
+  .tile h3 { font: 800 24px/1.15 Outfit, sans-serif; margin: 0 0 8px; }
+  .tile p { margin: 0; color: var(--muted); font-size: 16px; }
+  .tile .tag { display: inline-block; margin-bottom: 14px; font: 700 12px/1 "JetBrains Mono", monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ice); padding: 6px 10px; border-radius: 8px; background: rgba(159, 216, 255, 0.1); }
+  .tile.photo { min-height: 340px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .tile.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transition: transform 0.8s ease; }
+  .tile.photo:hover img { transform: scale(1.05); }
+  .tile.photo::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(6, 11, 22, 0.05) 30%, rgba(6, 11, 22, 0.9) 100%); }
+  .tile.photo p { color: #d0dcea; }
+  .span-4 { grid-column: span 4; } .span-3 { grid-column: span 3; } .span-2 { grid-column: span 2; } .span-6 { grid-column: span 6; }
+  .tile.glow::after { content: ""; position: absolute; width: 260px; height: 260px; right: -80px; top: -80px; border-radius: 50%; background: radial-gradient(circle, rgba(92, 242, 180, 0.22), transparent 70%); z-index: -1; }
+  .tile.glow.violet::after { background: radial-gradient(circle, rgba(124, 140, 255, 0.25), transparent 70%); }
+  .tile.glow.amber::after { background: radial-gradient(circle, rgba(255, 179, 92, 0.2), transparent 70%); }
+  .menu { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 8px; }
+  .menu li { display: flex; gap: 10px; font-size: 15px; color: #d0dcea; border-bottom: 1px dashed var(--line); padding-bottom: 8px; }
+  .menu li b { color: #fff; white-space: nowrap; }
+  .menu li span { color: var(--muted); margin-left: auto; text-align: right; }
+  .cmds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  code, .cmd { font: 600 14px/1.4 "JetBrains Mono", ui-monospace, Consolas, monospace; background: rgba(255, 255, 255, 0.07); border: 1px solid var(--line); border-radius: 8px; padding: 2px 8px; color: #fff; overflow-wrap: anywhere; }
+  .cmd { padding: 7px 11px; }
+  .weather { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .weather span { padding: 7px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); }
+
+  /* panorama */
+  .pano { position: relative; height: min(70vh, 640px); overflow: hidden; }
+  .pano img { width: 100%; height: 100%; object-fit: cover; }
+  .pano::before, .pano::after { content: ""; position: absolute; left: 0; right: 0; height: 30%; z-index: 1; }
+  .pano::before { top: 0; background: linear-gradient(var(--night), transparent); }
+  .pano::after { bottom: 0; background: linear-gradient(transparent, var(--night)); }
+  .pano blockquote { position: absolute; z-index: 2; left: 0; right: 0; bottom: 12%; margin: 0; text-align: center; padding: 0 16px; font: 800 clamp(28px, 4.6vw, 54px)/1.08 Outfit, sans-serif; letter-spacing: -0.01em; text-shadow: 0 6px 30px rgba(0, 0, 0, 0.6); }
+
+  /* join: lift tickets */
+  .tickets { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: t; }
+  .ticket {
+    counter-increment: t; position: relative; padding: 24px 22px 22px; border-radius: 18px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
     border: 1px solid var(--line);
-    border-radius: 22px;
-    padding: 18px;
-    box-shadow: var(--shadow);
+    -webkit-mask: radial-gradient(circle 11px at 0 64px, transparent 98%, #000) , radial-gradient(circle 11px at 100% 64px, transparent 98%, #000);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
   }
-  .feature:nth-child(even) { grid-template-columns: 1fr 1.15fr; }
-  .feature:nth-child(even) .shot { order: 2; }
-  .shot { border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 9; background: #0b1320; }
-  .shot img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-  .feature:hover .shot img { transform: scale(1.03); }
-  .feature h3 { font-family: Outfit, Inter, sans-serif; font-size: 28px; margin: 0 0 10px; line-height: 1.15; }
-  .feature p { margin: 0 0 12px; color: var(--muted); }
-  .feature ul { margin: 0; padding-left: 20px; color: var(--muted); }
-  .feature .text { padding: 10px 14px 10px 4px; }
-  .feature:nth-child(even) .text { padding: 10px 4px 10px 14px; }
+  .ticket::before {
+    content: "STEP " counter(t, decimal-leading-zero); display: block; font: 700 12px/1 "JetBrains Mono", monospace; letter-spacing: 0.14em; color: var(--aurora);
+    padding-bottom: 18px; margin-bottom: 18px; border-bottom: 2px dashed rgba(255, 255, 255, 0.14);
+  }
+  .ticket h4 { margin: 0 0 6px; font: 800 21px/1.2 Outfit, sans-serif; }
+  .ticket p { margin: 0; color: var(--muted); font-size: 15.5px; }
+  .ticket ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+  .ticket b { color: #fff; }
 
-  .gear { background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .gear-grid {
-    background: linear-gradient(160deg, #dfeaf7, #f7fbff);
-    border-radius: 22px;
-    padding: 28px;
-    border: 1px solid var(--line);
-  }
-  :root[data-theme="dark"] .gear-grid { background: linear-gradient(160deg, #18263b, #0f1a2a); }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gear-grid { background: linear-gradient(160deg, #18263b, #0f1a2a); } }
-  .gear-grid img { image-rendering: pixelated; margin: 0 auto; width: 100%; max-width: 900px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
-  .chip { background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 15px; font-weight: 500; }
+  .faq { display: grid; gap: 10px; max-width: 860px; }
+  .faq details { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; }
+  .faq details[open] { background: rgba(255, 255, 255, 0.07); }
+  .faq summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; color: var(--aurora); font-weight: 800; font-size: 20px; line-height: 1; }
+  .faq details[open] summary::after { content: "–"; }
+  .faq p { margin: 10px 0 0; color: var(--muted); }
+  kbd { display: inline-block; min-width: 26px; padding: 1px 8px; border-radius: 7px; text-align: center; border: 1px solid var(--line); border-bottom-width: 3px; background: rgba(255,255,255,0.06); font: 700 14px/1.5 Inter, sans-serif; }
 
-  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .gallery figure { margin: 0; border-radius: 16px; overflow: hidden; position: relative; aspect-ratio: 16 / 10; background: #0b1320; }
-  .gallery figure.wide { grid-column: span 2; }
-  .gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-  .gallery figure:hover img { transform: scale(1.04); }
-  .gallery figcaption {
-    position: absolute; left: 12px; bottom: 10px; color: #fff; font-weight: 600; font-size: 14px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
-  }
+  .finale { text-align: center; padding: 120px 0 100px; position: relative; overflow: hidden; isolation: isolate; }
+  .finale::before { content: ""; position: absolute; inset: 0; z-index: -1; background: url("images/server-plaza-night.jpg") center / cover no-repeat; opacity: 0.45; }
+  .finale::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(var(--night), rgba(6, 11, 22, 0.4) 40%, rgba(6, 11, 22, 0.4) 60%, var(--night)); }
+  .finale .sub { margin: 0 auto 30px; }
+  .finale .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: step; }
-  .step {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 24px; position: relative;
-    box-shadow: var(--shadow);
-  }
-  .step::before {
-    counter-increment: step; content: counter(step);
-    display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px;
-    background: var(--accent); color: var(--accent-ink); font-weight: 800; margin-bottom: 14px;
-  }
-  .step h4 { margin: 0 0 6px; font-size: 19px; }
-  .step p { margin: 0; color: var(--muted); font-size: 16px; }
-  .note { margin-top: 22px; color: var(--muted); font-size: 16px; }
-
-  table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
-  th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--accent-soft); }
-  tr:last-child td { border-bottom: 0; }
-  kbd {
-    display: inline-block; min-width: 26px; padding: 2px 8px; border-radius: 7px; text-align: center;
-    border: 1px solid var(--line); border-bottom-width: 3px; background: var(--bg); font: 600 14px/1.5 Inter, sans-serif;
-  }
-  .table-scroll { overflow-x: auto; border-radius: 16px; }
-
-  .cta {
-    text-align: center; color: #fff; border-radius: 28px; padding: 64px 22px;
-    background: #0b1320 url("images/northern-lights.jpg") center / cover no-repeat; position: relative; overflow: hidden;
-  }
-  .cta::before { content: ""; position: absolute; inset: 0; background: rgba(6, 14, 28, 0.35); }
-  .cta > * { position: relative; }
-  .cta h2 { color: #fff; }
-  .cta p { color: #dce8f6; margin: 0 auto 26px; max-width: 560px; }
-  .cta .buttons { justify-content: center; }
-
-  footer { padding: 40px 0 60px; color: var(--muted); font-size: 15px; }
+  footer { padding: 36px 0 56px; color: var(--dim); font-size: 14.5px; border-top: 1px solid var(--line); }
   footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; }
+  footer a { color: var(--muted); }
 
-  .diff { display: inline-flex; align-items: center; gap: 6px; margin-right: 12px; font-weight: 600; }
-  .sym { width: 14px; height: 14px; display: inline-block; }
-  .sym.g { background: var(--green); border-radius: 50%; }
-  .sym.b { background: var(--blue); }
-  .sym.k { background: var(--black); transform: rotate(45deg) scale(0.85); }
+  /* reveal on scroll */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in { opacity: 1; transform: none; }
 
-  @media (max-width: 860px) {
-    .feature, .feature:nth-child(even) { grid-template-columns: 1fr; gap: 12px; }
-    .feature:nth-child(even) .shot { order: 0; }
-    .feature .text, .feature:nth-child(even) .text { padding: 6px 6px 10px; }
-    .gallery { grid-template-columns: 1fr 1fr; }
-    .gallery figure.wide { grid-column: span 2; }
-    .steps { grid-template-columns: 1fr; }
-    section { padding: 60px 0; }
+  @media (max-width: 960px) {
+    .bento { grid-template-columns: 1fr 1fr; }
+    .span-4, .span-3, .span-6 { grid-column: span 2; } .span-2 { grid-column: span 1; }
+    .tickets { grid-template-columns: 1fr 1fr; }
+    .nav .links { display: none; }
+    .nav .pill { margin-left: auto; }
   }
-  @media (max-width: 520px) {
-    .gallery { grid-template-columns: 1fr; }
-    .gallery figure.wide { grid-column: auto; }
-    .hero .wrap { padding-bottom: 40px; }
-    .btn { width: 100%; justify-content: center; }
+  @media (max-width: 640px) {
+    section { padding: 72px 0; }
+    .stats .wrap { grid-template-columns: 1fr 1fr; }
+    .stat:nth-child(2) { border-right: 0; }
+    .stat:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .bento { grid-template-columns: 1fr; }
+    .span-4, .span-3, .span-2, .span-6 { grid-column: auto; }
+    .tickets { grid-template-columns: 1fr; }
+    .status-card { min-width: 0; width: 100%; }
+    .hero-row .btn { width: 100%; }
+    .day { grid-auto-columns: 82%; }
+    .scroll-cue { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .snow { display: none; }
+    .hero-bg, .scroll-cue::after, .dot { animation: none !important; }
+    #snow { display: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
     * { transition: none !important; scroll-behavior: auto !important; }
   }
-
-.hero{background-image:url('images/server-mountain.jpg');min-height:76vh}.site-nav{padding:18px 0;background:var(--panel);border-bottom:1px solid var(--line)}.site-nav .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.site-nav a{text-decoration:none;font-weight:700}.hero h1{font-size:clamp(48px,8vw,100px)}.join-link{display:inline-block;background:var(--accent);color:var(--accent-ink);padding:14px 24px;border-radius:12px;text-decoration:none;font-weight:700}.rules{max-width:720px;color:var(--muted)}:focus-visible{outline:3px solid #f6a63d;outline-offset:5px}.steps{align-items:start}code{overflow-wrap:anywhere}
-.howto{counter-reset:how;list-style:none;padding:0;margin:0;display:grid;gap:14px}.howto>li{counter-increment:how;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px 22px 20px 74px;position:relative;box-shadow:var(--shadow)}.howto>li::before{content:counter(how);position:absolute;left:20px;top:20px;display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:800}.howto h4{margin:0 0 6px;font-size:19px}.howto p{margin:0;color:var(--muted);font-size:16px}.howto ul{margin:8px 0 0;padding-left:20px;color:var(--muted);font-size:16px}.addr{display:inline-block;font:700 17px/1.4 ui-monospace,Consolas,monospace;background:var(--accent-soft);color:var(--ink);padding:3px 10px;border-radius:8px}.faq{display:grid;gap:10px;max-width:820px}.faq details{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px}.faq summary{font-weight:700;cursor:pointer}.faq p{margin:10px 0 0;color:var(--muted)}
 </style></head><body>
-<nav class="site-nav" aria-label="Main navigation"><div class="wrap"><a href="./">← Fresh Tracks</a><a href="#join">Join the server</a></div></nav>
-<header class="hero"><div class="wrap"><span class="eyebrow">Fresh Tracks · Community server</span><h1>Your next lap.<br>With friends.</h1><p class="lede">Like the mod? Come ski with us on Snowmass. Ride the gondola, find a powder line, session the park, and meet back in Base Village.</p><div class="buttons"><a class="btn btn-primary" href="#join">Join us on Snowmass</a><a class="btn btn-ghost" href="./#install">Get Fresh Tracks</a></div></div></header>
+
+<nav class="nav" id="nav" aria-label="Main navigation"><div class="wrap">
+  <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 27 12 9l5 8 4-5 9 15z" fill="#eaf4ff"/><path d="m12 9 3 5-3 2-2-3z" fill="#5cf2b4"/></svg>Fresh Tracks</a>
+  <div class="links"><a href="#day">The mountain</a><a href="#resort">The resort</a><a href="#join">Join</a><a href="#help">Help</a></div>
+  <a class="pill" href="#join" aria-live="polite"><span class="dot" id="nav-dot"></span><span id="nav-status">Checking…</span></a>
+</div></nav>
+
+<header class="hero">
+  <div class="hero-bg" role="img" aria-label="Northern lights over Snowmass Base Village at night, the lodges lit and the slopes behind"></div>
+  <canvas id="snow" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <span class="eyebrow">Fresh Tracks community server</span>
+    <h1>Snowmass.<br>Tonight.</h1>
+    <p class="lede">A whole ski resort built in Minecraft, with 18 working lifts, two real villages, powder days and northern lights. Bring your friends and make a day of it.</p>
+    <div class="hero-row">
+      <div class="status-card" aria-live="polite">
+        <div class="status-top"><span class="dot" id="dot"></span><span id="headline">Checking the mountain…</span><small id="since"></small></div>
+        <p class="status-detail" id="detail">One moment.</p>
+        <div class="addr-row"><span class="addr" id="address">18.227.232.192</span><button class="icon-btn" id="copy" type="button">Copy</button></div>
+        <button class="btn btn-aurora" id="wake" type="button" disabled>Wake the mountain</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;justify-content:flex-end">
+        <a class="btn btn-glass" href="#join">How to join &rarr;</a>
+        <a class="btn btn-glass" href="./#install">Get Fresh Tracks</a>
+      </div>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#day">Drop in</a>
+</header>
+
+<div class="stats"><div class="wrap">
+  <div class="stat reveal"><b data-count="18">18</b><span>WORKING LIFTS</span></div>
+  <div class="stat reveal"><b>2</b><span>REAL VILLAGES</span></div>
+  <div class="stat reveal"><b data-count="20" data-suffix="+">20+</b><span>REAL RESTAURANT MENUS</span></div>
+  <div class="stat reveal"><b>24/7</b><span>WAKE IT ANY TIME</span></div>
+</div></div>
+
 <main>
-<section><div class="wrap"><div class="kicker">One mod. A mountain to share.</div><h2>Meet you at the lift.</h2><p class="sub">A Snowmass-inspired Minecraft world running Fresh Tracks, hosted by Griffdog21. Bring your friends and make a day of it.</p><div class="steps"><div class="step"><h4>Pick your line</h4><p>Explore wide slopes and tree runs, or link rails, jumps and butters in a park session. Ride skis or a snowboard.</p></div><div class="step"><h4>Chase the weather</h4><p>Bluebird laps, fresh powder and storms change the mountain. Groomed runs get tracked as you ride.</p></div><div class="step"><h4>Make it a resort day</h4><p>Earn Ski Bucks while riding, shop for gear, and take working lifts back up for another run.</p></div></div></div></section>
-<section style="padding-top:0"><div class="wrap"><div class="feature"><div class="shot"><img src="images/server-village.jpg" alt="The Base Village ice rink at night, ringed by iron street lamps with snowflake banners, string lights and fire pits" loading="lazy" width="1200" height="675"></div><div class="text"><div class="kicker">After last chair</div><h3>Stay for the village lights.</h3><p>Base Village and the Snowmass Mall come alive at night: iron street lamps with snowflake banners, lights strung over the ice rink, white lights in the trees and fire pits to warm up by.</p><p>Catch the northern lights over the mountain on a clear night. (Screenshots without shaders; shaders are optional.)</p></div></div></div></section>
-<section style="padding-top:0"><div class="wrap"><div class="kicker">New on the mountain</div><h2>The villages, made for real.</h2><p class="sub">Base Village and the Snowmass Mall are modeled on the real places, from the shops and restaurants down to what's on the menu.</p>
-<div class="gallery"><figure class="wide"><img src="images/server-tree.jpg" alt="A tall lit holiday tree with presents in Base Village at night" loading="lazy"><figcaption>The holiday tree in Base Village</figcaption></figure><figure><img src="images/server-elk.jpg" alt="A bronze bull elk sculpture on a lit stone plinth" loading="lazy"><figcaption>Bronze bull elk, Base Village</figcaption></figure></div>
-<div class="steps" style="margin-top:22px"><div class="step"><h4>Eat like a local</h4><p>Every restaurant serves what it's known for: tableside guac and street tacos at Venga Venga, ribs at Slow Groovin' BBQ, beef stew at the Stew Pot, wood-fired pizza at il Poggio and the Limelight Lounge, sushi at Kenichi, breakfast burritos at Fuel Cafe. You get hungry skiing, so stop in.</p></div><div class="step"><h4>Holidays in the village</h4><p>Lit holiday trees with presents, the US, Colorado and Snowmass flags over the welcome monuments, a snowflake sculpture in the Mall, evergreen window boxes, signposts to the lifts and art on the walls inside.</p></div><div class="step"><h4>Ski School and leaderboards</h4><p>Seven quick lessons pay Ski Bucks on your first day. The board on the Base Village plaza shows the mountain's champions live; type <code>/leaderboard</code> for the full lists.</p></div></div></div></section>
-<section id="join" style="padding-top:20px"><div class="wrap"><div class="kicker">Come ride</div><h2>Like the mod? Join the server.</h2><p class="sub">You need Minecraft: Java Edition and about ten minutes the first time. After that it's just: wake the server, join, ski.</p>
-<ol class="howto">
-<li><h4>Get a mod launcher</h4><p>Install <a href="https://prismlauncher.org">Prism Launcher</a> (recommended, free) or the <a href="https://modrinth.com/app">Modrinth App</a>, and sign in with the Microsoft account you play Minecraft on. It keeps the modded game separate, so your normal worlds are never touched.</p></li>
-<li><h4>Install the Fresh Tracks pack</h4><p>Download <b>FreshTracks-1.5.0.mrpack</b> from the <a href="https://github.com/Griffdog21/FreshTracks/releases/latest">latest release</a>.</p><ul><li><b>Prism:</b> Add Instance &rarr; Import &rarr; pick the file &rarr; OK.</li><li><b>Modrinth App:</b> + (Create instance) &rarr; Import from file &rarr; pick it.</li></ul><p style="margin-top:8px">It sets up Minecraft 26.3 and Fabric for you. Keep <b>Simple Voice Chat</b> ticked to talk to skiers near you; Sodium, Iris shaders and Distant Horizons are optional (untick them if your PC struggles). Launch it once to make sure it opens.</p></li>
-<li><h4>Wake the server</h4><p>Open the <a href="./play/"><b>Play page</b></a> and press <b>Wake the server</b>. It takes about two minutes; wait until it says <b>Online</b>. It sleeps 15 minutes after the last skier leaves, so if it's asleep, just wake it again.</p></li>
-<li><h4>Add the server and join</h4><p>In the Fresh Tracks instance: <b>Multiplayer &rarr; Add Server</b>, Server Address <span class="addr">18.227.232.192</span>, <b>Done</b>, then double-click it.</p></li>
-<li><h4>Register (first visit only)</h4><p>Type <code>/register</code> in chat. You land on the Base Village plaza with free skis, a snowboard, poles, goggles, helmet, jacket, snow pants, boots, hot cocoa, wax and a packed lunch. No password: your Minecraft account is your login.</p></li>
-<li><h4>Ride</h4><p>Put the skis or board in your hotbar and right-click to click in. Stand on <b>LOAD HERE</b> to board a lift. Type <code>/skibucks</code> for your wallet and today's challenges, and follow the Ski School tips to earn your first Ski Bucks.</p></li>
-</ol>
-<p style="margin-top:26px"><a class="join-link" href="./play/">Wake the server and play &rarr;</a></p>
-<h3 style="margin-top:40px">Trouble joining?</h3><div class="faq">
-<details><summary>"Can't connect to server" or it times out</summary><p>The server is asleep or still waking up. Open the <a href="./play/">Play page</a>, press Wake, and wait for <b>Online</b> before joining.</p></details>
-<details><summary>"Incompatible client", "outdated" or missing mods</summary><p>Your pack is out of date or you're in the wrong instance. Download the latest <b>.mrpack</b> from the <a href="https://github.com/Griffdog21/FreshTracks/releases/latest">releases page</a> and import it again, then join from the Fresh Tracks instance, not the plain game.</p></details>
-<details><summary>I'm floating and can't do anything</summary><p>New visitors start as spectators. Type <code>/register</code> and you're in.</p></details>
-<details><summary>My starter kit didn't show up</summary><p>It needs 11 free inventory slots. Clear some space and type <code>/register</code> again.</p></details>
-<details><summary>I can't place or break blocks</summary><p>That's on purpose: visitors can ski, ride lifts, shop and eat, but the resort itself is protected. Ask Griffdog21 if you'd like building permission.</p></details>
-<details><summary>Voice chat isn't working</summary><p>Make sure Simple Voice Chat is enabled in your instance, then press <kbd>V</kbd> in game to open its settings and pick your microphone.</p></details>
-</div>
-<div class="rules"><h3>A few mountain rules</h3><p>Be respectful, leave other players' gear alone, and enjoy the resort. Visitors can ski, ride lifts, shop and eat. Placing or breaking blocks requires the owner's permission.</p><p>The Snowmass world is hosted on the server; it isn't included in the mod download.</p></div></div></section>
-</main><footer><div class="wrap"><span><a href="./">Fresh Tracks</a> · Hosted by Griffdog21</span><span>A fan-made Minecraft resort, not affiliated with Aspen Snowmass, Mojang or Microsoft.</span></div></footer></body></html>
+<section id="day"><div class="wrap">
+  <div class="kicker reveal">A day on the mountain</div>
+  <h2 class="reveal">From first chair<br>to <em>northern lights.</em></h2>
+  <p class="sub reveal">Every screenshot here is the real server, taken in game with the optional shaders on. Scroll sideways through a day.</p>
+  <div class="day" tabindex="0" aria-label="A day on the mountain, scroll sideways">
+    <figure class="moment reveal"><img src="images/server-coney.jpg" alt="Red quad chairs climbing the Coney Express past a lodge, the slope and trees catching morning light" loading="lazy"><figcaption class="cap"><time>8:30 AM</time><h3>First chair</h3><p>Grab your skis or board from the starter kit and stand on LOAD HERE. The chairs scoop you up.</p></figcaption></figure>
+    <figure class="moment reveal"><img src="images/server-gondola-view.jpg" alt="Looking down over Base Village's lodges and roads toward the snowy peaks of Snowmass" loading="lazy"><figcaption class="cap"><time>10:00 AM</time><h3>Gondola laps</h3><p>The Elk Camp Gondola floats over Base Village to the upper mountain. Pick a line from the top.</p></figcaption></figure>
+    <figure class="moment reveal"><img src="images/server-park.jpg" alt="A terrain park run lined with table-top jumps between snowy pines, a lodge on the ridge" loading="lazy"><figcaption class="cap"><time>1:00 PM</time><h3>Park session</h3><p>Table-top jumps that build from medium to big, rails and butters. Tricks score points and Ski Bucks.</p></figcaption></figure>
+    <figure class="moment reveal"><img src="images/server-laps.jpg" alt="Wide groomed corduroy under a chairlift with towers stepping up the slope" loading="lazy"><figcaption class="cap"><time>3:30 PM</time><h3>Last laps</h3><p>Corduroy in the afternoon sun. Groomers get tracked up as everyone rides them.</p></figcaption></figure>
+    <figure class="moment reveal"><img src="images/server-plaza-night.jpg" alt="Base Village plaza at night under green aurora, the ice rink and fire pits glowing between the lodges" loading="lazy"><figcaption class="cap"><time>7:00 PM</time><h3>Après</h3><p>Fire pits, the ice rink and dinner in the village. On a clear night, look up.</p></figcaption></figure>
+  </div>
+</div></section>
+
+<div class="pano"><img src="images/server-vista.jpg" alt="Wide view across Snowmass at dusk: aspen groves, snowy meadows and distant ridgelines" loading="lazy"><blockquote class="reveal">The whole mountain, mapped from<br>the real Snowmass.</blockquote></div>
+
+<section id="resort"><div class="wrap">
+  <div class="kicker reveal">The resort</div>
+  <h2 class="reveal">Not a map. <em>A ski town.</em></h2>
+  <p class="sub reveal">Lifts, trails, villages and restaurants are laid out from the real Snowmass, then built to be lived in.</p>
+  <div class="bento">
+    <div class="tile photo span-4 reveal"><img src="images/server-village.jpg" alt="The Base Village ice rink at night ringed by street lamps, string lights and fire pits" loading="lazy"><span class="tag">Base Village · Snowmass Mall</span><h3>Two villages, made for real</h3><p>Lodges with hallways you can walk, a transit center with an escalator down to the buses, shops, a holiday tree with presents, flags over the welcome monuments and art on the walls.</p></div>
+    <div class="tile glow amber span-2 reveal"><span class="tag">Eat like a local</span><h3>Real menus</h3><p>Every restaurant serves what it's known for. You get hungry skiing.</p>
+      <ul class="menu"><li><b>Venga Venga</b><span>street tacos</span></li><li><b>Slow Groovin'</b><span>ribs</span></li><li><b>il Poggio</b><span>wood-fired pizza</span></li><li><b>Kenichi</b><span>sushi</span></li><li><b>Fuel Cafe</b><span>breakfast burrito</span></li></ul></div>
+    <div class="tile glow span-2 reveal"><span class="tag">Lifts</span><h3>18 lifts that actually run</h3><p>Gondolas, high-speed quads, six-packs, a T-bar and platters. Towers at real-world heights, chairs you ride in with friends.</p></div>
+    <div class="tile glow violet span-2 reveal"><span class="tag">Weather</span><h3>The mountain changes</h3><p>Storms roll in, and the morning after is a powder day.</p><div class="weather"><span>❄ Powder days</span><span>🌨 Snowstorms</span><span>💨 Blizzards</span><span>⚡ Thundersnow</span><span>🌌 Aurora</span></div></div>
+    <div class="tile glow amber span-2 reveal"><span class="tag">Progression</span><h3>Earn your gear</h3><p>Ride, learn tricks and take Ski School lessons to earn Ski Bucks. A day pass is easy. The rarest skis take real dedication. Trade in old gear at Four Mountain Sports.</p></div>
+    <div class="tile photo span-3 reveal"><img src="images/server-tree.jpg" alt="A tall lit holiday tree with presents in Base Village at night" loading="lazy"><span class="tag">Holidays</span><h3>The village after dark</h3><p>Iron street lamps with snowflake banners, white lights in the trees and fire pits to warm up by.</p></div>
+    <div class="tile glow span-3 reveal"><span class="tag">Handy commands</span><h3>Built for friends</h3><p>Leaderboards on the plaza, voice chat with skiers near you, and a few commands to get around.</p>
+      <div class="cmds"><span class="cmd">/skibucks</span><span class="cmd">/leaderboard</span><span class="cmd">/where</span><span class="cmd">/stuck</span><span class="cmd">/report</span></div></div>
+  </div>
+</div></section>
+
+<section id="join" style="padding-top:40px"><div class="wrap">
+  <div class="kicker reveal">Come ride</div>
+  <h2 class="reveal">Your lift ticket, <em>ten minutes.</em></h2>
+  <p class="sub reveal">You need Minecraft: Java Edition and about ten minutes the first time. After that, wake it, join and ski.</p>
+  <ol class="tickets">
+    <li class="ticket reveal"><h4>Get a mod launcher</h4><p>Install <a href="https://prismlauncher.org">Prism Launcher</a> (recommended, free) or the <a href="https://modrinth.com/app">Modrinth App</a> and sign in with your Minecraft account. Your normal worlds are never touched.</p></li>
+    <li class="ticket reveal"><h4>Install the pack</h4><p>Download the <b>FreshTracks .mrpack</b> from the <a href="https://github.com/Griffdog21/FreshTracks/releases/latest">latest release</a>.</p><ul><li><b>Prism:</b> Add Instance &rarr; Import &rarr; pick the file.</li><li><b>Modrinth:</b> + &rarr; Import from file.</li></ul></li>
+    <li class="ticket reveal"><h4>Wake the mountain</h4><p>Press <b>Wake the mountain</b> at the top of this page (or on the <a href="./play/">Play page</a>). About two minutes later it says <b>Online</b>. It naps 15 minutes after the last skier leaves.</p></li>
+    <li class="ticket reveal"><h4>Add the server</h4><p>In the Fresh Tracks instance: <b>Multiplayer &rarr; Add Server</b>, address <code>18.227.232.192</code>, then double-click it.</p></li>
+    <li class="ticket reveal"><h4>Register and ride</h4><p>Type <code>/register</code>. You land on the Base Village plaza with skis, a board, poles, goggles, a jacket, cocoa and a packed lunch. Right-click your skis to click in.</p></li>
+    <li class="ticket reveal"><h4>Optional: make it pretty</h4><p>The pack includes Iris shaders and Distant Horizons, which made these screenshots. Untick them if your PC struggles. Keep <b>Simple Voice Chat</b> on to talk to skiers near you.</p></li>
+  </ol>
+</div></section>
+
+<section id="help" style="padding-top:20px"><div class="wrap">
+  <div class="kicker reveal">Ski patrol</div>
+  <h2 class="reveal">Trouble joining?</h2>
+  <div class="faq">
+    <details><summary>"Can't connect to server" or it times out</summary><p>The mountain is asleep or still waking. Press <b>Wake the mountain</b> above and wait for <b>Online</b> before joining.</p></details>
+    <details><summary>"Incompatible client", "outdated" or missing mods</summary><p>Your pack is out of date or you're in the wrong instance. Download the latest <b>.mrpack</b> from the <a href="https://github.com/Griffdog21/FreshTracks/releases/latest">releases page</a>, import it again, and join from that instance.</p></details>
+    <details><summary>I'm floating and can't do anything</summary><p>New visitors start as spectators. Type <code>/register</code> and you're in.</p></details>
+    <details><summary>My starter kit didn't show up</summary><p>It needs 11 free inventory slots. Clear some space and type <code>/register</code> again.</p></details>
+    <details><summary>I'm stuck somewhere</summary><p>Type <code>/stuck</code> to get back to safe ground. If something on the map looks broken, <code>/report</code> it with a short note and it'll get fixed.</p></details>
+    <details><summary>I can't place or break blocks</summary><p>That's on purpose. Visitors can ski, ride, shop and eat, but the resort itself is protected. Ask Griffdog21 if you'd like building permission.</p></details>
+    <details><summary>Voice chat isn't working</summary><p>Make sure Simple Voice Chat is enabled in your instance, then press <kbd>V</kbd> in game to pick your microphone.</p></details>
+  </div>
+  <p style="color:var(--muted);margin-top:28px;max-width:760px">Mountain rules: be respectful, leave other players' gear alone, and enjoy the resort. The Snowmass world lives on the server and isn't part of the mod download.</p>
+</div></section>
+
+<div class="finale"><div class="wrap">
+  <div class="kicker">Last chair is whenever you say</div>
+  <h2>See you <em>on the hill.</em></h2>
+  <p class="sub">Wake the mountain, send your friends this page, and meet at the Base Village plaza.</p>
+  <div class="btns"><a class="btn btn-aurora" href="#top" id="to-top">Wake the mountain</a><a class="btn btn-glass" href="./">About Fresh Tracks</a></div>
+</div></div>
+</main>
+
+<footer><div class="wrap"><span><a href="./">Fresh Tracks</a> · Hosted by Griffdog21</span><span>A fan-made Minecraft resort, not affiliated with Aspen Snowmass, Mojang or Microsoft.</span></div></footer>
+
+<script>
+  // ----- live mountain status (same service as the Play page) -----
+  const API = "https://ork6byv4t2uetr6qwcwngnof4i0hzcmu.lambda-url.us-east-2.on.aws/";
+  const text = {
+    online: ["Open", "The lifts are running. Jump in.", "Open"],
+    starting: ["Waking up…", "The mountain is opening; about two minutes.", "Waking up"],
+    stopping: ["Closing for the night…", "It just went to sleep. Wake it again in a minute.", "Closing"],
+    asleep: ["Asleep", "Nobody's on. Wake it and it opens in about two minutes.", "Asleep"],
+  };
+  const $ = (id) => document.getElementById(id);
+  let timer = null;
+  function show(s) {
+    const [h, d, short] = text[s.state] || ["Can't reach it", "Try again in a moment.", "Status unknown"];
+    for (const id of ["dot", "nav-dot"]) $(id).className = "dot " + (s.state || "");
+    $("headline").textContent = h;
+    $("detail").textContent = d;
+    $("nav-status").textContent = short;
+    $("wake").disabled = s.state !== "asleep";
+    $("wake").textContent = s.state === "online" ? "Mountain is open" : s.state === "starting" ? "Waking…" : "Wake the mountain";
+    if (s.address) $("address").textContent = s.address;
+    clearTimeout(timer);
+    if (s.state === "starting" || s.state === "stopping") timer = setTimeout(() => check(false), 8000);
+  }
+  async function check(start) {
+    try {
+      const r = await fetch(API + "?json=1&start=" + (start ? "1" : "0"), { method: start ? "POST" : "GET", cache: "no-store" });
+      show(await r.json());
+    } catch (e) {
+      show({ state: "unknown" });
+    }
+  }
+  $("wake").onclick = () => { $("wake").disabled = true; $("wake").textContent = "Waking…"; check(true); };
+  $("copy").onclick = async () => {
+    try { await navigator.clipboard.writeText($("address").textContent); $("copy").textContent = "Copied"; }
+    catch (e) { $("copy").textContent = "Select it"; }
+    setTimeout(() => ($("copy").textContent = "Copy"), 1600);
+  };
+  $("to-top").onclick = (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); setTimeout(() => $("wake").focus(), 600); };
+  check(false);
+
+  // ----- nav goes solid after the hero -----
+  const nav = $("nav");
+  const onScroll = () => nav.classList.toggle("solid", window.scrollY > 40);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  // ----- reveal on scroll -----
+  const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.12 }) : null;
+  document.querySelectorAll(".reveal").forEach((el) => io ? io.observe(el) : el.classList.add("in"));
+
+  // ----- falling snow -----
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cv = $("snow");
+  if (!reduce && cv.getContext) {
+    const ctx = cv.getContext("2d");
+    let w, h, flakes = [];
+    const size = () => {
+      const r = Math.min(devicePixelRatio || 1, 2);
+      w = cv.clientWidth; h = cv.clientHeight; cv.width = w * r; cv.height = h * r; ctx.setTransform(r, 0, 0, r, 0, 0);
+      const n = Math.round(Math.min(160, w * h / 9000));
+      flakes = Array.from({ length: n }, () => ({ x: Math.random() * w, y: Math.random() * h, r: 0.6 + Math.random() * 2.2, s: 0.3 + Math.random() * 0.9, d: Math.random() * Math.PI * 2 }));
+    };
+    size(); addEventListener("resize", size);
+    let visible = true;
+    new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(cv);
+    const tick = (t) => {
+      if (visible) {
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "rgba(255,255,255,0.85)";
+        for (const f of flakes) {
+          f.y += f.s * (0.6 + f.r * 0.35);
+          f.x += Math.sin(t / 1600 + f.d) * 0.35 + 0.15;
+          if (f.y > h + 4) { f.y = -4; f.x = Math.random() * w; }
+          if (f.x > w + 4) f.x = -4;
+          ctx.globalAlpha = 0.35 + f.r / 3.2;
+          ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+</script>
+</body></html>
