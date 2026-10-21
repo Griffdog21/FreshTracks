@@ -14,13 +14,14 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 ## Like the mod? Join the server
 
-Come ski Snowmass with us—shared laps, park sessions, powder days and Base Village after dark.
+Come ski Snowmass with us: shared laps, park sessions, powder days, and Base Village and the Mall lit up after dark, with real restaurants serving what they're known for.
 
-1. Install the Fresh Tracks mod pack (below) for Minecraft Java 26.3.
-2. **Wake the server:** open **[griffdog21.github.io/FreshTracks/play](https://griffdog21.github.io/FreshTracks/play/)** and press *Wake the server*. It sleeps when nobody's on and takes about two minutes to open.
-3. In Minecraft: **Multiplayer → Add Server → `18.227.232.192`**, join, and type `/register` for your free skis, snowboard and gear.
+1. **Install the pack:** get [Prism Launcher](https://prismlauncher.org) or the [Modrinth App](https://modrinth.com/app), then import **`FreshTracks-1.5.0.mrpack`** from the [releases page](../../releases/latest) ([step by step](#-install-in-2-minutes)).
+2. **Wake the server:** open **[griffdog21.github.io/FreshTracks/play](https://griffdog21.github.io/FreshTracks/play/)**, press *Wake the server* and wait for **Online** (about two minutes). It sleeps 15 minutes after the last skier leaves.
+3. **Join:** in the Fresh Tracks instance, **Multiplayer → Add Server → `18.227.232.192`**.
+4. **Register (first visit):** type `/register` for free skis, a snowboard, gear and a packed lunch. Your Minecraft account is your login; no password.
 
-Keep **Simple Voice Chat** ticked in the pack to talk to skiers near you. [More about the server →](https://griffdog21.github.io/FreshTracks/server.html)
+Keep **Simple Voice Chat** ticked in the pack to talk to skiers near you. Can't connect? The server is still waking up. "Incompatible client"? Re-import the latest `.mrpack`. [Full guide and troubleshooting →](https://griffdog21.github.io/FreshTracks/server.html#join)
 
 ## New in 1.5.0: Ski School and leaderboards
 
