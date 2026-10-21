@@ -8,11 +8,11 @@ import net.minecraft.ChatFormatting;
  */
 public enum PassTier {
 	DAY_TICKET("Day Ticket", 0, 0, ChatFormatting.WHITE),
-	LOCAL("Local", 3, 1_500, ChatFormatting.GREEN),
-	SEASON_PASS("Season Pass", 7, 6_000, ChatFormatting.AQUA),
-	SKI_BUM("Ski Bum", 14, 20_000, ChatFormatting.BLUE),
-	LEGEND("Legend", 30, 60_000, ChatFormatting.LIGHT_PURPLE),
-	FOUNDER("Founders' Circle", 60, 150_000, ChatFormatting.GOLD);
+	LOCAL("Local", 3, 400, ChatFormatting.GREEN),
+	SEASON_PASS("Season Pass", 7, 1_500, ChatFormatting.AQUA),
+	SKI_BUM("Ski Bum", 14, 5_000, ChatFormatting.BLUE),
+	LEGEND("Legend", 30, 15_000, ChatFormatting.LIGHT_PURPLE),
+	FOUNDER("Founders' Circle", 60, 40_000, ChatFormatting.GOLD);
 
 	public final String title;
 	public final int days;

@@ -23,6 +23,12 @@ Come ski Snowmass with us: shared laps, park sessions, powder days, and Base Vil
 
 Keep **Simple Voice Chat** ticked in the pack to talk to skiers near you. Can't connect? The server is still waking up. "Incompatible client"? Re-import the latest `.mrpack`. [Full guide and troubleshooting →](https://griffdog21.github.io/FreshTracks/server.html#join)
 
+## New in 1.6.0: earning Ski Bucks feels like progress
+
+- **Paid by the run, not the second:** Ski Bucks you earn while riding (vertical, tricks, challenges) collect in your run's pocket and show on screen as you go. Stop or hop on a lift and you're paid in one go, with a line saying where it came from: no more bills popping into your hand mid-turn.
+- **Way rarer, so gear means something:** a day pass is still easy after a run or two, a rare pair of skis takes a couple of days of skiing, and the rarest gear takes weeks. Vertical pays 1 Ski Buck per 80 blocks, tricks at most 10 each (the first 150 a day in full), first chair 10, a day on the mountain 25 and up with your streak, challenges 25 to 40 each.
+- **Trade in your old gear:** on the Snowmass server, Four Mountain Sports buys used skis, boards, poles and boots back for Ski Bucks toward something better.
+
 ## New in 1.5.0: Ski School and leaderboards
 
 - **Ski School:** seven short lessons for your first day on the mountain: click in, ride a lift, ski some vertical, hit 50 km/h, land a trick, try a butter and buy something. Each pays Ski Bucks, and graduating earns 200 more and the Ski School Graduate Pin. New skiers get a nudge toward the next lesson when they join.
@@ -36,7 +42,7 @@ Keep **Simple Voice Chat** ticked in the pack to talk to skiers near you. Can't 
 - **Passes that take weeks:** Day Ticket, Local, Season Pass, Ski Bum, Legend and Founders' Circle. Each needs days on the mountain (a day counts once you ride 10 minutes) and lifetime earnings. The best shop gear stays locked until you get there.
 - **Pro shop:** ski and board techs now sell branded, tuned gear for Ski Bucks: skis and boards that ride a few percent better, jackets with extra warmth, up to numbered limited editions like The Golden Skis (ten per world).
 - **Real money:** Ski Bucks come as 1s, $100 and $1,000 bills. Shops make change automatically; use a bill to break it, sneak-use to tidy your wallet.
-- **Ski Bucks take a real grind:** big tricks still pay more, but with diminishing returns (at most 40 Ski Bucks a trick), and after 800 Ski Bucks from tricks in a day the rest pay a quarter. Skiing vertical, daily challenges, streaks and first chair pay in full, so the best way to earn is to ski the mountain every day.
+- **Ski Bucks take a real grind:** big tricks still pay more, but with diminishing returns (at most 10 Ski Bucks a trick), and after 150 Ski Bucks from tricks in a day the rest pay a quarter. Skiing vertical, daily challenges, streaks and first chair pay in full, so the best way to earn is to ski the mountain every day.
 - **Shaders included:** the mod pack now brings the Complementary Unbound shader pack, switched on with Iris (press **K** in game to turn shaders off on slower computers).
 - **Voice chat and smoother play:** the mod pack now offers Simple Voice Chat (talk to skiers near you on the Snowmass server), Lithium and FerriteCore. All optional; untick any in your launcher.
 - **Wallet on screen:** while you ride, your Ski Bucks total sits above the speedometer and every payout flashes in.

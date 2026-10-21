@@ -18,13 +18,13 @@ import net.minecraft.world.item.component.ItemLore;
  */
 public final class SkiSchool {
 	public enum Lesson {
-		CLICK_IN("Click into your skis or board (hold them and right-click)", 25),
-		LIFT("Ride a chairlift or the gondola (stand on LOAD HERE)", 25),
-		VERTICAL("Ski 200 blocks of vertical", 50),
-		SPEED("Hit 50 km/h (hold W to tuck)", 50),
-		TRICK("Land a trick (hold Space to load a jump, release to pop)", 25),
-		BUTTER("Press or butter (left-click + W or S while riding)", 50),
-		SHOP("Buy something from a shop with your Ski Bucks", 25);
+		CLICK_IN("Click into your skis or board (hold them and right-click)", 10),
+		LIFT("Ride a chairlift or the gondola (stand on LOAD HERE)", 10),
+		VERTICAL("Ski 200 blocks of vertical", 15),
+		SPEED("Hit 50 km/h (hold W to tuck)", 15),
+		TRICK("Land a trick (hold Space to load a jump, release to pop)", 10),
+		BUTTER("Press or butter (left-click + W or S while riding)", 15),
+		SHOP("Buy something from a shop with your Ski Bucks", 10);
 
 		public final String text;
 		public final int reward;
@@ -35,7 +35,7 @@ public final class SkiSchool {
 		}
 	}
 
-	public static final int GRADUATION_BONUS = 200;
+	public static final int GRADUATION_BONUS = 40;
 
 	private SkiSchool() {
 	}
@@ -69,7 +69,7 @@ public final class SkiSchool {
 			.append(Component.literal(l.text.replaceAll(" \\(.*\\)", "")).withStyle(ChatFormatting.WHITE))
 			.append(Component.literal("  +" + l.reward + " Ski Bucks  (" + count(p) + "/" + Lesson.values().length + ")").withStyle(ChatFormatting.GOLD)));
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_CHIME.value(), SoundSource.PLAYERS, 0.8f, 1.4f);
-		Economy.earn(player, l.reward, null);
+		Economy.earn(player, l.reward, "Ski School");
 		if (next != null) {
 			player.sendSystemMessage(Component.literal("  Next: " + next.text).withStyle(ChatFormatting.GRAY));
 		} else {
@@ -91,7 +91,7 @@ public final class SkiSchool {
 			.append(Component.literal("  +" + GRADUATION_BONUS + " Ski Bucks and the Graduate Pin. Now go chase the daily challenges (/skibucks).")
 				.withStyle(ChatFormatting.YELLOW)));
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1f, 1f);
-		Economy.earn(player, GRADUATION_BONUS, null);
+		Economy.earn(player, GRADUATION_BONUS, "Ski School");
 	}
 
 	/** A reminder of the next lesson for anyone still in school (on join). */

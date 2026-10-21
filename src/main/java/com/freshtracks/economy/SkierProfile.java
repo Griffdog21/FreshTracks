@@ -53,6 +53,10 @@ public final class SkierProfile {
 	public int ticketsFound;
 	/** Not saved: rate limits for messages. */
 	transient long lastPayMessage;
+	/** Game time of the last tick on skis or a board (the run's pocket pays out a few seconds after). */
+	transient long lastRideTick;
+	/** What this run's pocket is made of, for the payout line. */
+	transient java.util.Map<String, Integer> pocketWhy = new java.util.LinkedHashMap<>();
 	/** Trick earnings today (the daily cap); not saved, a restart starts the count again. */
 	transient String trickDay = "";
 	transient int trickBucksToday;

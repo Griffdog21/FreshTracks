@@ -12,7 +12,8 @@ public final class SkierRecords {
 		Codec.INT.optionalFieldOf("longest_air", 0).forGetter(r -> r.longestAir),
 		Codec.INT.optionalFieldOf("top_kmh", 0).forGetter(r -> r.topKmh),
 		Codec.INT.optionalFieldOf("lessons", 0).forGetter(r -> r.lessons),
-		Codec.BOOL.optionalFieldOf("graduated", false).forGetter(r -> r.graduated)
+		Codec.BOOL.optionalFieldOf("graduated", false).forGetter(r -> r.graduated),
+		Codec.INT.optionalFieldOf("pocket", 0).forGetter(r -> r.pocket)
 	).apply(i, SkierRecords::new));
 
 	/** The skier's name as last seen (leaderboards list offline skiers too). */
@@ -25,11 +26,14 @@ public final class SkierRecords {
 	/** Bit per Ski School lesson done. */
 	public int lessons;
 	public boolean graduated;
+	/** Ski Bucks earned on the run so far, paid out when the skier stops (kept if they log off mid-run). */
+	public int pocket;
 
 	public SkierRecords() {
 	}
 
-	private SkierRecords(String name, int bestTrick, String bestTrickName, int longestAir, int topKmh, int lessons, boolean graduated) {
+	private SkierRecords(String name, int bestTrick, String bestTrickName, int longestAir, int topKmh, int lessons, boolean graduated, int pocket) {
+		this.pocket = pocket;
 		this.name = name;
 		this.bestTrick = bestTrick;
 		this.bestTrickName = bestTrickName;

@@ -4,18 +4,18 @@ package com.freshtracks.economy;
 public final class Challenges {
 	public static final int PER_DAY = 3;
 	/** Paid once all three are done. */
-	public static final int ALL_BONUS = 250;
+	public static final int ALL_BONUS = 60;
 
 	public enum Kind {
-		VERTICAL("Ski %s blocks of vertical", 1500, 150),
-		BIG_TRICK("Land a trick worth %s+ points", 2000, 150),
-		TRICKS("Land %s tricks", 15, 100),
-		HANG_TIME("Catch %s seconds of air in one jump", 2, 120),
-		LIFTS("Ride %s lifts", 6, 100),
-		SPEED("Hit %s km/h", 70, 120),
-		POINTS("Score %s trick points", 12000, 150),
-		RIDE_TIME("Ride for %s minutes", 25, 100),
-		BUTTERS("Land %s presses or butters", 5, 120);
+		VERTICAL("Ski %s blocks of vertical", 1500, 40),
+		BIG_TRICK("Land a trick worth %s+ points", 2000, 40),
+		TRICKS("Land %s tricks", 15, 25),
+		HANG_TIME("Catch %s seconds of air in one jump", 2, 30),
+		LIFTS("Ride %s lifts", 6, 25),
+		SPEED("Hit %s km/h", 70, 30),
+		POINTS("Score %s trick points", 12000, 40),
+		RIDE_TIME("Ride for %s minutes", 25, 25),
+		BUTTERS("Land %s presses or butters", 5, 30);
 
 		public final String text;
 		public final int target;

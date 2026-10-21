@@ -23,6 +23,7 @@ public final class ShopKeepers {
 
 	public static void init() {
 		ProShop.register();
+		Economy.init();
 		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((listener, sender, server) ->
 			server.execute(() -> SkiSchool.remind(listener.getPlayer())));
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {

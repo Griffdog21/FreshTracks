@@ -15,28 +15,28 @@ import net.minecraft.world.phys.Vec3;
  * on the mountain (more on a streak), three daily challenges, and - very rarely - a Golden Ticket.
  */
 public final class Economy {
-	/** Vertical blocks skied per Ski Buck. */
-	private static final double VERTICAL_PER_BUCK = 20;
+	/** Vertical blocks skied per Ski Buck (a top-to-bottom Big Burn lap is worth about a dozen). */
+	private static final double VERTICAL_PER_BUCK = 80;
 	/** Riding time that makes a day count (10 minutes). */
 	private static final int DAY_TICKS = 12_000;
-	private static final int FIRST_CHAIR = 50;
+	private static final int FIRST_CHAIR = 10;
 
 	private Economy() {
 	}
 
-	/** Trick pay: a Ski Buck per 100 points up to 1,500 points, then less and less for bigger tricks, at most 40. */
+	/** Trick pay: a Ski Buck per 400 points up to 1,500 points, then a little more for bigger tricks, at most 10. */
 	public static int trickBucks(int points) {
 		if (points <= 0) {
 			return 0;
 		}
 		if (points <= 1500) {
-			return points / 100;
+			return points / 400;
 		}
-		return Math.min(40, 15 + (int) Math.round(Math.sqrt(points - 1500) / 5));
+		return Math.min(10, 4 + (int) Math.round(Math.sqrt(points - 1500) / 15));
 	}
 
 	/** Ski Bucks from tricks per day before the rest pay a quarter (skiing, challenges and streaks aren't capped). */
-	public static final int TRICK_DAILY_FULL = 800;
+	public static final int TRICK_DAILY_FULL = 150;
 
 	public static String today() {
 		return LocalDate.now().toString();
@@ -79,13 +79,61 @@ public final class Economy {
 		}
 		SkierProfile p = profile(player);
 		PassTier before = PassTier.of(p);
-		SkiBucks.give(player, amount, 1000);
+		// into this run's pocket: paid out in one go when you stop riding, not a bill in your hand every few seconds
+		p.records.pocket += amount;
+		p.pocketWhy.merge(why == null ? "tricks" : category(why), amount, Integer::sum);
 		p.lifetimeEarned += amount;
 		dirty(player);
-		if (why != null) {
-			player.sendOverlayMessage(Component.literal("+" + SkiBucks.format(amount) + " Ski Bucks  ·  " + why).withStyle(ChatFormatting.GOLD));
+		long now = player.level().getGameTime();
+		if (now - p.lastPayMessage > 160) {
+			p.lastPayMessage = now;
+			player.sendOverlayMessage(Component.literal("This run: +" + SkiBucks.format(p.records.pocket) + " Ski Bucks").withStyle(ChatFormatting.GOLD));
 		}
 		checkTier(player, p, before);
+	}
+
+	private static String category(String why) {
+		if (why.contains("streak") || why.contains("day on the mountain")) {
+			return "day bonus";
+		}
+		if (why.contains("first chair")) {
+			return "first chair";
+		}
+		if (why.contains("sweep")) {
+			return "challenge";
+		}
+		return why;
+	}
+
+	/** Pays out the run's pocket once you've been off your skis or board for a few seconds (stopped, or on a lift). */
+	public static void init() {
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(server -> {
+			if (server.getTickCount() % 10 != 0) {
+				return;
+			}
+			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+				SkierProfile p = profile(player);
+				if (p.records.pocket <= 0 || player.level().getGameTime() - p.lastRideTick < 60) {
+					continue;
+				}
+				payOut(player, p);
+			}
+		});
+	}
+
+	private static void payOut(ServerPlayer player, SkierProfile p) {
+		int amount = p.records.pocket;
+		p.records.pocket = 0;
+		dirty(player);
+		SkiBucks.give(player, amount, 1000);
+		StringBuilder parts = new StringBuilder();
+		for (var e : p.pocketWhy.entrySet()) {
+			parts.append(parts.isEmpty() ? "" : "  ·  ").append(e.getKey()).append(' ').append(SkiBucks.format(e.getValue()));
+		}
+		p.pocketWhy.clear();
+		player.sendSystemMessage(Component.literal("Run paid: +" + SkiBucks.format(amount) + " Ski Bucks").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD)
+			.append(Component.literal(parts.isEmpty() ? "" : "   " + parts).withStyle(ChatFormatting.GRAY)));
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5f, 0.8f);
 	}
 
 	private static void checkTier(ServerPlayer player, SkierProfile p, PassTier before) {
@@ -155,6 +203,7 @@ public final class Economy {
 	/** Every server tick a player rides skis or a board. */
 	public static void ride(ServerPlayer player, Vec3 moved, double speed) {
 		SkierProfile p = profile(player);
+		p.lastRideTick = player.level().getGameTime();
 		if (speed > 0.05) {
 			SkiSchool.complete(player, p, SkiSchool.Lesson.CLICK_IN);
 			p.rideTicksToday++;
@@ -174,14 +223,9 @@ public final class Economy {
 			}
 			// pay vertical as it adds up, in small batches so the hotbar isn't spammed
 			int owed = (int) (p.pendingVertical / VERTICAL_PER_BUCK);
-			if (owed >= 5) {
+			if (owed >= 1) {
 				p.pendingVertical -= (int) (owed * VERTICAL_PER_BUCK);
-				long now = player.level().getGameTime();
-				boolean say = now - p.lastPayMessage > 400;
-				if (say) {
-					p.lastPayMessage = now;
-				}
-				earn(player, owed, say ? "vertical" : null);
+				earn(player, owed, "vertical");
 			}
 		}
 		// the rig's smoothed speed: a single-tick jump (clicking in, a teleport) doesn't count as a top speed
@@ -222,7 +266,7 @@ public final class Economy {
 		p.lastDay = p.today;
 		p.daysSkied++;
 		dirty(player);
-		int bonus = 100 + 50 * Math.min(p.streak - 1, 6);
+		int bonus = 25 + 10 * Math.min(p.streak - 1, 6);
 		player.sendSystemMessage(Component.literal("Day " + p.daysSkied + " on the mountain").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
 			.append(Component.literal(p.streak > 1 ? "  ·  " + p.streak + "-day streak" : "").withStyle(ChatFormatting.YELLOW)));
 		earn(player, bonus, p.streak > 1 ? p.streak + "-day streak" : "a day on the mountain");
