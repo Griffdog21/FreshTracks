@@ -16,27 +16,27 @@ import net.minecraft.world.phys.Vec3;
  */
 public final class Economy {
 	/** Vertical blocks skied per Ski Buck (a top-to-bottom Big Burn lap is worth about a dozen). */
-	private static final double VERTICAL_PER_BUCK = 80;
+	private static final double VERTICAL_PER_BUCK = 200;
 	/** Riding time that makes a day count (10 minutes). */
 	private static final int DAY_TICKS = 12_000;
-	private static final int FIRST_CHAIR = 10;
+	private static final int FIRST_CHAIR = 5;
 
 	private Economy() {
 	}
 
-	/** Trick pay: a Ski Buck per 400 points up to 1,500 points, then a little more for bigger tricks, at most 10. */
+	/** Trick pay: a Ski Buck per 1,000 points up to 3,000 points, then a little more for bigger tricks, at most 6. */
 	public static int trickBucks(int points) {
 		if (points <= 0) {
 			return 0;
 		}
-		if (points <= 1500) {
-			return points / 400;
+		if (points <= 3000) {
+			return points / 1000;
 		}
-		return Math.min(10, 4 + (int) Math.round(Math.sqrt(points - 1500) / 15));
+		return Math.min(6, 3 + (int) Math.round(Math.sqrt(points - 3000) / 25));
 	}
 
 	/** Ski Bucks from tricks per day before the rest pay a quarter (skiing, challenges and streaks aren't capped). */
-	public static final int TRICK_DAILY_FULL = 150;
+	public static final int TRICK_DAILY_FULL = 40;
 
 	public static String today() {
 		return LocalDate.now().toString();
@@ -266,7 +266,7 @@ public final class Economy {
 		p.lastDay = p.today;
 		p.daysSkied++;
 		dirty(player);
-		int bonus = 25 + 10 * Math.min(p.streak - 1, 6);
+		int bonus = 10 + 3 * Math.min(p.streak - 1, 5);
 		player.sendSystemMessage(Component.literal("Day " + p.daysSkied + " on the mountain").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD)
 			.append(Component.literal(p.streak > 1 ? "  ·  " + p.streak + "-day streak" : "").withStyle(ChatFormatting.YELLOW)));
 		earn(player, bonus, p.streak > 1 ? p.streak + "-day streak" : "a day on the mountain");

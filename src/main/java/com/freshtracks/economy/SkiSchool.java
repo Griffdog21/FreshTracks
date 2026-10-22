@@ -18,13 +18,13 @@ import net.minecraft.world.item.component.ItemLore;
  */
 public final class SkiSchool {
 	public enum Lesson {
-		CLICK_IN("Click into your skis or board (hold them and right-click)", 10),
-		LIFT("Ride a chairlift or the gondola (stand on LOAD HERE)", 10),
-		VERTICAL("Ski 200 blocks of vertical", 15),
-		SPEED("Hit 50 km/h (hold W to tuck)", 15),
-		TRICK("Land a trick (hold Space to load a jump, release to pop)", 10),
-		BUTTER("Press or butter (left-click + W or S while riding)", 15),
-		SHOP("Buy something from a shop with your Ski Bucks", 10);
+		CLICK_IN("Click into your skis or board (hold them and right-click)", 5),
+		LIFT("Ride a chairlift or the gondola (stand on LOAD HERE)", 5),
+		VERTICAL("Ski 200 blocks of vertical", 5),
+		SPEED("Hit 50 km/h (hold W to tuck)", 5),
+		TRICK("Land a trick (hold Space to load a jump, release to pop)", 5),
+		BUTTER("Press or butter (left-click + W or S while riding)", 5),
+		SHOP("Buy something from a shop with your Ski Bucks", 5);
 
 		public final String text;
 		public final int reward;
@@ -35,7 +35,7 @@ public final class SkiSchool {
 		}
 	}
 
-	public static final int GRADUATION_BONUS = 40;
+	public static final int GRADUATION_BONUS = 15;
 
 	private SkiSchool() {
 	}

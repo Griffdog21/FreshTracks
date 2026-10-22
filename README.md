@@ -16,12 +16,17 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 Come ski Snowmass with us: shared laps, park sessions, powder days, and Base Village and the Mall lit up after dark, with real restaurants serving what they're known for.
 
-1. **Install the pack:** get [Prism Launcher](https://prismlauncher.org) or the [Modrinth App](https://modrinth.com/app), then import **`FreshTracks-1.6.0.mrpack`** from the [releases page](../../releases/latest) ([step by step](#-install-in-2-minutes)).
+1. **Install the pack:** get [Prism Launcher](https://prismlauncher.org) or the [Modrinth App](https://modrinth.com/app), then import **`FreshTracks-1.6.1.mrpack`** from the [releases page](../../releases/latest) ([step by step](#-install-in-2-minutes)).
 2. **Wake the server:** open **[griffdog21.github.io/FreshTracks/play](https://griffdog21.github.io/FreshTracks/play/)**, press *Wake the server* and wait for **Online** (about two minutes). It sleeps 15 minutes after the last skier leaves.
 3. **Join:** in the Fresh Tracks instance, **Multiplayer → Add Server → `18.227.232.192`**.
 4. **Register (first visit):** type `/register` for free skis, a snowboard, gear and a packed lunch. Your Minecraft account is your login; no password.
 
 Keep **Simple Voice Chat** ticked in the pack to talk to skiers near you. Can't connect? The server is still waking up. "Incompatible client"? Re-import the latest `.mrpack`. [Full guide and troubleshooting →](https://griffdog21.github.io/FreshTracks/server.html#join)
+
+## New in 1.6.1: a slower grind, and no more surprise launches
+
+- **Ski Bucks a lot harder to come by:** a full day of skiing now pays around 200 Ski Bucks and a casual hour 50 to 80, so the good gear is something you work toward over weeks. Vertical pays 1 Ski Buck per 200 blocks; tricks pay at most 6 each, the first 40 a day in full; first chair 5; a day on the mountain 10, up to 25 on a streak; challenges 10 to 15 each and 20 for clearing all three; Ski School lessons 5 each and 15 to graduate.
+- **No more getting flung into the air:** riding up onto a ledge, a step or a block of snow used to carry its whole height on as speed, so the next flat bit could throw you several blocks up. Your knees soak up steps now; kickers and lips launch you exactly as before.
 
 ## New in 1.6.0: earning Ski Bucks feels like progress
 
@@ -142,12 +147,12 @@ Want to jump straight in? The **Fresh Tracks Test World** is a ready-made ski hi
 Everything comes as one file you import into a launcher. It makes its own separate game folder, so **your normal Minecraft worlds are never touched**.
 
 **Prism Launcher** (recommended, free: [prismlauncher.org](https://prismlauncher.org))
-1. Download **`FreshTracks-1.6.0.mrpack`** from the [releases page](../../releases/latest).
+1. Download **`FreshTracks-1.6.1.mrpack`** from the [releases page](../../releases/latest).
 2. In Prism: **Add Instance → Import** → pick the file → **OK**.
 3. Select the new **Fresh Tracks** instance and press **Launch**.
 
 **Modrinth App** ([modrinth.com/app](https://modrinth.com/app))
-1. Download **`FreshTracks-1.6.0.mrpack`**.
+1. Download **`FreshTracks-1.6.1.mrpack`**.
 2. **+ (Create instance) → Import from file** → pick it → **Play**.
 
 The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **Sodium, Iris (shaders) and Distant Horizons** as optional extras (untick them if your PC struggles). For the screenshots above: Iris with the *Complementary Unbound* shader pack.
@@ -158,7 +163,7 @@ The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **S
 <summary>Manual install (official launcher)</summary>
 
 1. Install Fabric for Minecraft 26.3 with the [Fabric installer](https://fabricmc.net/use/installer) (give the profile its own game directory so your normal worlds stay separate).
-2. Put `freshtracks-1.6.0.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
+2. Put `freshtracks-1.6.1.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
 </details>
 
 ## 🎮 Controls

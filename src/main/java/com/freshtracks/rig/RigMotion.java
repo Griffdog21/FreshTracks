@@ -79,6 +79,8 @@ public final class RigMotion {
 	// more at speed) before you're airborne. Steep pitches and block steps under that are ridden, not jumped.
 	private static final double STICK = 0.30;
 	private static final double STICK_SPEED = 0.10;
+	/** How much of a step up (a block edge, a stair, a layer of snow) carries on as upward speed: the knees soak the rest. */
+	private static final double CLIMB_CARRY = 0.06;
 
 	// Crashes.
 	private static final double WALL_CRASH = 0.42;
@@ -489,7 +491,7 @@ public final class RigMotion {
 			events.popped = pop > 0;
 			return new Vec3(nx, pos.y, nz);
 		}
-		vy = floor - pos.y;
+		vy = climb(floor - pos.y, slopeVy);
 		return new Vec3(nx, floor, nz);
 	}
 
@@ -802,7 +804,7 @@ public final class RigMotion {
 			takeoff(ny, false);
 		} else {
 			ny = floor;
-			vy = ny - y;
+			vy = climb(ny - y, slopeVy);
 		}
 		if (edgeCheck) {
 			lean += (in.steer() * 38f - lean) * 0.3f; // hips into the hill, edges dug in
@@ -811,6 +813,15 @@ public final class RigMotion {
 		}
 		countPowderTurn(level, nx, ny, nz, speed);
 		return new Vec3(nx, ny, nz);
+	}
+
+	/**
+	 * Vertical speed after following the snow by dy this tick. Going down, or up a smooth slope, it's just that; but
+	 * riding up onto a ledge or a step must not carry the step's whole height on as speed, or the next flat stretch
+	 * throws the rider into the air (a one-block edge used to fling skiers several blocks high).
+	 */
+	private static double climb(double dy, double slopeVy) {
+		return dy <= 0 ? dy : Math.min(dy, Math.max(slopeVy, 0) + CLIMB_CARRY);
 	}
 
 	/**
