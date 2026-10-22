@@ -146,12 +146,10 @@
   .sub { color: var(--muted); max-width: 640px; margin: 0 0 44px; font-size: 18px; }
 
   /* a day on the mountain */
-  .day { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(300px, 380px); gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 16px 24px; margin: 0 -16px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent; }
-  .moment { scroll-snap-align: start; position: relative; margin: 0; border-radius: var(--radius); overflow: hidden; height: clamp(420px, 62vh, 540px); background: var(--panel-solid); border: 1px solid var(--line); }
-  .moment img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
-  .moment:hover img { transform: scale(1.06); }
-  .moment::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6, 11, 22, 0) 40%, rgba(6, 11, 22, 0.92) 100%); }
-  .moment .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px; z-index: 1; }
+  .day { display: grid; grid-auto-flow: column; grid-auto-columns: min(460px, 82vw); gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 16px 24px; margin: 0 -16px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent; }
+  .moment { scroll-snap-align: start; position: relative; margin: 0; border-radius: var(--radius); overflow: hidden; background: var(--panel-solid); border: 1px solid var(--line); }
+  .moment img { width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: contain; background: #000; }
+  .moment .cap { padding: 18px 22px 22px; }
   .moment time { font: 700 13px/1 "JetBrains Mono", monospace; color: var(--ember); letter-spacing: 0.06em; }
   .moment h3 { font: 800 26px/1.1 Outfit, sans-serif; margin: 8px 0 6px; }
   .moment p { margin: 0; color: #c8d5e5; font-size: 15px; }
@@ -162,11 +160,11 @@
   .tile h3 { font: 800 24px/1.15 Outfit, sans-serif; margin: 0 0 8px; }
   .tile p { margin: 0; color: var(--muted); font-size: 16px; }
   .tile .tag { display: inline-block; margin-bottom: 14px; font: 700 12px/1 "JetBrains Mono", monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ice); padding: 6px 10px; border-radius: 8px; background: rgba(159, 216, 255, 0.1); }
-  .tile.photo { min-height: 340px; display: flex; flex-direction: column; justify-content: flex-end; }
-  .tile.photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transition: transform 0.8s ease; }
-  .tile.photo:hover img { transform: scale(1.05); }
-  .tile.photo::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(6, 11, 22, 0.05) 30%, rgba(6, 11, 22, 0.9) 100%); }
-  .tile.photo p { color: #d0dcea; }
+  .tile.photo { padding: 0; display: flex; flex-direction: column; }
+  .tile.photo img { width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: contain; background: #000; border-bottom: 1px solid var(--line); }
+  .tile.photo .tag { margin: 22px 26px 12px; align-self: flex-start; }
+  .tile.photo h3, .tile.photo p { margin-left: 26px; margin-right: 26px; }
+  .tile.photo p { margin-bottom: 26px; }
   .span-4 { grid-column: span 4; } .span-3 { grid-column: span 3; } .span-2 { grid-column: span 2; } .span-6 { grid-column: span 6; }
   .tile.glow::after { content: ""; position: absolute; width: 260px; height: 260px; right: -80px; top: -80px; border-radius: 50%; background: radial-gradient(circle, rgba(92, 242, 180, 0.22), transparent 70%); z-index: -1; }
   .tile.glow.violet::after { background: radial-gradient(circle, rgba(124, 140, 255, 0.25), transparent 70%); }
@@ -182,8 +180,8 @@
   .weather span { padding: 7px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); }
 
   /* panorama */
-  .pano { position: relative; height: min(70vh, 640px); overflow: hidden; }
-  .pano img { width: 100%; height: 100%; object-fit: cover; }
+  .pano { position: relative; overflow: hidden; }
+  .pano img { width: 100%; aspect-ratio: 16 / 9; height: auto; }
   .pano::before, .pano::after { content: ""; position: absolute; left: 0; right: 0; height: 30%; z-index: 1; }
   .pano::before { top: 0; background: linear-gradient(var(--night), transparent); }
   .pano::after { bottom: 0; background: linear-gradient(transparent, var(--night)); }
