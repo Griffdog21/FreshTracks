@@ -215,6 +215,8 @@
   .rec-list { list-style: none; padding: 0; margin: 0 0 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .rec-list li { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 4px; }
   .rec-list b { color: #fff; }
+  .rec-list b a { color: #fff; text-decoration-color: var(--aurora); text-underline-offset: 3px; }
+  .rec-list b a:hover { color: var(--aurora); }
   .rec-list span { color: var(--muted); font-size: 15px; }
   .recommend .rec-note { margin: 0; color: var(--muted); font-size: 15px; }
   @media (max-width: 760px) { .rec-list { grid-template-columns: 1fr; } }
@@ -352,11 +354,11 @@
   </ol>
   <div class="recommend reveal">
     <div class="rec-head"><span class="rec-badge">Highly recommended</span><h3>Shaders and Distant Horizons</h3></div>
-    <p>They're what make Snowmass look like the screenshots on this page: real light on the snow, sunsets, glowing village lights, and the whole range of mountains out to the horizon instead of fog a few hundred blocks away. Both come in the Fresh Tracks pack, so just leave them ticked when you import it.</p>
+    <p>They're what make Snowmass look like the screenshots on this page: real light on the snow, sunsets, glowing village lights, and the whole range of mountains out to the horizon instead of fog a few hundred blocks away. Both come in the Fresh Tracks pack, so just leave them ticked when you import it. Playing without the pack? Get them from the links below (pick the Fabric 26.3 versions).</p>
     <ul class="rec-list">
-      <li><b>Iris + Complementary shaders</b><span>Lighting, shadows, sky and water. Press <kbd>K</kbd> in game to turn them on or off.</span></li>
-      <li><b>Distant Horizons</b><span>Draws the far-off mountains and valleys at low detail, so you can see across the resort from the top.</span></li>
-      <li><b>Sodium</b><span>Smoother frame rates, and it makes room for the other two.</span></li>
+      <li><b><a href="https://modrinth.com/mod/iris">Iris</a> + <a href="https://modrinth.com/shader/complementary-unbound">Complementary shaders</a></b><span>Lighting, shadows, sky and water. Press <kbd>K</kbd> in game to turn them on or off.</span></li>
+      <li><b><a href="https://modrinth.com/mod/distanthorizons">Distant Horizons</a></b><span>Draws the far-off mountains and valleys at low detail, so you can see across the resort from the top.</span></li>
+      <li><b><a href="https://modrinth.com/mod/sodium">Sodium</a></b><span>Smoother frame rates, and it makes room for the other two.</span></li>
     </ul>
     <p class="rec-note">On an older PC or laptop, untick shaders first if the game stutters, then lower Distant Horizons' distance in its settings. Keep <b>Simple Voice Chat</b> on to talk to skiers near you.</p>
   </div>
