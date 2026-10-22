@@ -205,6 +205,19 @@
   .ticket ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
   .ticket b { color: #fff; }
 
+  .recommend { margin-top: 18px; padding: 26px; border-radius: 18px; border: 1px solid rgba(92, 242, 180, 0.35);
+    background: linear-gradient(135deg, rgba(92, 242, 180, 0.1), rgba(124, 140, 255, 0.1)); }
+  .rec-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .rec-head h3 { margin: 0; font: 800 26px/1.15 Outfit, sans-serif; }
+  .rec-badge { font: 700 12px/1 "JetBrains Mono", monospace; letter-spacing: 0.1em; text-transform: uppercase; color: #04121a;
+    background: linear-gradient(135deg, var(--aurora), var(--ice)); padding: 7px 11px; border-radius: 8px; }
+  .recommend p { margin: 0 0 14px; color: #d0dcea; max-width: 820px; }
+  .rec-list { list-style: none; padding: 0; margin: 0 0 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .rec-list li { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 4px; }
+  .rec-list b { color: #fff; }
+  .rec-list span { color: var(--muted); font-size: 15px; }
+  .recommend .rec-note { margin: 0; color: var(--muted); font-size: 15px; }
+  @media (max-width: 760px) { .rec-list { grid-template-columns: 1fr; } }
   .faq { display: grid; gap: 10px; max-width: 860px; }
   .faq details { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; }
   .faq details[open] { background: rgba(255, 255, 255, 0.07); }
@@ -336,8 +349,17 @@
     <li class="ticket reveal"><h4>Wake the mountain</h4><p>Press <b>Wake the mountain</b> at the top of this page (or on the <a href="./play/">Play page</a>). About two minutes later it says <b>Online</b>. It naps 15 minutes after the last skier leaves.</p></li>
     <li class="ticket reveal"><h4>Add the server</h4><p>In the Fresh Tracks instance: <b>Multiplayer &rarr; Add Server</b>, address <code>18.227.232.192</code>, then double-click it.</p></li>
     <li class="ticket reveal"><h4>Register and ride</h4><p>Type <code>/register</code>. You land on the Base Village plaza with skis, a board, poles, goggles, a jacket, cocoa and a packed lunch. Right-click your skis to click in.</p></li>
-    <li class="ticket reveal"><h4>Optional: make it pretty</h4><p>The pack includes Iris shaders and Distant Horizons, which made these screenshots. Untick them if your PC struggles. Keep <b>Simple Voice Chat</b> on to talk to skiers near you.</p></li>
   </ol>
+  <div class="recommend reveal">
+    <div class="rec-head"><span class="rec-badge">Highly recommended</span><h3>Shaders and Distant Horizons</h3></div>
+    <p>They're what make Snowmass look like the screenshots on this page: real light on the snow, sunsets, glowing village lights, and the whole range of mountains out to the horizon instead of fog a few hundred blocks away. Both come in the Fresh Tracks pack, so just leave them ticked when you import it.</p>
+    <ul class="rec-list">
+      <li><b>Iris + Complementary shaders</b><span>Lighting, shadows, sky and water. Press <kbd>K</kbd> in game to turn them on or off.</span></li>
+      <li><b>Distant Horizons</b><span>Draws the far-off mountains and valleys at low detail, so you can see across the resort from the top.</span></li>
+      <li><b>Sodium</b><span>Smoother frame rates, and it makes room for the other two.</span></li>
+    </ul>
+    <p class="rec-note">On an older PC or laptop, untick shaders first if the game stutters, then lower Distant Horizons' distance in its settings. Keep <b>Simple Voice Chat</b> on to talk to skiers near you.</p>
+  </div>
 </div></section>
 
 <section id="help" style="padding-top:20px"><div class="wrap">
