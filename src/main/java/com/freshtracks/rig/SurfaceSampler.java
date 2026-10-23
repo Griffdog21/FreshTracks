@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -21,7 +22,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * never below the top of the column you're over, so skis never sink into the snow. Steps are smoothed the way snow
  * drifts fill them: every column a little higher than its neighbours casts a ramp downhill from its edge, sloping at
  * the hillside's own steepness, and the surface is the highest of those ramps. A staircase rides like an even slope;
- * drops bigger than {@link #SMOOTH_STEP} stay sharp edges (kicker lips, cornices, cliffs).
+ * drops bigger than {@link #SMOOTH_STEP} stay sharp edges (kicker lips, cornices, cliffs). A block standing up out of
+ * the hillside gets only a gentle fill on its uphill side and flanks, so riding into one never throws you like a
+ * kicker, and fences, walls, gates, bars and panes are barriers: never ramped, never stood on. Only snow drifts: paving,
+ * rock, wood and the like are ridden on their real tops, and only snowy columns cast ramps (a snow ramp over bare
+ * paving left riders floating beside every snowy planter in the village).
  */
 public final class SurfaceSampler {
 	/** Columns more than this far above the rider count as walls, not slope. */
@@ -36,6 +41,8 @@ public final class SurfaceSampler {
 	private static final double MIN_RAMP = 0.25;
 	/** Nor steeper than this (a 1:1 staircase and a bit). */
 	private static final double MAX_RAMP = 1.35;
+	/** A column at least this much above the spot gets the gentle fill on its uphill side (see the class notes). */
+	private static final double BIG_STEP = 0.5;
 	private static final double SCAN_UP = 2.6;
 	private static final double SCAN_DOWN = 6.0;
 	/** Half the distance used to measure the surface's slope. */
@@ -44,7 +51,15 @@ public final class SurfaceSampler {
 	private SurfaceSampler() {
 	}
 
-	public record Column(double top, Surface surface, Vec3 carry, boolean found) {
+	/**
+	 * One column's ride surface. A {@code barrier} (a fence, wall, gate, bars, a pane: thin, and taller than a block to
+	 * anything running into it) is never a step to ride up onto; {@code below} is the snow under it, where a rider who
+	 * ends up over one comes down.
+	 */
+	public record Column(double top, Surface surface, Vec3 carry, boolean found, boolean barrier, double below) {
+		Column(double top, Surface surface, Vec3 carry, boolean found) {
+			this(top, surface, carry, found, false, top);
+		}
 	}
 
 	/** Ground under one point: surface height, slope and what it's made of. */
@@ -106,9 +121,19 @@ public final class SurfaceSampler {
 				continue;
 			}
 			double height = Math.min(shape.max(Direction.Axis.Y), 1.5);
+			if (height > 1.0 || block instanceof IronBarsBlock) {
+				// something you run into, not ground: what's under it is where you'd come down if you ended up on top
+				Column under = column(level, bx, bz, y - 0.5 - SCAN_UP);
+				return new Column(y + height, classify(state), Vec3.ZERO, true, true, under.found() ? under.top() : y);
+			}
 			return new Column(y + height, classify(state), Vec3.ZERO, true);
 		}
 		return new Column(refY - SCAN_DOWN, Surface.AIR, Vec3.ZERO, false);
+	}
+
+	/** Snow (and ice) drifts and gets smoothed into ramps; paving, rock, wood, dirt and water don't. */
+	private static boolean drifts(Surface s) {
+		return s.snowy || s == Surface.ICE;
 	}
 
 	public static Surface classify(BlockState state) {
@@ -158,6 +183,8 @@ public final class SurfaceSampler {
 		private final double refY;
 		private final Column[] columns = new Column[SIZE * SIZE];
 		private final double[] ramps = new double[SIZE * SIZE];
+		private final double[] hillX = new double[SIZE * SIZE];
+		private final double[] hillZ = new double[SIZE * SIZE];
 
 		Patch(BlockGetter level, int cx, int cz, double refY) {
 			this.level = level;
@@ -183,7 +210,7 @@ public final class SurfaceSampler {
 		}
 
 		private boolean usable(Column c) {
-			return c.found() && c.top() <= refY + FLATTEN_STEP;
+			return c.found() && !c.barrier() && drifts(c.surface()) && c.top() <= refY + FLATTEN_STEP;
 		}
 
 		/** How steep the ramp a column casts is: the hillside's slope there, measured over 4 blocks. */
@@ -212,8 +239,34 @@ public final class SurfaceSampler {
 			double slope = Mth.clamp(Math.sqrt(gx * gx + gz * gz), MIN_RAMP, MAX_RAMP);
 			if (cached) {
 				ramps[k] = slope;
+				hillX[k] = gx;
+				hillZ[k] = gz;
 			}
 			return slope;
+		}
+
+		/**
+		 * How far a spot lies downhill of a column, 0 to 1: 1 straight down the hillside's fall line from it, 0 level
+		 * with it or uphill. Flat ground counts as downhill all round.
+		 */
+		private double downhillOf(int bx, int bz, double px, double pz) {
+			int i = bx - cx + SPAN;
+			int j = bz - cz + SPAN;
+			if (i < 0 || j < 0 || i >= SIZE || j >= SIZE) {
+				return 1.0;
+			}
+			int k = j * SIZE + i;
+			ramp(bx, bz); // fits the hillside there (cached)
+			double gx = hillX[k];
+			double gz = hillZ[k];
+			double g = Math.sqrt(gx * gx + gz * gz);
+			double ux = px - (bx + 0.5);
+			double uz = pz - (bz + 0.5);
+			double u = Math.sqrt(ux * ux + uz * uz);
+			if (g < 0.05 || u < 1.0e-6) {
+				return 1.0;
+			}
+			return Math.max(0.0, -(ux * gx + uz * gz) / (u * g));
 		}
 
 		/**
@@ -224,7 +277,7 @@ public final class SurfaceSampler {
 		 */
 		private double topOr(int bx, int bz, double fallback, int distance) {
 			Column c = column(bx, bz);
-			if (!c.found() || Math.abs(c.top() - fallback) > distance * MAX_RAMP + SMOOTH_STEP) {
+			if (!c.found() || c.barrier() || Math.abs(c.top() - fallback) > distance * MAX_RAMP + SMOOTH_STEP) {
 				return fallback;
 			}
 			return c.top();
@@ -254,7 +307,10 @@ public final class SurfaceSampler {
 			if (!own.found()) {
 				return own.top();
 			}
-			double ownTop = own.top();
+			double ownTop = own.barrier() ? own.below() : own.top();
+			if (!drifts(own.surface())) {
+				return ownTop; // no snow here to drift: ride the real top
+			}
 			double slope = slopeAt(px, pz);
 			double best = ownTop;
 			for (int dz = -REACH; dz <= REACH; dz++) {
@@ -271,7 +327,10 @@ public final class SurfaceSampler {
 					// distance from the point to that column's square
 					double ddx = Math.max(0, Math.max(nx - px, px - (nx + 1)));
 					double ddz = Math.max(0, Math.max(nz - pz, pz - (nz + 1)));
-					double drop = slope * Math.sqrt(ddx * ddx + ddz * ddz);
+					// a block standing up out of the hillside: the drift on its uphill side and flanks lies gentle, so riding
+					// into one doesn't launch you off it like a kicker (a step in the hillside is always uphill of you)
+					double s = c.top() - ownTop >= BIG_STEP ? MIN_RAMP + (slope - MIN_RAMP) * downhillOf(nx, nz, px, pz) : slope;
+					double drop = s * Math.sqrt(ddx * ddx + ddz * ddz);
 					if (drop > SMOOTH_STEP) {
 						continue; // a ramp only reaches so far down: bigger drops stay edges
 					}

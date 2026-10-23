@@ -91,6 +91,11 @@ public final class RigMotion {
 	private static final double STICK_SPEED = 0.10;
 	/** How much of a step up (a block edge, a stair, a layer of snow) carries on as upward speed: the knees soak the rest. */
 	private static final double CLIMB_CARRY = 0.06;
+	/**
+	 * Riding down into something that sticks up (a block, a bump): how fast the knees let it turn your fall down the hill
+	 * level, per tick. A short bump passes before it can, so you carry on down the slope instead of flying off its top.
+	 */
+	private static final double KNEES = 0.35;
 
 	// Crashes.
 	private static final double WALL_CRASH = 0.42;
@@ -877,13 +882,15 @@ public final class RigMotion {
 			windUp = 0;
 		} else if (!next.found() || (speed > 0.12 && fall > STICK + STICK_SPEED * speed)) {
 			ny = expectedY;
-			vy = Math.max(vy, slopeVy);
+			// up a lip or a kicker the snow throws you; off the top of a bump you were riding down over, you carry on down
+			vy = slopeVy > 0 ? Math.max(vy, slopeVy) : vy;
 			// Leaving the snow without jumping (a lip, a roll, a cliff) is never a trick by itself: like Steep, you jump
 			// at the lip, or tap jump in the air, to throw something. Otherwise the keys just steer the landing.
 			takeoff(ny, false);
 		} else {
 			ny = floor;
-			vy = climb(ny - y, slopeVy);
+			double follow = climb(ny - y, slopeVy);
+			vy = vy < 0 && follow > vy ? vy + (follow - vy) * KNEES : follow;
 		}
 		if (edgeCheck) {
 			lean += (in.steer() * 38f - lean) * 0.3f; // hips into the hill, edges dug in
@@ -1369,8 +1376,8 @@ public final class RigMotion {
 			double pz = z + fz * reach;
 			SurfaceSampler.Column column = SurfaceSampler.column(level, Mth.floor(px), Mth.floor(pz), y + 1.0);
 			double rise = slopeGx * (px - x) + slopeGz * (pz - z);
-			if (column.found() && column.top() > y + Math.max(0.0, rise) + SurfaceSampler.MAX_STEP + 0.3) {
-				return false;
+			if (column.found() && column.top() > y + (column.barrier() ? 0.1 : Math.max(0.0, rise) + SurfaceSampler.MAX_STEP + 0.3)) {
+				return false; // (a fence or wall stops the skis whenever its top is above them)
 			}
 		}
 		return true;
@@ -1387,7 +1394,7 @@ public final class RigMotion {
 			SurfaceSampler.Column column = SurfaceSampler.column(level, Mth.floor(cx), Mth.floor(cz), y + 1.0);
 			double rise = slopeGx * (cx - x + vx) + slopeGz * (cz - z + vz);
 			double expected = y + Math.max(0.0, rise);
-			if (column.found() && column.top() > expected + SurfaceSampler.MAX_STEP) {
+			if (column.found() && column.top() > (column.barrier() ? y + 0.1 : expected + SurfaceSampler.MAX_STEP)) {
 				return false;
 			}
 		}
