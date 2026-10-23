@@ -117,6 +117,32 @@ public final class FreshTracksCommand {
 									.executes(ctx -> createLift(ctx.getSource(), StringArgumentType.getString(ctx, "name"),
 										BlockPosArgument.getLoadedBlockPos(ctx, "from"), BlockPosArgument.getLoadedBlockPos(ctx, "to"),
 										parseStyle(StringArgumentType.getString(ctx, "style")))))))))
+				.then(Commands.literal("cabin")
+					.then(Commands.argument("paint", StringArgumentType.word())
+						.suggests((c, b) -> {
+							for (com.freshtracks.lift.Cabin l : com.freshtracks.lift.Cabin.values()) {
+								b.suggest(l.getSerializedName());
+							}
+							return b.buildFuture();
+						})
+						.then(Commands.argument("name", StringArgumentType.greedyString()).executes(ctx -> {
+							ServerLevel level = ctx.getSource().getLevel();
+							String name = StringArgumentType.getString(ctx, "name");
+							com.freshtracks.lift.Cabin paint = com.freshtracks.lift.Cabin.byName(StringArgumentType.getString(ctx, "paint"));
+							int n = 0;
+							for (LiftLine line : LiftManager.lines(level)) {
+								if (line.name.equalsIgnoreCase(name) || name.equals("*")) {
+									line.cabin = paint;
+									LiftManager.changed(level, line);
+									n++;
+									ctx.getSource().sendSuccess(() -> Component.literal(line.name + " cabins: " + line.cabin.getSerializedName()), true);
+								}
+							}
+							if (n == 0) {
+								ctx.getSource().sendFailure(Component.literal("No lift called " + name));
+							}
+							return n;
+						}))))
 				.then(Commands.literal("livery")
 					.then(Commands.argument("livery", StringArgumentType.word())
 						.suggests((c, b) -> {

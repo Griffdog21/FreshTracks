@@ -119,6 +119,25 @@ def sparkle(i):
     return img
 
 
+def breath(i):
+    """A breath of mist in cold air, soft all round: tight just out of the mouth, thinning out as it drifts."""
+    img = canvas(16, 16)
+    sigma = 3.0 + i * 0.6
+    peak = 235 - i * 40
+    blobs = [(7.5, 7.5, 1.0), (5.6 + i * 0.3, 8.9, 0.7), (9.6, 6.2 - i * 0.2, 0.65)]
+    for y in range(16):
+        for x in range(16):
+            a = 0.0
+            for (cx, cy, w) in blobs:
+                d2 = (x - cx) ** 2 + (y - cy) ** 2
+                a += w * math.exp(-d2 / (2 * sigma * sigma))
+            a = min(1.0, a / 1.4)
+            a *= min(1.0, max(0.0, (7.6 - math.hypot(x - 7.5, y - 7.5)) / 2.6))  # fades out before the sprite's edge
+            if a > 0.02:
+                put(img, x, y, (240, 244, 250, int(peak * a)))
+    return img
+
+
 def main(preview_dir: str | None):
     out = {"block/fresh_powder": fresh_powder(), "block/groomed_snow": corduroy(), "block/snowy_road": snowy_road(),
            "block/snowy_road_side": snowy_road_side()}
@@ -127,6 +146,8 @@ def main(preview_dir: str | None):
         out[f"particle/sparkle_{i}"] = sparkle(i)
     for i in range(3):
         out[f"particle/wind_snow_{i}"] = wind_snow(i)
+    for i in range(4):
+        out[f"particle/breath_{i}"] = breath(i)
     for name, img in out.items():
         save(img, f"textures/{name}.png")
     if preview_dir:

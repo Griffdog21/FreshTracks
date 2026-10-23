@@ -96,6 +96,35 @@ def icon(blank: Image.Image) -> Image.Image:
     return img
 
 
+def pocket_icon(blank: Image.Image) -> Image.Image:
+    """The pocket trail map: a folded paper map, three panels, the middle one catching the light."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    sheet = blank.resize((14, 10))
+    img.paste(sheet, (1, 3))
+    px = img.load()
+    for y in range(3, 13):
+        for x in range(1, 15):
+            r, g, b, a = px[x, y]
+            panel = 0 if x < 6 else 1 if x < 11 else 2
+            k = (0.82, 1.0, 0.9)[panel]
+            px[x, y] = (int(r * k), int(g * k), int(b * k), 255)
+    # the folds, a paper edge round it, and the red "you are here" dot
+    for y in range(3, 13):
+        px[6, y] = (150, 158, 170, 255)
+        px[11, y] = (170, 176, 186, 255)
+    for x in range(1, 15):
+        px[x, 2] = (238, 240, 242, 255)
+        px[x, 13] = (120, 126, 138, 255)
+    for y in range(2, 14):
+        px[0, y] = (120, 126, 138, 255)
+        px[15, y] = (120, 126, 138, 255)
+    px[8, 7] = (226, 32, 28, 255)
+    px[9, 7] = (226, 32, 28, 255)
+    px[8, 8] = (226, 32, 28, 255)
+    px[9, 8] = (180, 24, 20, 255)
+    return img
+
+
 def main() -> None:
     os.makedirs(os.path.join(OUT, "entity"), exist_ok=True)
     frame().save(os.path.join(OUT, "entity", "trail_map_frame.png"))
@@ -103,6 +132,7 @@ def main() -> None:
     blank = blank_map()
     blank.save(os.path.join(OUT, "entity", "trail_map_blank.png"))
     icon(blank).save(os.path.join(OUT, "item", "trail_map.png"))
+    pocket_icon(blank).save(os.path.join(OUT, "item", "pocket_trail_map.png"))
     print("trail map art: frame, dot, blank map, icon")
 
 

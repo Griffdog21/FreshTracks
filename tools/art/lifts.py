@@ -4,6 +4,7 @@ Box-UV layouts mirror LiftModels.java. Run: uv run --with pillow --with numpy py
 """
 from __future__ import annotations
 
+import math
 import os
 import sys
 
@@ -225,6 +226,30 @@ def gondola_texture(accent=None):
             painter = _recolor(painter, accent)
         u, v = GONDOLA_UV[name]
         paint_box(img, u, v, w, h, d, painter)
+    return img
+
+
+def gondola_black_texture():
+    """Black cabins with a white swoosh sweeping up each side (the newer gondolas' look, the Elk Camp Gondola's)."""
+    body, body_l = hexc("#1B1D22"), hexc("#2A2D33")
+    swap = {CABIN_WHITE: body, CABIN_RED: CABIN_WHITE, ROOF: body_l, ROOF_D: body}
+
+    def swoosh(face, s, t):
+        # a band rising from the bottom of one end to the top of the other, bowed like the logo's curve
+        centre = 0.92 - 0.8 * s + 0.18 * math.sin(math.pi * s)
+        return abs(t - centre) < 0.085 - 0.04 * abs(s - 0.5)
+
+    img = canvas(256, 256)
+    for name, (w, h, d), painter in GONDOLA_PARTS:
+        def p(face, s, t, x, y, painter=painter, name=name):
+            if name == "wall_side" and face in ("left", "right") and 0.12 <= t < 0.92:
+                return CABIN_WHITE if swoosh(face, s if face == "left" else 1 - s, t) else body
+            if name == "wall_front" and face in ("front", "back") and 0.12 <= t < 0.92:
+                return CABIN_WHITE if 0.66 < t < 0.73 else body
+            c = painter(face, s, t, x, y)
+            return swap.get(c, c)
+        u, v = GONDOLA_UV[name]
+        paint_box(img, u, v, w, h, d, p)
     return img
 
 
@@ -493,6 +518,7 @@ def main(preview_dir: str | None):
         "entity/lift/platter": flat_texture(hexc("#2B2D33"), hexc("#1C1D21")),
         "entity/lift/gondola": gondola_texture(),
         "entity/lift/gondola_glass": gondola_glass_texture(),
+        "entity/lift/gondola_black": gondola_black_texture(),
         "entity/lift/gondola_pulse": skittles_texture((hexc("#1F5FC4"), hexc("#16448C"))),
         "entity/lift/gondola_pulse_red": skittles_texture((hexc("#D8262C"), hexc("#97191E"))),
         "entity/lift/gondola_pulse_green": skittles_texture((hexc("#2E9A48"), hexc("#1E6A31"))),

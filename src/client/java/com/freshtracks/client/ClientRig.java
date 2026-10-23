@@ -42,7 +42,8 @@ public final class ClientRig implements RigClientHooks.Hooks {
 	public void afterLocalStep(RigEntity rig) {
 		RigMotion m = rig.motion;
 		RigMotion.Events e = m.events;
-		ClientPlayNetworking.send(new RiderStatePayload(rig.getId(), m.lean, m.flipVisual, (byte) rig.localFlags(), (byte) m.tricks.grab.ordinal()));
+		ClientPlayNetworking.send(new RiderStatePayload(rig.getId(), m.lean, m.flipVisual, (byte) rig.localFlags(), (byte) m.tricks.grab.ordinal(),
+			rig.renderAction()));
 		ClientLevel level = (ClientLevel) rig.level();
 		if (e.popped) {
 			level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), ModSounds.POP, SoundSource.PLAYERS, 0.7f, 0.9f + random.nextFloat() * 0.2f, false);
@@ -57,6 +58,11 @@ public final class ClientRig implements RigClientHooks.Hooks {
 		} else if (e.stroke == 1) {
 			level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), net.minecraft.sounds.SoundEvents.SNOW_STEP, SoundSource.PLAYERS, 0.55f, 0.9f + random.nextFloat() * 0.15f, false);
 			burst(level, rig, 3, 0.1);
+		} else if (e.stroke == 3) {
+			stepSound(level, rig, 0.6f);
+		}
+		if (e.polePlant != 0) {
+			polePlant(level, rig, e.polePlant, 0.5f);
 		}
 		if (e.boost) {
 			level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), ModSounds.TRICK, SoundSource.PLAYERS, 0.35f, 1.5f, false);
@@ -133,6 +139,9 @@ public final class ClientRig implements RigClientHooks.Hooks {
 			return;
 		}
 		ensureLoops(mc, rig);
+		if (!rig.isDrivenHere()) {
+			remoteAction(level, rig);
+		}
 		boolean air = rig.hasFlagOrLocal(RigEntity.FLAG_AIR);
 		double speed = rig.visualSpeed();
 		if (air || speed < 0.12) {
@@ -183,6 +192,55 @@ public final class ClientRig implements RigClientHooks.Hooks {
 			if (random.nextFloat() < speed) {
 				level.addParticle(com.freshtracks.registry.ModParticles.SNOW_SPRAY, rig.getX() + fx * 0.7, rig.getY() + 0.3, rig.getZ() + fz * 0.7,
 					(random.nextDouble() - 0.5) * 0.12, 0.12, (random.nextDouble() - 0.5) * 0.12);
+			}
+		}
+	}
+
+	/** A herringbone step: an edge stamped into the slope. */
+	private void stepSound(ClientLevel level, RigEntity rig, float volume) {
+		level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), net.minecraft.sounds.SoundEvents.SNOW_STEP, SoundSource.PLAYERS, volume, 0.72f + random.nextFloat() * 0.1f, false);
+		burst(level, rig, 2, 0.05);
+	}
+
+	/** A pole tapped into the snow beside the ski tip on that side (-1 left, 1 right): a light crunch and a puff. */
+	private void polePlant(ClientLevel level, RigEntity rig, int side, float volume) {
+		double yaw = Math.toRadians(rig.getYRot());
+		double fx = -Math.sin(yaw);
+		double fz = Math.cos(yaw);
+		// the rider's right, looking along the skis
+		double rx = -fz;
+		double rz = fx;
+		double x = rig.getX() + fx * 0.75 + rx * side * 0.55;
+		double z = rig.getZ() + fz * 0.75 + rz * side * 0.55;
+		level.playLocalSound(x, rig.getY(), z, net.minecraft.sounds.SoundEvents.SNOW_HIT, SoundSource.PLAYERS, volume, 1.55f + random.nextFloat() * 0.2f, false);
+		for (int i = 0; i < 4; i++) {
+			level.addParticle(com.freshtracks.registry.ModParticles.SNOW_SPRAY, x, rig.getY() + 0.05, z,
+				(random.nextDouble() - 0.5) * 0.05, 0.03 + random.nextDouble() * 0.04, (random.nextDouble() - 0.5) * 0.05);
+		}
+	}
+
+	/** Other riders' strokes, steps and pole plants, heard and seen as they happen. */
+	private final Map<RigEntity, Byte> lastActions = new WeakHashMap<>();
+
+	private void remoteAction(ClientLevel level, RigEntity rig) {
+		byte packed = rig.renderAction();
+		Byte before = lastActions.put(rig, packed);
+		com.freshtracks.rig.RiderAction action = com.freshtracks.rig.RiderAction.action(packed);
+		if (before == null || action == com.freshtracks.rig.RiderAction.NONE) {
+			return;
+		}
+		boolean fresh = com.freshtracks.rig.RiderAction.action(before) != action
+			|| com.freshtracks.rig.RiderAction.ticks(packed) < com.freshtracks.rig.RiderAction.ticks(before);
+		if (!fresh) {
+			return;
+		}
+		switch (action) {
+			case DOUBLE_POLE -> level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), net.minecraft.sounds.SoundEvents.SNOW_STEP, SoundSource.PLAYERS, 0.5f, 1.25f, false);
+			case SKATE_LEFT, SKATE_RIGHT -> level.playLocalSound(rig.getX(), rig.getY(), rig.getZ(), net.minecraft.sounds.SoundEvents.SNOW_STEP, SoundSource.PLAYERS, 0.35f, 0.95f, false);
+			case HERRINGBONE_LEFT, HERRINGBONE_RIGHT -> stepSound(level, rig, 0.4f);
+			case PLANT_LEFT -> polePlant(level, rig, -1, 0.35f);
+			case PLANT_RIGHT -> polePlant(level, rig, 1, 0.35f);
+			default -> {
 			}
 		}
 	}

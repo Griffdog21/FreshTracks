@@ -14,6 +14,18 @@ public final class SnowParticles {
 	private SnowParticles() {
 	}
 
+	/**
+	 * The particle textures are loaded: a particle asked for before then (weather on the first tick of a world loaded
+	 * the moment the game starts) has no sprite yet and would crash the game, so it's simply skipped.
+	 */
+	static boolean ready(SpriteSet sprites) {
+		try {
+			return sprites.first() != null;
+		} catch (RuntimeException notLoaded) {
+			return false;
+		}
+	}
+
 	/** A puff of snow kicked up by skis: flies out, slows in the air, sinks, fades. */
 	public static class Spray extends SingleQuadParticle {
 		private final SpriteSet sprites;
@@ -52,7 +64,7 @@ public final class SnowParticles {
 		public record Provider(SpriteSet sprites) implements ParticleProvider<SimpleParticleType> {
 			@Override
 			public Particle createParticle(SimpleParticleType options, ClientLevel level, double x, double y, double z, double xa, double ya, double za, RandomSource random) {
-				return new Spray(level, x, y, z, xa, ya, za, sprites);
+				return ready(sprites) ? new Spray(level, x, y, z, xa, ya, za, sprites) : null;
 			}
 		}
 	}
@@ -89,7 +101,49 @@ public final class SnowParticles {
 		public record Provider(SpriteSet sprites) implements ParticleProvider<SimpleParticleType> {
 			@Override
 			public Particle createParticle(SimpleParticleType options, ClientLevel level, double x, double y, double z, double xa, double ya, double za, RandomSource random) {
-				return new WindSnow(level, x, y, z, xa, ya, za, sprites);
+				return ready(sprites) ? new WindSnow(level, x, y, z, xa, ya, za, sprites) : null;
+			}
+		}
+	}
+
+	/** A breath in the cold: a small soft cloud that drifts out from the mouth, swells and fades. */
+	public static class Breath extends SingleQuadParticle {
+		private final SpriteSet sprites;
+
+		Breath(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, SpriteSet sprites) {
+			super(level, x, y, z, xd, yd, zd, sprites.first());
+			this.sprites = sprites;
+			this.xd = xd;
+			this.yd = yd;
+			this.zd = zd;
+			this.gravity = -0.004f;
+			this.friction = 0.9f;
+			this.lifetime = 18 + this.random.nextInt(10);
+			this.quadSize = 0.14f + this.random.nextFloat() * 0.05f;
+			this.hasPhysics = false;
+			this.setColor(0.94f, 0.96f, 1.0f);
+			this.alpha = 0.0f;
+			this.setSpriteFromAge(sprites);
+		}
+
+		@Override
+		public void tick() {
+			super.tick();
+			this.setSpriteFromAge(sprites);
+			float life = (float) this.age / this.lifetime;
+			this.alpha = Mth.clamp(Math.min(life * 5f, 1f - life), 0f, 1f) * 0.8f;
+			this.quadSize *= 1.05f;
+		}
+
+		@Override
+		public SingleQuadParticle.Layer getLayer() {
+			return SingleQuadParticle.Layer.TRANSLUCENT;
+		}
+
+		public record Provider(SpriteSet sprites) implements ParticleProvider<SimpleParticleType> {
+			@Override
+			public Particle createParticle(SimpleParticleType options, ClientLevel level, double x, double y, double z, double xa, double ya, double za, RandomSource random) {
+				return ready(sprites) ? new Breath(level, x, y, z, xa, ya, za, sprites) : null;
 			}
 		}
 	}
@@ -107,7 +161,7 @@ public final class SnowParticles {
 			this.gravity = 0f;
 			this.friction = 1f;
 			this.lifetime = 40 + this.random.nextInt(40);
-			this.quadSize = 0.04f + this.random.nextFloat() * 0.04f;
+			this.quadSize = 0.03f + this.random.nextFloat() * 0.025f; // a glint, not a star
 			this.hasPhysics = false;
 		}
 
@@ -132,7 +186,7 @@ public final class SnowParticles {
 		public record Provider(SpriteSet sprites) implements ParticleProvider<SimpleParticleType> {
 			@Override
 			public Particle createParticle(SimpleParticleType options, ClientLevel level, double x, double y, double z, double xa, double ya, double za, RandomSource random) {
-				return new Sparkle(level, x, y, z, sprites);
+				return ready(sprites) ? new Sparkle(level, x, y, z, sprites) : null;
 			}
 		}
 	}

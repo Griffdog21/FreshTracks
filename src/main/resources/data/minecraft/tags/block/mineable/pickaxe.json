@@ -8,6 +8,10 @@
     "freshtracks:first_aid_kit",
     "freshtracks:snow_gun",
     "freshtracks:snow_gun_tower",
-    "freshtracks:snow_gun_pole"
+    "freshtracks:snow_gun_pole",
+    "freshtracks:asphalt",
+    "freshtracks:asphalt_stairs",
+    "freshtracks:asphalt_slab",
+    "freshtracks:asphalt_line"
   ]
 }

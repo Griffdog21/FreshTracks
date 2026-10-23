@@ -75,6 +75,8 @@ public final class ModItems {
 	public static final Item SKI_BUCK_THOUSAND = register("ski_buck_thousand", p -> new com.freshtracks.economy.BillItem(p, 1000), new Item.Properties().stacksTo(64).rarity(Rarity.RARE));
 	/** Found very rarely while skiing; the bank pays well for one, and the best shops take them. */
 	public static final Item GOLDEN_TICKET = register("golden_ticket", Item::new, new Item.Properties().stacksTo(16).rarity(Rarity.EPIC));
+	/** The trail map from the ticket office, folded in your pocket: use it to see where you are on the mountain. */
+	public static final Item POCKET_TRAIL_MAP = register("pocket_trail_map", com.freshtracks.item.PocketMapItem::new, new Item.Properties().stacksTo(1));
 	/** A collectible resort pin (the shop names each one). */
 	public static final Item COLLECTOR_PIN = register("collector_pin", Item::new, new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
 

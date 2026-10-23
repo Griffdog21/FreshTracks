@@ -16,4 +16,7 @@ public class RigRenderState extends EntityRenderState {
 	public boolean ridden;
 	public float slopePitch;
 	public float slopeRoll;
+	/** What the rider's legs are doing (skis splay for a skating stride or a herringbone climb), and how long for. */
+	public com.freshtracks.rig.RiderAction action = com.freshtracks.rig.RiderAction.NONE;
+	public float actionTime;
 }

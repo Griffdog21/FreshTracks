@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "freshtracks:block/asphalt",
+    "side": "freshtracks:block/asphalt",
+    "top": "freshtracks:block/asphalt"
+  }
+}

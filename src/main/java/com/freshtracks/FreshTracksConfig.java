@@ -52,6 +52,8 @@ public final class FreshTracksConfig {
 	public static String rideEffects = "full";
 	/** Wind rush volume for the local skier, independently adjustable from world sounds. */
 	public static double rideWindVolume = 1.0;
+	/** Share of chairs and cabins going up with other skiers on them (drawn on your screen only), 0 for empty lifts. */
+	public static double liftRiders = 0.4;
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -82,6 +84,7 @@ public final class FreshTracksConfig {
 				rideCamera = choice(str(json, "rideCamera", autoThirdPerson ? "chase" : "keep"), "chase", "helmet", "chase", "keep");
 				rideEffects = choice(str(json, "rideEffects", rideEffects), "full", "full", "reduced", "off");
 				rideWindVolume = clamp(num(json, "rideWindVolume", rideWindVolume), 0, 1);
+				liftRiders = clamp(num(json, "liftRiders", liftRiders), 0, 1);
 			} catch (IOException | RuntimeException e) {
 				FreshTracks.LOG.warn("Could not read {} ({}); using defaults for anything unreadable", path, e.toString());
 			}
@@ -107,6 +110,7 @@ public final class FreshTracksConfig {
 		json.addProperty("rideCamera", rideCamera);
 		json.addProperty("rideEffects", rideEffects);
 		json.addProperty("rideWindVolume", rideWindVolume);
+		json.addProperty("liftRiders", liftRiders);
 		try {
 			Files.createDirectories(file().getParent());
 			try (Writer writer = Files.newBufferedWriter(file(), StandardCharsets.UTF_8)) {

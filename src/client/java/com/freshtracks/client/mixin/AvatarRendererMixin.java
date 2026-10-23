@@ -2,6 +2,7 @@ package com.freshtracks.client.mixin;
 
 import com.freshtracks.client.render.RigPose;
 import com.freshtracks.client.render.RiderPose;
+import com.freshtracks.rig.RiderAction;
 import com.freshtracks.rig.RigEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
@@ -25,15 +26,16 @@ public abstract class AvatarRendererMixin {
 			state.yRot = Mth.clamp(Mth.wrapDegrees(headRot - body), -80f, 80f);
 			state.isPassenger = false;
 			state.isCrouching = false;
+			boolean poles = rig.hasPoles();
+			byte action = rig.renderAction();
 			state.setData(RiderPose.KEY, new RiderPose(rig.kind(), rigYaw, rig.lean(partialTicks), rig.flip(partialTicks), rig.renderFlags(), rig.renderGrab(), state.ageInTicks,
-				rig.slopePitch(partialTicks) * 0.55f, rig.slopeRoll(partialTicks) * 0.75f));
-			if (rig.hasPoles()) {
-				// One pair of poles in either hand: draw a pole in each hand.
-				net.minecraft.world.item.ItemStack poles = entity.getMainHandItem().is(com.freshtracks.registry.ModItems.SKI_POLES)
-					? entity.getMainHandItem() : entity.getOffhandItem();
-				var resolver = ((LivingEntityRendererAccessor) (Object) this).freshtracks$itemModelResolver();
-				resolver.updateForLiving(state.rightHandItemState, poles, net.minecraft.world.item.ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, entity);
-				resolver.updateForLiving(state.leftHandItemState, poles, net.minecraft.world.item.ItemDisplayContext.THIRD_PERSON_LEFT_HAND, entity);
+				rig.slopePitch(partialTicks) * 0.55f, rig.slopeRoll(partialTicks) * 0.75f, RiderAction.action(action),
+				RiderAction.ticks(action) + partialTicks, poles));
+			if (poles) {
+				// A skier rides with a pole in each hand, whatever the hotbar has selected: the pole layer draws them down to
+				// the snow, and nothing else is held.
+				state.rightHandItemState.clear();
+				state.leftHandItemState.clear();
 			}
 		} else {
 			state.setData(RiderPose.KEY, null);

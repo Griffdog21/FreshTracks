@@ -57,6 +57,8 @@ public final class LiftLine {
 	public ChairStyle style;
 	/** The terminals' paint (see {@link Livery}); AUTO picks one from the name. */
 	public Livery livery = Livery.AUTO;
+	/** A gondola's cabin paint. */
+	public Cabin cabin = Cabin.AUTO;
 	/** Loading angle around the bottom bullwheel, in degrees before the uphill tangent. */
 	public double bottomLoadAngle;
 	/** Rope speed when running, blocks per tick. */
@@ -116,11 +118,13 @@ public final class LiftLine {
 		Codec.DOUBLE.optionalFieldOf("spacing", 9.0).forGetter(l -> l.spacing),
 		Codec.BOOL.optionalFieldOf("running", true).forGetter(l -> l.running),
 		Livery.CODEC.optionalFieldOf("livery", Livery.AUTO).forGetter(l -> l.livery),
-		Codec.doubleRange(0, 180).optionalFieldOf("bottom_load_angle", 0.0).forGetter(l -> l.bottomLoadAngle)
-	).apply(i, (id, name, bottom, top, towers, stations, style, speed, spacing, running, livery, bottomLoadAngle) -> {
+		Codec.doubleRange(0, 180).optionalFieldOf("bottom_load_angle", 0.0).forGetter(l -> l.bottomLoadAngle),
+		Cabin.CODEC.optionalFieldOf("cabin", Cabin.AUTO).forGetter(l -> l.cabin)
+	).apply(i, (id, name, bottom, top, towers, stations, style, speed, spacing, running, livery, bottomLoadAngle, cabin) -> {
 		LiftLine line = new LiftLine(id, name, bottom, top, towers, stations, style, speed, spacing, running);
 		line.livery = livery;
 		line.bottomLoadAngle = bottomLoadAngle;
+		line.cabin = cabin;
 		return line;
 	}));
 
@@ -144,6 +148,7 @@ public final class LiftLine {
 			buf.writeBoolean(l.running);
 			buf.writeVarInt(l.livery.ordinal());
 			buf.writeDouble(l.bottomLoadAngle);
+			buf.writeVarInt(l.cabin.ordinal());
 		},
 		buf -> {
 			UUID id = UUIDUtil.STREAM_CODEC.decode(buf);
@@ -164,6 +169,7 @@ public final class LiftLine {
 			LiftLine line = new LiftLine(id, name, bottom, top, towers, stations, style, buf.readDouble(), buf.readDouble(), buf.readBoolean());
 			line.livery = Livery.byId(buf.readVarInt());
 			line.bottomLoadAngle = Mth.clamp(buf.readDouble(), 0, 180);
+			line.cabin = Cabin.byId(buf.readVarInt());
 			return line;
 		});
 
@@ -640,6 +646,7 @@ public final class LiftLine {
 	public LiftLine copyWith(List<BlockPos> newTowers) {
 		LiftLine copy = new LiftLine(id, name, bottom, top, newTowers, stations, style, speed, spacing, running);
 		copy.livery = livery;
+		copy.cabin = cabin;
 		return copy;
 	}
 

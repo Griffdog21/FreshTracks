@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "freshtracks:block/asphalt_slab"
+    },
+    "type=double": {
+      "model": "freshtracks:block/asphalt"
+    },
+    "type=top": {
+      "model": "freshtracks:block/asphalt_slab_top"
+    }
+  }
+}

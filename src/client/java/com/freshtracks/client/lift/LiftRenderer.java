@@ -37,6 +37,7 @@ import net.minecraft.world.phys.Vec3;
 public final class LiftRenderer {
 	public static final Identifier CHAIR_TEXTURE = FreshTracks.id("textures/entity/lift/chair.png");
 	public static final Identifier GONDOLA_TEXTURE = FreshTracks.id("textures/entity/lift/gondola.png");
+	public static final Identifier GONDOLA_BLACK_TEXTURE = FreshTracks.id("textures/entity/lift/gondola_black.png");
 	public static final Identifier PULSE_TEXTURE = FreshTracks.id("textures/entity/lift/gondola_pulse.png");
 	private static final Identifier[] SKITTLES_TEXTURES = {
 		FreshTracks.id("textures/entity/lift/gondola_pulse_red.png"), PULSE_TEXTURE,
@@ -52,6 +53,23 @@ public final class LiftRenderer {
 	private static final double ROPE_VIEW = 320;
 
 	private static Map<ChairStyle, ChairModel> chairs;
+	/** The skiers riding the lifts: a seated player model in ski gear, and the skis or board hanging off their boots. */
+	private static net.minecraft.client.model.player.PlayerModel riderModel;
+	private static net.minecraft.client.renderer.entity.state.AvatarRenderState riderPose;
+	private static com.freshtracks.client.render.RigRenderer.RigModel riderSkis;
+	private static com.freshtracks.client.render.RigRenderer.RigModel riderBoard;
+	private static final Identifier[] RIDER_SKINS = new Identifier[8];
+	private static final net.minecraft.world.item.Item[] RIDER_SKIS = {com.freshtracks.registry.ModItems.ALPINE_SKIS, com.freshtracks.registry.ModItems.CARVING_SKIS,
+		com.freshtracks.registry.ModItems.POWDER_SKIS, com.freshtracks.registry.ModItems.FREERIDE_SKIS, com.freshtracks.registry.ModItems.RACE_SKIS,
+		com.freshtracks.registry.ModItems.PARK_SKIS};
+	private static final net.minecraft.world.item.Item[] RIDER_BOARDS = {com.freshtracks.registry.ModItems.ALL_MOUNTAIN_BOARD,
+		com.freshtracks.registry.ModItems.FREERIDE_BOARD, com.freshtracks.registry.ModItems.PARK_BOARD};
+
+	static {
+		for (int i = 0; i < RIDER_SKINS.length; i++) {
+			RIDER_SKINS[i] = FreshTracks.id("textures/entity/rider/rider_" + i + ".png");
+		}
+	}
 	private static Model.Simple gondolaGlass;
 	private static Model.Simple midHousing;
 
@@ -89,6 +107,13 @@ public final class LiftRenderer {
 			chairs.put(style, new ChairModel(set.bakeLayer(LiftModels.CHAIRS.get(style))));
 		}
 		gondolaGlass = new Model.Simple(set.bakeLayer(LiftModels.GONDOLA_GLASS), RenderTypes::entityTranslucent);
+		riderModel = new net.minecraft.client.model.player.PlayerModel(set.bakeLayer(net.minecraft.client.model.geom.ModelLayers.PLAYER), false);
+		riderPose = new net.minecraft.client.renderer.entity.state.AvatarRenderState();
+		riderPose.isPassenger = true;
+		riderPose.speedValue = 1f;
+		riderPose.showHat = true;
+		riderSkis = new com.freshtracks.client.render.RigRenderer.RigModel(set.bakeLayer(com.freshtracks.client.render.RigModels.SKIS));
+		riderBoard = new com.freshtracks.client.render.RigRenderer.RigModel(set.bakeLayer(com.freshtracks.client.render.RigModels.BOARD));
 		midHousing = new Model.Simple(set.bakeLayer(TerminalModels.MID_HOUSING), RenderTypes::entityCutout);
 	}
 
@@ -134,7 +159,7 @@ public final class LiftRenderer {
 			}
 			ChairModel model = chairs.get(line.style);
 			Identifier texture = switch (line.style) {
-				case GONDOLA, GONDOLA_8 -> GONDOLA_TEXTURE;
+				case GONDOLA, GONDOLA_8 -> line.cabin == com.freshtracks.lift.Cabin.BLACK ? GONDOLA_BLACK_TEXTURE : GONDOLA_TEXTURE;
 				case PULSE_GONDOLA -> PULSE_TEXTURE;
 				case SIX, QUAD_EXPRESS -> EXPRESS_TEXTURE;
 				default -> CHAIR_TEXTURE;
@@ -146,7 +171,8 @@ public final class LiftRenderer {
 					// each group of three is one colour, like the real Skittles
 					texture = SKITTLES_TEXTURES[(chair / LiftLine.PULSE_CABINS) % SKITTLES_TEXTURES.length];
 				}
-				LiftLine.RopePoint rope = line.ropeAt(line.chairS(phase, chair));
+				double chairS = line.chairS(phase, chair);
+				LiftLine.RopePoint rope = line.ropeAt(chairS);
 				Vec3 p = rope.pos();
 				if (p.distanceToSqr(cam) > CHAIR_VIEW * CHAIR_VIEW) {
 					continue;
@@ -157,18 +183,130 @@ public final class LiftRenderer {
 				poseStack.translate(p.x - cam.x, p.y - cam.y, p.z - cam.z);
 				poseStack.rotateDegrees(Axis.YP, 180f - rope.yaw());
 				poseStack.rotateDegrees(Axis.XP, swing);
+				int riders = busy.contains(chair) ? 0 : riders(line, entry.netId, chair, chairS);
+				if (riders > 0) {
+					drawRiders(out, poseStack, line, entry.netId, chair, riders, time, BlockPos.containing(p.x, p.y - line.style.hanger + 0.5, p.z), level);
+				}
 				poseStack.scale(-1f, -1f, 1f);
 				if (line.style == ChairStyle.GONDOLA_8) {
 					poseStack.scale(1.2f, 1f, 1.15f); // the eight-seat cabins are a size up
 				}
 				int light = light(level, BlockPos.containing(p.x, p.y - line.style.hanger + 0.5, p.z));
-				out.submitModel(model, new ChairState(busy.contains(chair) ? 1f : 0f, swing), poseStack, texture, light, OverlayTexture.NO_OVERLAY, 0);
+				out.submitModel(model, new ChairState(busy.contains(chair) || riders > 0 ? barDown(line, chairS) : 0f, swing), poseStack, texture, light, OverlayTexture.NO_OVERLAY, 0);
 				if (line.style.cabin()) {
 					out.submitModel(gondolaGlass, Unit.INSTANCE, poseStack, GONDOLA_GLASS_TEXTURE, light, OverlayTexture.NO_OVERLAY, 0);
 				}
 				poseStack.popPose();
 			}
 		}
+	}
+
+	/** How many made-up skiers ride this chair right now (0 for most, and for any chair outside its trip up). */
+	private static int riders(LiftLine line, int netId, int chair, double s) {
+		double share = com.freshtracks.FreshTracksConfig.liftRiders;
+		if (share <= 0 || line.style.seats < 1) {
+			return 0;
+		}
+		long h = mix(netId * 0x9E3779B97F4A7C15L + chair * 0xC2B2AE3D27D4EB4FL);
+		if ((h & 0xFFFF) / 65536.0 >= share) {
+			return 0;
+		}
+		double loop = line.loopLength();
+		double sinceLoad = ((s - line.loadS()) % loop + loop) % loop;
+		double upTrip = ((line.unloadS() - line.loadS()) % loop + loop) % loop;
+		if (sinceLoad < 1.5 || sinceLoad > upTrip - 0.5) {
+			return 0; // empty from the top round to the loading point
+		}
+		int seats = line.style.seats;
+		double r = (h >>> 16 & 0xFFFF) / 65536.0;
+		return r < 0.4 ? 1 : r < 0.75 ? Math.min(2, seats) : 1 + (int) ((h >>> 32 & 0xFF) % seats);
+	}
+
+	/**
+	 * Other skiers on the lift, the way a lift is on any day the mountain's open: some of the chairs (and cabins) going up
+	 * carry one to a full load of riders in ski gear, boards and skis hanging off their boots; they ride from the loading
+	 * point to the top and get off there. The same chair always carries the same people, and a chair someone is really
+	 * riding has no one made up on it. Drawn in the chair's own frame, so they swing with it.
+	 */
+	private static void drawRiders(SubmitNodeCollector out, PoseStack poseStack, LiftLine line, int netId, int chair, int count, double time,
+		BlockPos lightAt, ClientLevel level) {
+		long h = mix(netId * 0x9E3779B97F4A7C15L + chair * 0xC2B2AE3D27D4EB4FL);
+		int seats = line.style.seats;
+		int first = (int) ((h >>> 40 & 0xFF) % Math.max(1, seats - count + 1));
+		int light = light(level, lightAt);
+		for (int k = 0; k < count; k++) {
+			int seat = first + k;
+			long rh = mix(h + seat * 0x632BE59BD9B4E019L);
+			double back = line.style.cabin() ? (seat < Math.max(1, seats / 2) ? 0.6 : -0.6) : 0.15;
+			poseStack.pushPose();
+			// the seat, in the chair's frame, where a real rider's feet go (LiftLine.seatPos): across, down the hanger, a little back
+			poseStack.translate(line.style.seatOffset(seat), -line.style.hanger, back);
+			if (line.style.cabin() && seat >= Math.max(1, seats / 2)) {
+				poseStack.rotateDegrees(Axis.YP, 180f); // the front bench faces back across the cabin
+			}
+			poseStack.scale(-1f, -1f, 1f);
+			poseStack.translate(0f, -1.501f, 0f);
+			riderPose.yRot = (float) ((rh >>> 8 & 0xFF) / 255.0 * 70 - 35);
+			riderPose.xRot = (float) ((rh >>> 16 & 0xFF) / 255.0 * 30 - 10);
+			riderModel.setupAnim(riderPose);
+			// sat on a chair, not a horse: knees down, boots together, and now and then a lazy swing of the legs
+			float swingLegs = (rh >>> 44 & 0x3) == 0 ? Mth.sin((float) (time * 0.09 + (rh >>> 48 & 0xFF))) * 0.16f : 0f;
+			float legs = -0.95f + (float) ((rh >>> 52 & 0xFF) / 255.0 * 0.2 - 0.1);
+			riderModel.rightLeg.xRot = legs + swingLegs;
+			riderModel.leftLeg.xRot = legs - swingLegs;
+			riderModel.rightLeg.yRot = 0.04f;
+			riderModel.leftLeg.yRot = -0.04f;
+			riderModel.rightLeg.zRot = 0.02f;
+			riderModel.leftLeg.zRot = -0.02f;
+			out.submitModel(riderModel, riderPose, poseStack, RIDER_SKINS[(int) ((rh >>> 24) & 0x7)], light, OverlayTexture.NO_OVERLAY, 0);
+			if (!line.style.cabin()) {
+				// skis hanging level off the boots, tips a little down; a board hangs off the front foot, across and nose down
+				boolean board = (rh >>> 32 & 0x3) == 0;
+				float footY = (12f + 12f * Mth.cos(legs)) / 16f;
+				float footZ = 12f * Mth.sin(legs) / 16f;
+				if (board) {
+					poseStack.translate(0.12f, footY + 0.12f, footZ - 0.02f);
+					poseStack.rotateDegrees(Axis.YP, 62f);
+					poseStack.rotateDegrees(Axis.XP, 24f);
+					poseStack.translate(0f, 0f, 4.5f / 16f); // the front binding on the boot, the rest of the board behind it
+				} else {
+					poseStack.translate(0f, footY + 0.14f, footZ + 0.04f);
+					poseStack.rotateDegrees(Axis.XP, 14f);
+				}
+				net.minecraft.world.item.Item item = board ? RIDER_BOARDS[(int) ((rh >>> 36) % RIDER_BOARDS.length)] : RIDER_SKIS[(int) ((rh >>> 36) % RIDER_SKIS.length)];
+				com.freshtracks.client.render.RigRenderState skiState = new com.freshtracks.client.render.RigRenderState();
+				out.submitModel(board ? riderBoard : riderSkis, skiState, poseStack, com.freshtracks.client.render.RigRenderer.textureFor(item), light, OverlayTexture.NO_OVERLAY, 0);
+			}
+			poseStack.popPose();
+		}
+	}
+
+	/** A well-mixed 64-bit hash (splitmix64's finaliser). */
+	private static long mix(long z) {
+		z = (z ^ (z >>> 30)) * 0xBF58476D1CE4E5B9L;
+		z = (z ^ (z >>> 27)) * 0x94D049BB133111EBL;
+		return z ^ (z >>> 31);
+	}
+
+	/**
+	 * How far a ridden chair's safety bar is down: riders pull it down once they're clear of the loading station and
+	 * push it up again as the top comes near ("prepare to unload"), the same on the way back down.
+	 */
+	static float barDown(LiftLine line, double s) {
+		double up = line.upLength();
+		if (s <= up) {
+			// (some lifts load round the bullwheel, just before the loop comes back to the start)
+			double loop = line.loopLength();
+			double sinceLoad = ((s - line.loadS()) % loop + loop) % loop;
+			return (float) (smooth(sinceLoad, 6, 14) * (1 - smooth(s - line.unloadS(), -24, -15)));
+		}
+		double down = s - up;
+		return (float) smooth(down, 10, 18) * (float) (1 - smooth(down, up - 26, up - 17));
+	}
+
+	private static double smooth(double x, double a, double b) {
+		double t = Mth.clamp((x - a) / (b - a), 0, 1);
+		return t * t * (3 - 2 * t);
 	}
 
 	/** Mid stations: the terminal housing, open at both ends, over the level stretch of rope through the station. */

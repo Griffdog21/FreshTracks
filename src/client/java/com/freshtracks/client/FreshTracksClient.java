@@ -36,6 +36,13 @@ public class FreshTracksClient implements ClientModInitializer {
 		ModelLayerRegistry.registerModelLayer(RigModels.SKIS, RigModels::skis);
 		ModelLayerRegistry.registerModelLayer(RigModels.BOARD, RigModels::board);
 		EntityRendererRegistry.register(ModEntities.RIG, RigRenderer::new);
+		com.freshtracks.item.PocketMapItem.opener = () -> net.minecraft.client.Minecraft.getInstance().gui.setScreen(new com.freshtracks.client.screen.TrailMapScreen());
+		// skiers' poles, drawn from the fist down to the snow
+		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
+			if (renderer instanceof net.minecraft.client.renderer.entity.player.AvatarRenderer<?> avatar) {
+				helper.register(new com.freshtracks.client.render.PoleLayer(avatar));
+			}
+		});
 		EntityRendererRegistry.register(ModEntities.LIFT_SEAT, NoopRenderer::new);
 		for (ChairStyle style : ChairStyle.values()) {
 			ModelLayerRegistry.registerModelLayer(LiftModels.CHAIRS.get(style), () -> LiftModels.chair(style));
@@ -96,6 +103,7 @@ public class FreshTracksClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(ModParticles.SNOW_SPRAY, SnowParticles.Spray.Provider::new);
 		ParticleProviderRegistry.getInstance().register(ModParticles.WIND_SNOW, SnowParticles.WindSnow.Provider::new);
 		ParticleProviderRegistry.getInstance().register(ModParticles.SPARKLE, SnowParticles.Sparkle.Provider::new);
+		ParticleProviderRegistry.getInstance().register(ModParticles.BREATH, SnowParticles.Breath.Provider::new);
 		ClientWeather.init();
 
 		// Lifts move first, so seats (and the riders on them) are placed from this tick's rope position and stay

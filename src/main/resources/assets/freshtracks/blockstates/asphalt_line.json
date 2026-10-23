@@ -1,0 +1,454 @@
+{
+  "variants": {
+    "seg=0": {
+      "model": "freshtracks:block/asphalt_line/0"
+    },
+    "seg=1": {
+      "model": "freshtracks:block/asphalt_line/1"
+    },
+    "seg=2": {
+      "model": "freshtracks:block/asphalt_line/2"
+    },
+    "seg=3": {
+      "model": "freshtracks:block/asphalt_line/3"
+    },
+    "seg=4": {
+      "model": "freshtracks:block/asphalt_line/4"
+    },
+    "seg=5": {
+      "model": "freshtracks:block/asphalt_line/5"
+    },
+    "seg=6": {
+      "model": "freshtracks:block/asphalt_line/6"
+    },
+    "seg=7": {
+      "model": "freshtracks:block/asphalt_line/7"
+    },
+    "seg=8": {
+      "model": "freshtracks:block/asphalt_line/8"
+    },
+    "seg=9": {
+      "model": "freshtracks:block/asphalt_line/9"
+    },
+    "seg=10": {
+      "model": "freshtracks:block/asphalt_line/10"
+    },
+    "seg=11": {
+      "model": "freshtracks:block/asphalt_line/11"
+    },
+    "seg=12": {
+      "model": "freshtracks:block/asphalt_line/12"
+    },
+    "seg=13": {
+      "model": "freshtracks:block/asphalt_line/13"
+    },
+    "seg=14": {
+      "model": "freshtracks:block/asphalt_line/14"
+    },
+    "seg=15": {
+      "model": "freshtracks:block/asphalt_line/15"
+    },
+    "seg=16": {
+      "model": "freshtracks:block/asphalt_line/16"
+    },
+    "seg=17": {
+      "model": "freshtracks:block/asphalt_line/17"
+    },
+    "seg=18": {
+      "model": "freshtracks:block/asphalt_line/18"
+    },
+    "seg=19": {
+      "model": "freshtracks:block/asphalt_line/19"
+    },
+    "seg=20": {
+      "model": "freshtracks:block/asphalt_line/20"
+    },
+    "seg=21": {
+      "model": "freshtracks:block/asphalt_line/21"
+    },
+    "seg=22": {
+      "model": "freshtracks:block/asphalt_line/22"
+    },
+    "seg=23": {
+      "model": "freshtracks:block/asphalt_line/23"
+    },
+    "seg=24": {
+      "model": "freshtracks:block/asphalt_line/24"
+    },
+    "seg=25": {
+      "model": "freshtracks:block/asphalt_line/25"
+    },
+    "seg=26": {
+      "model": "freshtracks:block/asphalt_line/26"
+    },
+    "seg=27": {
+      "model": "freshtracks:block/asphalt_line/27"
+    },
+    "seg=28": {
+      "model": "freshtracks:block/asphalt_line/28"
+    },
+    "seg=29": {
+      "model": "freshtracks:block/asphalt_line/29"
+    },
+    "seg=30": {
+      "model": "freshtracks:block/asphalt_line/30"
+    },
+    "seg=31": {
+      "model": "freshtracks:block/asphalt_line/31"
+    },
+    "seg=32": {
+      "model": "freshtracks:block/asphalt_line/32"
+    },
+    "seg=33": {
+      "model": "freshtracks:block/asphalt_line/33"
+    },
+    "seg=34": {
+      "model": "freshtracks:block/asphalt_line/34"
+    },
+    "seg=35": {
+      "model": "freshtracks:block/asphalt_line/35"
+    },
+    "seg=36": {
+      "model": "freshtracks:block/asphalt_line/36"
+    },
+    "seg=37": {
+      "model": "freshtracks:block/asphalt_line/37"
+    },
+    "seg=38": {
+      "model": "freshtracks:block/asphalt_line/38"
+    },
+    "seg=39": {
+      "model": "freshtracks:block/asphalt_line/39"
+    },
+    "seg=40": {
+      "model": "freshtracks:block/asphalt_line/40"
+    },
+    "seg=41": {
+      "model": "freshtracks:block/asphalt_line/41"
+    },
+    "seg=42": {
+      "model": "freshtracks:block/asphalt_line/42"
+    },
+    "seg=43": {
+      "model": "freshtracks:block/asphalt_line/43"
+    },
+    "seg=44": {
+      "model": "freshtracks:block/asphalt_line/44"
+    },
+    "seg=45": {
+      "model": "freshtracks:block/asphalt_line/45"
+    },
+    "seg=46": {
+      "model": "freshtracks:block/asphalt_line/46"
+    },
+    "seg=47": {
+      "model": "freshtracks:block/asphalt_line/47"
+    },
+    "seg=48": {
+      "model": "freshtracks:block/asphalt_line/48"
+    },
+    "seg=49": {
+      "model": "freshtracks:block/asphalt_line/49"
+    },
+    "seg=50": {
+      "model": "freshtracks:block/asphalt_line/50"
+    },
+    "seg=51": {
+      "model": "freshtracks:block/asphalt_line/51"
+    },
+    "seg=52": {
+      "model": "freshtracks:block/asphalt_line/52"
+    },
+    "seg=53": {
+      "model": "freshtracks:block/asphalt_line/53"
+    },
+    "seg=54": {
+      "model": "freshtracks:block/asphalt_line/54"
+    },
+    "seg=55": {
+      "model": "freshtracks:block/asphalt_line/55"
+    },
+    "seg=56": {
+      "model": "freshtracks:block/asphalt_line/56"
+    },
+    "seg=57": {
+      "model": "freshtracks:block/asphalt_line/57"
+    },
+    "seg=58": {
+      "model": "freshtracks:block/asphalt_line/58"
+    },
+    "seg=59": {
+      "model": "freshtracks:block/asphalt_line/59"
+    },
+    "seg=60": {
+      "model": "freshtracks:block/asphalt_line/60"
+    },
+    "seg=61": {
+      "model": "freshtracks:block/asphalt_line/61"
+    },
+    "seg=62": {
+      "model": "freshtracks:block/asphalt_line/62"
+    },
+    "seg=63": {
+      "model": "freshtracks:block/asphalt_line/63"
+    },
+    "seg=64": {
+      "model": "freshtracks:block/asphalt_line/64"
+    },
+    "seg=65": {
+      "model": "freshtracks:block/asphalt_line/65"
+    },
+    "seg=66": {
+      "model": "freshtracks:block/asphalt_line/66"
+    },
+    "seg=67": {
+      "model": "freshtracks:block/asphalt_line/67"
+    },
+    "seg=68": {
+      "model": "freshtracks:block/asphalt_line/68"
+    },
+    "seg=69": {
+      "model": "freshtracks:block/asphalt_line/69"
+    },
+    "seg=70": {
+      "model": "freshtracks:block/asphalt_line/70"
+    },
+    "seg=71": {
+      "model": "freshtracks:block/asphalt_line/71"
+    },
+    "seg=72": {
+      "model": "freshtracks:block/asphalt_line/72"
+    },
+    "seg=73": {
+      "model": "freshtracks:block/asphalt_line/73"
+    },
+    "seg=74": {
+      "model": "freshtracks:block/asphalt_line/74"
+    },
+    "seg=75": {
+      "model": "freshtracks:block/asphalt_line/75"
+    },
+    "seg=76": {
+      "model": "freshtracks:block/asphalt_line/76"
+    },
+    "seg=77": {
+      "model": "freshtracks:block/asphalt_line/77"
+    },
+    "seg=78": {
+      "model": "freshtracks:block/asphalt_line/78"
+    },
+    "seg=79": {
+      "model": "freshtracks:block/asphalt_line/79"
+    },
+    "seg=80": {
+      "model": "freshtracks:block/asphalt_line/80"
+    },
+    "seg=81": {
+      "model": "freshtracks:block/asphalt_line/81"
+    },
+    "seg=82": {
+      "model": "freshtracks:block/asphalt_line/82"
+    },
+    "seg=83": {
+      "model": "freshtracks:block/asphalt_line/83"
+    },
+    "seg=84": {
+      "model": "freshtracks:block/asphalt_line/84"
+    },
+    "seg=85": {
+      "model": "freshtracks:block/asphalt_line/85"
+    },
+    "seg=86": {
+      "model": "freshtracks:block/asphalt_line/86"
+    },
+    "seg=87": {
+      "model": "freshtracks:block/asphalt_line/87"
+    },
+    "seg=88": {
+      "model": "freshtracks:block/asphalt_line/88"
+    },
+    "seg=89": {
+      "model": "freshtracks:block/asphalt_line/89"
+    },
+    "seg=90": {
+      "model": "freshtracks:block/asphalt_line/90"
+    },
+    "seg=91": {
+      "model": "freshtracks:block/asphalt_line/91"
+    },
+    "seg=92": {
+      "model": "freshtracks:block/asphalt_line/92"
+    },
+    "seg=93": {
+      "model": "freshtracks:block/asphalt_line/93"
+    },
+    "seg=94": {
+      "model": "freshtracks:block/asphalt_line/94"
+    },
+    "seg=95": {
+      "model": "freshtracks:block/asphalt_line/95"
+    },
+    "seg=96": {
+      "model": "freshtracks:block/asphalt_line/96"
+    },
+    "seg=97": {
+      "model": "freshtracks:block/asphalt_line/97"
+    },
+    "seg=98": {
+      "model": "freshtracks:block/asphalt_line/98"
+    },
+    "seg=99": {
+      "model": "freshtracks:block/asphalt_line/99"
+    },
+    "seg=100": {
+      "model": "freshtracks:block/asphalt_line/100"
+    },
+    "seg=101": {
+      "model": "freshtracks:block/asphalt_line/101"
+    },
+    "seg=102": {
+      "model": "freshtracks:block/asphalt_line/102"
+    },
+    "seg=103": {
+      "model": "freshtracks:block/asphalt_line/103"
+    },
+    "seg=104": {
+      "model": "freshtracks:block/asphalt_line/104"
+    },
+    "seg=105": {
+      "model": "freshtracks:block/asphalt_line/105"
+    },
+    "seg=106": {
+      "model": "freshtracks:block/asphalt_line/106"
+    },
+    "seg=107": {
+      "model": "freshtracks:block/asphalt_line/107"
+    },
+    "seg=108": {
+      "model": "freshtracks:block/asphalt_line/108"
+    },
+    "seg=109": {
+      "model": "freshtracks:block/asphalt_line/109"
+    },
+    "seg=110": {
+      "model": "freshtracks:block/asphalt_line/110"
+    },
+    "seg=111": {
+      "model": "freshtracks:block/asphalt_line/111"
+    },
+    "seg=112": {
+      "model": "freshtracks:block/asphalt_line/112"
+    },
+    "seg=113": {
+      "model": "freshtracks:block/asphalt_line/113"
+    },
+    "seg=114": {
+      "model": "freshtracks:block/asphalt_line/114"
+    },
+    "seg=115": {
+      "model": "freshtracks:block/asphalt_line/115"
+    },
+    "seg=116": {
+      "model": "freshtracks:block/asphalt_line/116"
+    },
+    "seg=117": {
+      "model": "freshtracks:block/asphalt_line/117"
+    },
+    "seg=118": {
+      "model": "freshtracks:block/asphalt_line/118"
+    },
+    "seg=119": {
+      "model": "freshtracks:block/asphalt_line/119"
+    },
+    "seg=120": {
+      "model": "freshtracks:block/asphalt_line/120"
+    },
+    "seg=121": {
+      "model": "freshtracks:block/asphalt_line/121"
+    },
+    "seg=122": {
+      "model": "freshtracks:block/asphalt_line/122"
+    },
+    "seg=123": {
+      "model": "freshtracks:block/asphalt_line/123"
+    },
+    "seg=124": {
+      "model": "freshtracks:block/asphalt_line/124"
+    },
+    "seg=125": {
+      "model": "freshtracks:block/asphalt_line/125"
+    },
+    "seg=126": {
+      "model": "freshtracks:block/asphalt_line/126"
+    },
+    "seg=127": {
+      "model": "freshtracks:block/asphalt_line/127"
+    },
+    "seg=128": {
+      "model": "freshtracks:block/asphalt_line/128"
+    },
+    "seg=129": {
+      "model": "freshtracks:block/asphalt_line/129"
+    },
+    "seg=130": {
+      "model": "freshtracks:block/asphalt_line/130"
+    },
+    "seg=131": {
+      "model": "freshtracks:block/asphalt_line/131"
+    },
+    "seg=132": {
+      "model": "freshtracks:block/asphalt_line/132"
+    },
+    "seg=133": {
+      "model": "freshtracks:block/asphalt_line/133"
+    },
+    "seg=134": {
+      "model": "freshtracks:block/asphalt_line/134"
+    },
+    "seg=135": {
+      "model": "freshtracks:block/asphalt_line/135"
+    },
+    "seg=136": {
+      "model": "freshtracks:block/asphalt_line/136"
+    },
+    "seg=137": {
+      "model": "freshtracks:block/asphalt_line/137"
+    },
+    "seg=138": {
+      "model": "freshtracks:block/asphalt_line/138"
+    },
+    "seg=139": {
+      "model": "freshtracks:block/asphalt_line/139"
+    },
+    "seg=140": {
+      "model": "freshtracks:block/asphalt_line/140"
+    },
+    "seg=141": {
+      "model": "freshtracks:block/asphalt_line/141"
+    },
+    "seg=142": {
+      "model": "freshtracks:block/asphalt_line/142"
+    },
+    "seg=143": {
+      "model": "freshtracks:block/asphalt_line/143"
+    },
+    "seg=144": {
+      "model": "freshtracks:block/asphalt_line/144"
+    },
+    "seg=145": {
+      "model": "freshtracks:block/asphalt_line/145"
+    },
+    "seg=146": {
+      "model": "freshtracks:block/asphalt_line/146"
+    },
+    "seg=147": {
+      "model": "freshtracks:block/asphalt_line/147"
+    },
+    "seg=148": {
+      "model": "freshtracks:block/asphalt_line/148"
+    },
+    "seg=149": {
+      "model": "freshtracks:block/asphalt_line/149"
+    }
+  }
+}

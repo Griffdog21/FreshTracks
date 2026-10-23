@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "freshtracks:block/asphalt"
+      },
+      {
+        "model": "freshtracks:block/asphalt",
+        "y": 90
+      },
+      {
+        "model": "freshtracks:block/asphalt",
+        "y": 180
+      },
+      {
+        "model": "freshtracks:block/asphalt",
+        "y": 270
+      }
+    ]
+  }
+}

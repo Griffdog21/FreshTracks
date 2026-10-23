@@ -59,6 +59,16 @@ public final class RigMotion {
 	private static final double PUSH_SKI = 0.0110;
 	private static final double PUSH_BOARD = 0.0080;
 	private static final double PUSH_MAX = 0.26;
+	/**
+	 * Herringbone: stepping up a rise with the tips apart. From this much rise per block along the skis, at a crawl,
+	 * pushing climbs instead of strokes; at this pace on a gentle rise, slower as it steepens, up to {@link #CLIMB_MAX}.
+	 * A board can only shuffle up the gentlest rises.
+	 */
+	private static final double CLIMB_MIN = 0.035;
+	private static final double CLIMB_MAX = 0.9;
+	private static final double CLIMB_SPEED = 0.075;
+	private static final double BOARD_CLIMB_MAX = 0.12;
+	private static final double BOARD_CLIMB_SPEED = 0.035;
 
 	// Air.
 	// A real ollie is a knee-high hop: a tap ~0.3 blocks, fully loaded ~0.75 (big air comes from speed off a lip).
@@ -104,6 +114,17 @@ public final class RigMotion {
 	public boolean jumpHeld;
 	/** Ticks until the next push stroke can land. */
 	public int strokeTimer;
+	/** Poles in hand (set by the rig each tick): strokes are double-pole pushes, and turns start with a pole plant. */
+	public boolean poles;
+	/** What the rider's arms and legs are doing (for drawing them), and for how many ticks. */
+	public RiderAction action = RiderAction.NONE;
+	public int actionTicks;
+	/** Stepping up a rise herringbone-style this tick. */
+	public boolean climbing;
+	/** Ticks since the last pole plant (they come once per turn, not on every wiggle). */
+	private int sincePlant = 100;
+	/** Which edge the last pole plant was for. */
+	private int plantEdge;
 	/** Spin wound up while loading an ollie (A/D held), -1..1. */
 	public float windUp;
 	/** This air was on purpose (an ollie, or launched up off a lip): flips are allowed. Rolling off a bump isn't. */
@@ -160,8 +181,10 @@ public final class RigMotion {
 		public boolean sank;
 		public boolean popped;
 		public boolean groundTrick;
-		/** A push stroke this tick: 0 none, 1 a skate stride, 2 a double-pole plant. */
+		/** A push stroke this tick: 0 none, 1 a skate stride, 2 a double-pole plant, 3 a herringbone step. */
 		public int stroke;
+		/** A pole planted to start a turn this tick: -1 the left pole, 1 the right, 0 none. */
+		public int polePlant;
 		/** A stomped landing gave a burst of speed this tick. */
 		public boolean boost;
 		/** The ollie was timed right at a lip and went higher. */
@@ -180,6 +203,7 @@ public final class RigMotion {
 			popped = false;
 			groundTrick = false;
 			stroke = 0;
+			polePlant = 0;
 			boost = false;
 			perfectPop = false;
 		}
@@ -229,11 +253,26 @@ public final class RigMotion {
 	/** One physics tick. Returns the new position; the caller moves the entity there. */
 	public Vec3 step(BlockGetter level, Vec3 pos, RiderInput in, RigStats st, RigKind kind) {
 		events.clear();
+		climbing = false;
+		sincePlant++;
+		actionTicks++;
+		int lasts = switch (action) {
+			case DOUBLE_POLE -> 13;
+			case SKATE_LEFT, SKATE_RIGHT -> 10;
+			case HERRINGBONE_LEFT, HERRINGBONE_RIGHT -> 9;
+			default -> 8;
+		};
+		if (actionTicks > lasts) {
+			action = RiderAction.NONE;
+		}
 		leanO = lean;
 		flipVisualO = flipVisual;
 		steerYaw = 0;
 		if (grindCooldown > 0) grindCooldown--;
 		Vec3 next;
+		if (tow != null || grinding || !grounded) {
+			action = RiderAction.NONE;
+		}
 		if (tow != null) {
 			grinding = buttering = false;
 			press = 0;
@@ -568,6 +607,19 @@ public final class RigMotion {
 		} else {
 			edge = approach(edge, target, engage);
 		}
+		// A pole planted on the inside of each new turn as the edges change over: the downhill pole at the end of the
+		// last turn, the way a skier times a turn (short turns and bumps especially).
+		int edgeSide = edge > 0.35f ? 1 : edge < -0.35f ? -1 : 0;
+		if (edgeSide != 0 && edgeSide != plantEdge) {
+			if (poles && !board && plantEdge != 0 && sincePlant > 9 && speed > 0.10 && speed < 0.75 && !in.forward() && !edgeCheck
+				&& !hockeyStop && action != RiderAction.DOUBLE_POLE) {
+				action = edgeSide > 0 ? RiderAction.PLANT_RIGHT : RiderAction.PLANT_LEFT;
+				actionTicks = 0;
+				sincePlant = 0;
+				events.polePlant = edgeSide;
+			}
+			plantEdge = edgeSide;
+		}
 
 		// Gravity pulls along the slope.
 		double gx = ground.gradX();
@@ -706,29 +758,56 @@ public final class RigMotion {
 			vz += Math.cos(rad) * drive;
 		}
 
-		// Pushing: hold W for rhythmic strokes. With poles in hand it's a strong double-pole plant every half second
-		// (good up to ~40 km/h); without them a skate stride; on a board a one-footed skate. Each stroke is a real shove
-		// that fades as you get going, so it's punchy from a standstill and still useful across a flat.
+		// Pushing: hold W. Up a rise at a crawl, skis climb herringbone, tips apart, a step at a time; a board can only
+		// shuffle up the gentlest. Otherwise rhythmic strokes: with poles a strong double-pole push every half second
+		// (good up to ~40 km/h), without them a skating stride, on a board a one-footed skate. Each stroke is a real
+		// shove that fades as you get going, so it's punchy from a standstill and still useful across a flat.
 		speed = speed();
 		if (strokeTimer > 0) {
 			strokeTimer--;
 		}
-		boolean poles = !board && st.push() > 1.2f;
-		double strokeCap = board ? 0.30 : poles ? 0.55 : 0.38;
-		if (in.forward() && !in.back() && !in.jump() && speed < strokeCap) {
-			if (switchStance && speed < 0.04) {
-				// pushing off from (nearly) a standstill goes the way the skis point
-				switchStance = false;
-				travel = travelHeading();
-			}
+		boolean polesOut = poles && !board;
+		double strokeCap = board ? 0.30 : polesOut ? 0.55 : 0.38;
+		boolean pushing = in.forward() && !in.back() && !in.jump() && !in.brake();
+		if (pushing && switchStance && speed < 0.04) {
+			// pushing off from (nearly) a standstill goes the way the skis point
+			switchStance = false;
+			travel = travelHeading();
+		}
+		double pushRad = Math.toRadians(travel);
+		double fx = -Math.sin(pushRad);
+		double fz = Math.cos(pushRad);
+		double rise = gx * fx + gz * fz; // how far the snow climbs per block along the skis
+		double climbMax = board ? BOARD_CLIMB_MAX : CLIMB_MAX;
+		double climbSpeed = board ? BOARD_CLIMB_SPEED : CLIMB_SPEED;
+		if (pushing && !onBelt && rise > CLIMB_MIN && rise < climbMax && speed < climbSpeed + 0.03) {
+			// the edges bite on each step, so the hill can't pull you back down or sideways while you climb
+			climbing = true;
+			double pace = climbSpeed * (1 - 0.6 * rise / climbMax);
+			// (this tick's pull back down the slope is undone: the edges dug in held it)
+			double along = Math.max(0, vx * fx + vz * fz + G_SLOPE * rise / denom);
+			along += (pace - along) * 0.35;
+			vx = fx * along;
+			vz = fz * along;
+			skid = 0;
 			if (strokeTimer == 0) {
-				double base = board ? 0.034 : poles ? 0.085 : 0.046;
-				double impulse = base * Math.min(1.3, st.push() / (poles ? 1.45 : 1.0)) * (0.35 + 0.65 * (1 - speed / strokeCap));
-				double rad = Math.toRadians(travel);
-				vx += -Math.sin(rad) * impulse;
-				vz += Math.cos(rad) * impulse;
-				strokeTimer = poles ? 11 : 9;
-				events.stroke = poles ? 2 : 1;
+				strokeTimer = 7;
+				action = board ? RiderAction.SKATE_RIGHT
+					: action == RiderAction.HERRINGBONE_LEFT ? RiderAction.HERRINGBONE_RIGHT : RiderAction.HERRINGBONE_LEFT;
+				actionTicks = 0;
+				events.stroke = 3;
+			}
+		} else if (pushing && speed < strokeCap) {
+			if (strokeTimer == 0) {
+				double base = board ? 0.034 : polesOut ? 0.085 : 0.046;
+				double impulse = base * Math.min(1.3, st.push() / (polesOut ? 1.45 : 1.0)) * (0.35 + 0.65 * (1 - speed / strokeCap));
+				vx += fx * impulse;
+				vz += fz * impulse;
+				strokeTimer = polesOut ? 11 : 9;
+				events.stroke = polesOut ? 2 : 1;
+				action = polesOut ? RiderAction.DOUBLE_POLE : board ? RiderAction.SKATE_RIGHT
+					: action == RiderAction.SKATE_LEFT ? RiderAction.SKATE_RIGHT : RiderAction.SKATE_LEFT;
+				actionTicks = 0;
 			}
 		} else if (!in.forward()) {
 			strokeTimer = Math.min(strokeTimer, 3); // a fresh press strokes almost at once

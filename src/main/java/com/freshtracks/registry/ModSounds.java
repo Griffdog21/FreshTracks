@@ -27,6 +27,8 @@ public final class ModSounds {
 	public static final SoundEvent LIFT_HUM = register("lift.hum");
 	public static final SoundEvent LIFT_BELL = register("lift.bell");
 	public static final SoundEvent BLIZZARD = register("weather.blizzard");
+	/** Ski Patrol's avalanche charges going off up high on a powder morning: a deep thud rolling round the valley. */
+	public static final SoundEvent AVALANCHE_CONTROL = register("weather.avalanche_control");
 
 	private ModSounds() {
 	}

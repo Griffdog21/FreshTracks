@@ -47,6 +47,10 @@ public class RigEntity extends Entity {
 	/** Surface lift pulling this rig: the lift's network id (-1 = none) and carrier * 8 + slot on the bar. */
 	private static final EntityDataAccessor<Integer> DATA_TOW_LINE = SynchedEntityData.defineId(RigEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Integer> DATA_TOW_CARRIER = SynchedEntityData.defineId(RigEntity.class, EntityDataSerializers.INT);
+	/** The rider carries ski poles (anywhere in their inventory: they ride with them in their hands). */
+	private static final EntityDataAccessor<Boolean> DATA_POLES = SynchedEntityData.defineId(RigEntity.class, EntityDataSerializers.BOOLEAN);
+	/** What the rider's arms and legs are doing (RiderAction packed with its ticks), for everyone else's view. */
+	private static final EntityDataAccessor<Byte> DATA_ACTION = SynchedEntityData.defineId(RigEntity.class, EntityDataSerializers.BYTE);
 
 	/** Client hook: where the carrier towing this rig wants it (null if that lift isn't known here yet). */
 	public interface TowLocator {
@@ -100,6 +104,8 @@ public class RigEntity extends Entity {
 		builder.define(DATA_GRAB, (byte) 0);
 		builder.define(DATA_TOW_LINE, -1);
 		builder.define(DATA_TOW_CARRIER, 0);
+		builder.define(DATA_POLES, false);
+		builder.define(DATA_ACTION, (byte) 0);
 	}
 
 	// ----------------------------------------------------------------------------------------- data
@@ -146,9 +152,30 @@ public class RigEntity extends Entity {
 		return stats;
 	}
 
+	/**
+	 * Skis ridden with poles: the rider carries a pair anywhere in their inventory (you ride with them in your hands,
+	 * whatever the hotbar has selected). The server works it out; the rider's own client can tell at once.
+	 */
 	public boolean hasPoles() {
-		return this.getControllingPassenger() instanceof LivingEntity rider && !kind().isBoard()
-			&& (rider.getMainHandItem().is(ModItems.SKI_POLES) || rider.getOffhandItem().is(ModItems.SKI_POLES));
+		if (!(this.getControllingPassenger() instanceof Player rider) || kind().isBoard()) {
+			return false;
+		}
+		if (this.level().isClientSide() && !isDrivenHere()) {
+			return this.entityData.get(DATA_POLES);
+		}
+		return carriesPoles(rider);
+	}
+
+	private static boolean carriesPoles(Player rider) {
+		if (rider.getOffhandItem().is(ModItems.SKI_POLES)) {
+			return true;
+		}
+		for (ItemStack stack : rider.getInventory().getNonEquipmentItems()) {
+			if (stack.is(ModItems.SKI_POLES)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public int flags() {
@@ -210,11 +237,17 @@ public class RigEntity extends Entity {
 	}
 
 	/** Called on the server with what the rider's client says it's doing (for everyone else's view). */
-	public void applyRiderState(float lean, float flip, int flags, int grab) {
+	public void applyRiderState(float lean, float flip, int flags, int grab, byte action) {
 		this.entityData.set(DATA_LEAN, Mth.clamp(lean, -80f, 80f));
 		this.entityData.set(DATA_FLIP, Mth.wrapDegrees(flip));
 		this.entityData.set(DATA_FLAGS, (byte) flags);
 		this.entityData.set(DATA_GRAB, (byte) grab);
+		this.entityData.set(DATA_ACTION, action);
+	}
+
+	/** The rider's arms and legs this tick: RiderAction packed with how long it has been going. */
+	public byte renderAction() {
+		return isDrivenHere() ? RiderAction.pack(motion.action, motion.actionTicks) : this.entityData.get(DATA_ACTION);
 	}
 
 	public void setRiderInput(RiderInput input) {
@@ -362,6 +395,7 @@ public class RigEntity extends Entity {
 				motion.reset(this.getYRot());
 			}
 			updateTow();
+			motion.poles = hasPoles();
 			Vec3 next = motion.step(this.level(), this.position(), input, effectiveStats(), kind());
 			Vec3 delta = next.subtract(this.position());
 			this.move(MoverType.SELF, delta);
@@ -401,6 +435,9 @@ public class RigEntity extends Entity {
 		unriddenTicks = 0;
 		if (rider instanceof ServerPlayer player) {
 			lastRider = player.getUUID();
+			if (this.tickCount % 10 == 0) {
+				this.entityData.set(DATA_POLES, !kind().isBoard() && carriesPoles(player));
+			}
 			if (player.isShiftKeyDown() && serverSpeed < STEP_OUT_SPEED) {
 				stepOut(player);
 				return;

@@ -77,6 +77,7 @@ ITEMS: dict[str, tuple[str, str]] = {
     "carving_board": ("Carving Snowboard", "handheld"),
     "splitboard": ("Splitboard", "handheld"),
     "retro_board": ("Retro Snowboard", "handheld"),
+    "pocket_trail_map": ("Trail Map", "generated"),
 }
 
 # Dyeable gear: name -> (English, default colour, equipment layer kind)
@@ -455,6 +456,8 @@ LANG: dict[str, str] = {
     "message.freshtracks.wax.howto": "Hold your skis or board in your other hand to wax them",
     "message.freshtracks.wax.done": "Waxed! %s minutes of fast glide",
     "tooltip.freshtracks.magic_carpet": "Carries anyone standing on it the way the arrows point.",
+    "tooltip.freshtracks.pocket_trail_map": "Use to unfold it: where you are on the mountain",
+    "message.freshtracks.no_trail_map": "There's no trail map for this mountain",
     "mount.freshtracks.rig": "Clicked in! Hold %s to brake. Hold it when stopped to step out.",
     "mount.freshtracks.chair": "Enjoy the ride. Bar down! (hold %s to jump off, careful)",
     "tooltip.freshtracks.cable.linking": "Clipped to %s (%s towers)",

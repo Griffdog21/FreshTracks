@@ -36,6 +36,7 @@ public final class ModNetworking {
 		PayloadTypeRegistry.serverboundPlay().register(TrailSignPayload.TYPE, TrailSignPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(LiftEditPayload.TYPE, LiftEditPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(LiftSyncPayload.TYPE, LiftSyncPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(TrailMapPointsPayload.TYPE, TrailMapPointsPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(LiftPhasePayload.TYPE, LiftPhasePayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(WeatherPayload.TYPE, WeatherPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(RaceTimerPayload.TYPE, RaceTimerPayload.CODEC);
@@ -43,7 +44,7 @@ public final class ModNetworking {
 
 		ServerPlayNetworking.registerGlobalReceiver(RiderStatePayload.TYPE, (payload, context) -> {
 			if (context.player().getVehicle() instanceof RigEntity rig && rig.getId() == payload.rigId()) {
-				rig.applyRiderState(payload.lean(), payload.flip(), payload.flags(), payload.grab());
+				rig.applyRiderState(payload.lean(), payload.flip(), payload.flags(), payload.grab(), payload.action());
 			}
 		});
 		ServerPlayNetworking.registerGlobalReceiver(TrickPayload.TYPE, (payload, context) -> onTrick(context.player(), payload));

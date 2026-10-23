@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "freshtracks:block/asphalt_line/124",
+    "bottom": "freshtracks:block/asphalt",
+    "side": "freshtracks:block/asphalt"
+  }
+}

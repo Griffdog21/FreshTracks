@@ -133,6 +133,18 @@ public final class ModBlocks {
 	public static final Block TOWER_PAD = register("tower_pad", com.freshtracks.resort.TowerPadBlock::new,
 		BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLUE).strength(0.8f).sound(SoundType.WOOL).noOcclusion());
 
+	/** Plowed street asphalt: fine dark aggregate, a little dusty with road sand. */
+	public static final Block ASPHALT = register("asphalt", Block::new, asphalt());
+	public static final Block ASPHALT_STAIRS = register("asphalt_stairs", p -> new net.minecraft.world.level.block.StairBlock(ASPHALT.defaultBlockState(), p),
+		asphalt());
+	public static final Block ASPHALT_SLAB = register("asphalt_slab", net.minecraft.world.level.block.SlabBlock::new, asphalt());
+	/** Asphalt with the double yellow centre line on it, a piece of the line per block. */
+	public static final Block ASPHALT_LINE = register("asphalt_line", com.freshtracks.resort.RoadLineBlock::new, asphalt());
+
+	private static BlockBehaviour.Properties asphalt() {
+		return BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).requiresCorrectToolForDrops().strength(1.5f, 6.0f).sound(SoundType.STONE);
+	}
+
 	private static BlockBehaviour.Properties sign() {
 		return BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(1.0f).sound(SoundType.WOOD).noOcclusion().ignitedByLava();
 	}

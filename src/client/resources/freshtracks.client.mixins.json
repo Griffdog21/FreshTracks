@@ -6,6 +6,7 @@
 		"CameraMixin",
 		"AvatarRendererMixin",
 		"ClientPacketListenerMixin",
+		"FirstPersonHandsMixin",
 		"FogRendererMixin",
 		"HumanoidModelMixin",
 		"LivingEntityRendererAccessor",

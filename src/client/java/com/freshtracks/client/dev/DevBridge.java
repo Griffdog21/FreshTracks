@@ -249,6 +249,24 @@ public final class DevBridge {
 					com.freshtracks.client.weather.Aurora.force(Float.parseFloat(q.getOrDefault("v", "-1")));
 					return "{\"ok\":true}";
 				});
+				case "/chairs" -> onMain(() -> {
+					// where each chair of a lift hangs right now: the grip on the rope, the seat below it, and the way it faces
+					StringBuilder sb = new StringBuilder("[");
+					for (com.freshtracks.client.lift.ClientLifts.Entry entry : com.freshtracks.client.lift.ClientLifts.all()) {
+						if (!entry.line.name.equals(q.getOrDefault("line", ""))) {
+							continue;
+						}
+						double phase = entry.phase(0f);
+						for (int chair = 0; chair < entry.line.chairCount(); chair++) {
+							com.freshtracks.lift.LiftLine.RopePoint rope = entry.line.ropeAt(entry.line.chairS(phase, chair));
+							net.minecraft.world.phys.Vec3 p = rope.pos();
+							sb.append(sb.length() > 1 ? "," : "").append(String.format(Locale.ROOT,
+								"{\"chair\":%d,\"x\":%.2f,\"y\":%.2f,\"z\":%.2f,\"seatY\":%.2f,\"yaw\":%.1f}",
+								chair, p.x, p.y, p.z, p.y - entry.line.style.hanger, rope.yaw()));
+						}
+					}
+					return sb.append("]").toString();
+				});
 				case "/reloadres" -> onMain(() -> {
 					Minecraft.getInstance().reloadResourcePacks();
 					return "{\"ok\":true}";

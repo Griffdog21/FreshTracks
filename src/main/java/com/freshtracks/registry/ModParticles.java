@@ -13,6 +13,8 @@ public final class ModParticles {
 	public static final SimpleParticleType WIND_SNOW = register("wind_snow", true);
 	/** Diamond dust: ice crystals glittering in cold, clear air. */
 	public static final SimpleParticleType SPARKLE = register("sparkle", true);
+	/** Breath in the cold air: a little cloud in front of the face. */
+	public static final SimpleParticleType BREATH = register("breath", false);
 
 	private ModParticles() {
 	}

@@ -76,6 +76,39 @@ public final class ClientWeather {
 		}
 		spawnWindSnow(level, player, event);
 		spawnSparkle(level, player, event);
+		breathe(level, player);
+	}
+
+	/**
+	 * Everyone's breath shows in the cold: a puff from each skier, rider and villager nearby every few seconds (quicker
+	 * when they're working hard), out in front of the face.
+	 */
+	private static void breathe(ClientLevel level, LocalPlayer player) {
+		for (net.minecraft.world.entity.Entity e : level.entitiesForRendering()) {
+			if (!(e instanceof net.minecraft.world.entity.player.Player || e instanceof net.minecraft.world.entity.npc.villager.AbstractVillager)
+				|| e.distanceToSqr(player) > 24 * 24 || e.isInvisible()
+				|| e == player && net.minecraft.client.Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+				continue; // (your own breath would fog the camera, which is right at your mouth)
+			}
+			boolean working = e.getVehicle() instanceof com.freshtracks.rig.RigEntity rig && rig.renderAction() != 0 || e.isSprinting();
+			int every = working ? 34 : 64;
+			if ((e.tickCount + e.getId() * 17L) % every != 0) { // each breathes on its own count
+				continue;
+			}
+			BlockPos head = BlockPos.containing(e.getEyePosition());
+			if (!coldHere(level, head) || !level.canSeeSky(head)) {
+				continue;
+			}
+			Vec3 look = e.getViewVector(1f);
+			// out in front of the mouth (clear of the head), blown forward a little and spreading
+			double x = e.getX() + look.x * 0.5;
+			double y = e.getEyeY() - 0.22;
+			double z = e.getZ() + look.z * 0.5;
+			for (int i = 0; i < 3; i++) {
+				level.addParticle(ModParticles.BREATH, x, y, z, look.x * 0.05 + (RANDOM.nextDouble() - 0.5) * 0.015, 0.002 + RANDOM.nextDouble() * 0.004,
+					look.z * 0.05 + (RANDOM.nextDouble() - 0.5) * 0.015);
+			}
+		}
 	}
 
 	private static void spawnWindSnow(ClientLevel level, LocalPlayer player, SnowEvent event) {
@@ -104,15 +137,20 @@ public final class ClientWeather {
 			return;
 		}
 		long time = level.getOverworldClockTime() % 24000L;
-		boolean daylight = time < 12500L;
-		float chance = (event == SnowEvent.COLD_SNAP ? 0.9f : 0.5f) * exposure * (daylight ? 1f : 0.3f);
+		if (time >= 12500L) {
+			return; // the glints are the sun catching the ice crystals
+		}
+		float chance = (event == SnowEvent.COLD_SNAP ? 0.9f : 0.5f) * exposure;
 		while (chance > 0) {
 			if (RANDOM.nextFloat() < chance) {
 				Vec3 look = player.getLookAngle();
 				double x = player.getX() + look.x * 4 + (RANDOM.nextDouble() - 0.5) * 10;
 				double y = player.getEyeY() + (RANDOM.nextDouble() - 0.4) * 4;
 				double z = player.getZ() + look.z * 4 + (RANDOM.nextDouble() - 0.5) * 10;
-				level.addParticle(ModParticles.SPARKLE, x, y, z, 0, 0, 0);
+				// never right in front of your eyes, where one crystal would look like a star
+				if (player.getEyePosition().distanceToSqr(x, y, z) > 9) {
+					level.addParticle(ModParticles.SPARKLE, x, y, z, 0, 0, 0);
+				}
 			}
 			chance -= 1f;
 		}

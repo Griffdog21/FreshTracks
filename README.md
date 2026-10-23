@@ -16,12 +16,25 @@ Carve on your edges, drop into powder, ride the gondola to the top, and live on 
 
 Come ski Snowmass with us: shared laps, park sessions, powder days, and Base Village and the Mall lit up after dark, with real restaurants serving what they're known for.
 
-1. **Install the pack:** get [Prism Launcher](https://prismlauncher.org) or the [Modrinth App](https://modrinth.com/app), then import **`FreshTracks-1.6.1.mrpack`** from the [releases page](../../releases/latest) ([step by step](#-install-in-2-minutes)).
+1. **Install the pack:** get [Prism Launcher](https://prismlauncher.org) or the [Modrinth App](https://modrinth.com/app), then import **`FreshTracks-1.7.0.mrpack`** from the [releases page](../../releases/latest) ([step by step](#-install-in-2-minutes)).
 2. **Wake the server:** open **[griffdog21.github.io/FreshTracks/play](https://griffdog21.github.io/FreshTracks/play/)**, press *Wake the server* and wait for **Online** (about two minutes). It sleeps 15 minutes after the last skier leaves.
 3. **Join:** in the Fresh Tracks instance, **Multiplayer → Add Server → `18.227.232.192`**.
 4. **Register (first visit):** type `/register` for free skis, a snowboard, gear and a packed lunch. Your Minecraft account is your login; no password.
 
 Keep **Simple Voice Chat** ticked in the pack to talk to skiers near you. Can't connect? The server is still waking up. "Incompatible client"? Re-import the latest `.mrpack`. [Full guide and troubleshooting →](https://griffdog21.github.io/FreshTracks/server.html#join)
+
+## New in 1.7.0: a living mountain
+
+- **Poles that really push:** carry your poles anywhere in your inventory and they're in your hands while you ride (no more empty hands after clicking in). Hold W on the flats to double-pole, stride out on skating steps, plant a pole through each turn, and climb gentle hills herringbone-style. Other skiers see every push and plant.
+- **Skiers on the lifts:** chairs and gondola cabins going up carry other skiers in helmets and jackets, sitting where you'd sit, skis or a board hanging off their boots. Set how busy the lifts are with `liftRiders` in `config/freshtracks.json` (0 for empty lifts, 1 for full).
+- **Safety bars:** a chair's bar comes down once you're clear of the station and goes up again as the top comes near.
+- **Pocket trail map:** on servers with a resort map (like Snowmass) you carry a folding trail map; use it anywhere to see the whole mountain and where you are on it.
+- **Your breath in the cold:** on cold days everyone's breath shows in little clouds, quicker when they're working hard.
+- **Avalanche control:** on powder mornings Ski Patrol bombs the steep slopes up high before the upper lifts open. The booms roll round the valley until about nine.
+- **Asphalt:** asphalt blocks, stairs and slabs, and painted asphalt with a double yellow centre line, for roads that look like real ones.
+- **Gondola paint:** `/freshtracks lift cabin black <lift>` paints a gondola's cabins black.
+- **Diamond dust:** the glints in the air on cold, clear days are finer, and only catch the sun in daytime.
+- **On the Snowmass server:** the run under the skier bridge curves left straight to the Elk Camp Gondola; the streets are asphalt with real double yellow lines and plow berms along them; the lift shacks look like real ones; there's a trail map board at every lift; and the Elk Camp Gondola's cabins are black, like the real ones.
 
 ## New in 1.6.1: a slower grind, and no more surprise launches
 
@@ -147,12 +160,12 @@ Want to jump straight in? The **Fresh Tracks Test World** is a ready-made ski hi
 Everything comes as one file you import into a launcher. It makes its own separate game folder, so **your normal Minecraft worlds are never touched**.
 
 **Prism Launcher** (recommended, free: [prismlauncher.org](https://prismlauncher.org))
-1. Download **`FreshTracks-1.6.1.mrpack`** from the [releases page](../../releases/latest).
+1. Download **`FreshTracks-1.7.0.mrpack`** from the [releases page](../../releases/latest).
 2. In Prism: **Add Instance → Import** → pick the file → **OK**.
 3. Select the new **Fresh Tracks** instance and press **Launch**.
 
 **Modrinth App** ([modrinth.com/app](https://modrinth.com/app))
-1. Download **`FreshTracks-1.6.1.mrpack`**.
+1. Download **`FreshTracks-1.7.0.mrpack`**.
 2. **+ (Create instance) → Import from file** → pick it → **Play**.
 
 The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **Sodium, Iris (shaders) and Distant Horizons** as optional extras (untick them if your PC struggles). For the screenshots above: Iris with the *Complementary Unbound* shader pack.
@@ -163,7 +176,7 @@ The pack sets up Minecraft 26.3, Fabric and Fresh Tracks for you, and offers **S
 <summary>Manual install (official launcher)</summary>
 
 1. Install Fabric for Minecraft 26.3 with the [Fabric installer](https://fabricmc.net/use/installer) (give the profile its own game directory so your normal worlds stay separate).
-2. Put `freshtracks-1.6.1.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
+2. Put `freshtracks-1.7.0.jar` and [Fabric API](https://modrinth.com/mod/fabric-api) (0.162.0+26.3) in that game directory's `mods` folder.
 </details>
 
 ## 🎮 Controls

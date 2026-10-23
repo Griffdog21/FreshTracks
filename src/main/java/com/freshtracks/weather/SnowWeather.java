@@ -89,6 +89,7 @@ public final class SnowWeather {
 			roll(level, data, day);
 		}
 		updateWind(level, data);
+		avalancheControl(level, data);
 		if (data.dumpTicks > 0) {
 			data.dumpTicks--;
 			data.setDirty();
@@ -107,6 +108,41 @@ public final class SnowWeather {
 			syncTimer = 0;
 			for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
 				sync(player);
+			}
+		}
+	}
+
+	private static long nextBoom;
+	private static long boomDay = -1;
+
+	/**
+	 * Avalanche control: on a powder morning Ski Patrol bombs the steep slopes up high before the upper lifts open, and
+	 * the whole mountain hears it, a thud every half minute or two rolling round the valley from first light to about nine.
+	 */
+	private static void avalancheControl(ServerLevel level, SnowWeatherData data) {
+		if (data.event != SnowEvent.POWDER_DAY || level.players().isEmpty()) {
+			return;
+		}
+		long clock = level.getOverworldClockTime();
+		if (Math.floorMod(clock, 24000L) > 3000) {
+			return;
+		}
+		long now = level.getGameTime();
+		if (now < nextBoom) {
+			return;
+		}
+		nextBoom = now + 600 + RANDOM.nextInt(1800);
+		long day = Math.floorDiv(clock, 24000L);
+		boolean first = boomDay != day;
+		boomDay = day;
+		var sound = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(com.freshtracks.registry.ModSounds.AVALANCHE_CONTROL);
+		for (ServerPlayer player : level.players()) {
+			// heard everywhere at once, from far off: played right at each player, quiet and low
+			player.connection.send(new net.minecraft.network.protocol.game.ClientboundSoundPacket(sound, net.minecraft.sounds.SoundSource.WEATHER,
+				player.getX(), player.getY() + 8, player.getZ(), 0.9f, 0.85f + RANDOM.nextFloat() * 0.25f, RANDOM.nextLong()));
+			if (first) {
+				player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.freshtracks.avalanche_control")
+					.withStyle(net.minecraft.ChatFormatting.GRAY), true);
 			}
 		}
 	}

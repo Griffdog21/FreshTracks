@@ -7,7 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 /** Rider's client to server, every tick: how the rider is posed, so other players see the carve and the tricks. */
-public record RiderStatePayload(int rigId, float lean, float flip, byte flags, byte grab) implements CustomPacketPayload {
+public record RiderStatePayload(int rigId, float lean, float flip, byte flags, byte grab, byte action) implements CustomPacketPayload {
 	public static final Type<RiderStatePayload> TYPE = new Type<>(FreshTracks.id("rider_state"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, RiderStatePayload> CODEC = StreamCodec.composite(
 		ByteBufCodecs.VAR_INT, RiderStatePayload::rigId,
@@ -15,6 +15,7 @@ public record RiderStatePayload(int rigId, float lean, float flip, byte flags, b
 		ByteBufCodecs.FLOAT, RiderStatePayload::flip,
 		ByteBufCodecs.BYTE, RiderStatePayload::flags,
 		ByteBufCodecs.BYTE, RiderStatePayload::grab,
+		ByteBufCodecs.BYTE, RiderStatePayload::action,
 		RiderStatePayload::new);
 
 	@Override
